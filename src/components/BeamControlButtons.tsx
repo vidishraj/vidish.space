@@ -1,6 +1,6 @@
 import React from "react";
 import {motion} from "framer-motion";
-import Zap from "../../public/assets/zap.png";
+import Zap from "/assets/zap.png";
 import {useGlobal} from "../GlobalContext.tsx";
 
 interface BeamControlButtonsProps {
@@ -27,7 +27,7 @@ const BeamControlButtons: React.FC<BeamControlButtonsProps> = ({
                     currentSpeed <= minSpeed ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-opacity-80'
                 }`}
                 style={{
-                    backgroundImage: "url(../../public/assets/heroPage/slowDown.png)",
+                    backgroundImage: "url(/assets/heroPage/slowDown.png)",
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     width: '60px',
@@ -72,7 +72,7 @@ const BeamControlButtons: React.FC<BeamControlButtonsProps> = ({
                     currentSpeed >= maxSpeed ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-opacity-80'
                 }`}
                 style={{
-                    backgroundImage: "url(../../public/assets/heroPage/speedUp.png)",
+                    backgroundImage: "url(/assets/heroPage/speedUp.png)",
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     width: '60px',

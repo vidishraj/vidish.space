@@ -1,13 +1,13 @@
 import {useRef, useState} from "react";
 import {LottieRefCurrentProps} from "lottie-react";
-import Icon1 from '../../public/assets/heroPage/l1.webp';
-import Icon2 from '../../public/assets/heroPage/l2.webp';
-import Icon3 from '../../public/assets/heroPage/l3.webp';
-import Icon4 from '../../public/assets/heroPage/l4.webp';
-import IconD1 from '../../public/assets/heroPage/lm1.webp';
-import IconD2 from '../../public/assets/heroPage/lm2.webp';
-import IconD3 from '../../public/assets/heroPage/lm3.webp';
-import IconD4 from '../../public/assets/heroPage/lm4.webp';
+import Icon1 from '/assets/heroPage/l1.webp';
+import Icon2 from '/assets/heroPage/l2.webp';
+import Icon3 from '/assets/heroPage/l3.webp';
+import Icon4 from '/assets/heroPage/l4.webp';
+import IconD1 from '/assets/heroPage/lm1.webp';
+import IconD2 from '/assets/heroPage/lm2.webp';
+import IconD3 from '/assets/heroPage/lm3.webp';
+import IconD4 from '/assets/heroPage/lm4.webp';
 import styles from './HeroSection.module.scss';
 import {TextScramble} from "../components/TextScramble.tsx";
 import {BackgroundBeamsWithCollision} from "../components/BackgroundBeams.tsx";
@@ -129,8 +129,8 @@ const HeroSection = () => {
                         alignItems: 'center'
                     }}>
                         <ImageToggleButton
-                            checkedImage={"../../public/assets/heroPage/lightMode.png"}
-                            uncheckedImage={"../../public/assets/heroPage/darkMode.png"}
+                            checkedImage={"/assets/heroPage/lightMode.png"}
+                            uncheckedImage={"/assets/heroPage/darkMode.png"}
                             onChange={handleToggle}
                             width={'150px'}
                             height={'44px'}

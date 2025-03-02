@@ -4,10 +4,10 @@ import {motion, useAnimation, useInView} from "framer-motion";
 import styles from "../pages/Projects.module.scss";
 import AnimatedCard from "./AnimatedCard";
 import Modal from "./Modal.tsx";
-import akkountantData from '../../public/assets/akkountantModal/akkountantInfo.json';
-import tripsplitData from '../../public/assets/tripsplitModal/tripsplitInfo.json';
-import leetcodeToGitData from '../../public/assets/leetcodeToGitModal/leetcodeToGitInfo.json';
-import vidishSpaceData from '../../public/assets/vidishSpaceModal/vidishSpaceInfo.json';
+import akkountantData from '/assets/akkountantModal/akkountantInfo.json?url';
+import tripsplitData from '/assets/tripsplitModal/tripsplitInfo.json?url';
+import leetcodeToGitData from '/assets/leetcodeToGitModal/leetcodeToGitInfo.json?url';
+import vidishSpaceData from '/assets/vidishSpaceModal/vidishSpaceInfo.json?url';
 
 import {useGlobal} from "../GlobalContext.tsx";
 
