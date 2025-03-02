@@ -1,0 +1,192 @@
+// ScrollTracker.module.scss
+.trackerContainer {
+  position: fixed;
+  width: 100%;
+  top: 1.5rem;
+  left: 50%;
+  display: flex;
+  justify-content: center;
+  transform: translateX(-50%);
+  z-index: 50;
+
+  // Add a transition for smooth theme switching
+  transition: all 0.3s ease;
+}
+
+.tracker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 9999px;
+  padding: 0.2rem;
+  max-width: 90%;
+  width: auto;
+
+  // Add a subtle shadow to lift the navigation
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+// Light mode styles
+.lightMode {
+  .tracker {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+  }
+
+  .trackerButton {
+    color: #4b5563;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.05);
+    }
+  }
+
+  .activeButton {
+    background: #2563eb; // Blue in light mode
+    color: white;
+
+    &:hover {
+      background: #1d4ed8; // Darker blue on hover
+    }
+  }
+
+  .divider {
+    background: #e5e7eb;
+  }
+
+  .resumeButton {
+    background: #f3f4f6;
+    color: #1f2937;
+
+    &:hover {
+      background: #e5e7eb;
+    }
+  }
+}
+
+// Dark mode styles
+.darkMode {
+  .tracker {
+    background: rgba(31, 41, 55, 0.85);
+    backdrop-filter: blur(10px);
+  }
+
+  .trackerButton {
+    color: #e5e7eb;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  .activeButton {
+    background: #3b82f6; // Brighter blue in dark mode
+    color: white;
+
+    &:hover {
+      background: #2563eb;
+    }
+  }
+
+  .divider {
+    background: #4b5563;
+  }
+
+  .resumeButton {
+    background: #374151;
+    color: #f9fafb;
+
+    &:hover {
+      background: #4b5563;
+    }
+  }
+}
+
+.navButtons {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.trackerButton {
+  padding: 0.5rem 0.75rem;
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  background: transparent;
+  transition: all 0.2s ease;
+
+  // Improve accessibility with focus styles
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+  }
+}
+
+.activeButton {
+  font-weight: 600;
+}
+
+.divider {
+  height: 1.5rem;
+  width: 1px;
+  margin: 0 0.5rem;
+}
+
+.resumeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+
+  // Improve accessibility with focus styles
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+  }
+
+  // Add subtle hover animation
+  svg {
+    transition: transform 0.2s ease;
+  }
+
+  &:hover svg {
+    transform: translateY(1px);
+  }
+}
+
+// Media queries for responsive design
+@media (max-width: 640px) {
+  .tracker {
+    padding: 0.375rem;
+  }
+
+  .trackerButton {
+    padding: 0.375rem 0.625rem;
+    font-size: 0.8125rem;
+  }
+
+  .resumeButton {
+    padding: 0.375rem 0.625rem;
+    font-size: 0.8125rem;
+
+    span {
+      display: none; // Hide text on small screens
+    }
+  }
+}
+
+@media (max-width: 400px) {
+  .trackerButton {
+    padding: 0.375rem 0.5rem;
+  }
+}

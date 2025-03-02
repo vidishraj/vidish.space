@@ -1,6 +1,16 @@
 body, html, #root {
     min-width: 100%;
+    /*max-height: 100%;*/
 }
+
+#root {
+    background-color: #F2E2CE;
+    min-height: 50px;
+    min-width: 50px;
+    height: 100%;
+    width: 100%;
+}
+
 
 /* Hide scrollbar for all browsers while keeping scroll functional */
 html, body {

@@ -1,0 +1,42 @@
+.hero-intro, .timeline-intro, .projects-intro, .contact-intro, .tech-intro, .performance-intro {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.hero-features, .timeline-features, .projects-features, .contact-details, .tech-stack {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin: 10px 0;
+}
+
+.hero-list, .timeline-features, .projects-features, .contact-details, .tech-stack {
+    list-style-type: circle;
+    padding-left: 30px;
+}
+
+.hero-list li, .timeline-features li, .projects-features li, .contact-details li, .tech-stack li {
+    margin-bottom: 5px;
+}
+
+ul.hero-list li::before,
+ul.timeline-features li::before,
+ul.projects-features li::before,
+ul.contact-details li::before,
+ul.tech-stack li::before {
+    content: "✔️";
+    margin-right: 8px;
+    color: green;
+}
+
+.hero-optimization, .timeline-summary, .projects-summary, .contact-summary, .tech-summary {
+    font-size: 1rem;
+    /*color: #555;*/
+    margin-top: 10px;
+}
+
+p.hero-optimization, p.timeline-summary, p.projects-summary, p.contact-summary, p.tech-summary {
+    border-left: 4px solid #ff9800;
+    padding-left: 10px;
+    font-style: italic;
+}

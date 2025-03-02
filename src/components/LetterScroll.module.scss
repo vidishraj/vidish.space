@@ -1,0 +1,37 @@
+.parallaxContainer {
+  width: 100vw;
+  height: auto;
+  min-height: 4rem;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 1rem 0;
+  will-change: transform; // Hardware acceleration hint
+}
+
+.scrollTrack {
+  display: flex;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  position: absolute;
+  will-change: transform; // Hardware acceleration hint
+}
+
+.textItem {
+  display: inline-block;
+  font-size: 2rem;
+  font-weight: 600;
+  padding: 0 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  flex-shrink: 0; // Prevent items from shrinking
+
+  @media (prefers-color-scheme: dark) {
+    text-shadow: 0 0 4px rgba(255, 255, 255, 0.2);
+  }
+
+  @media (prefers-color-scheme: light) {
+    text-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+  }
+}

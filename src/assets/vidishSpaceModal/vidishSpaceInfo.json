@@ -1,0 +1,40 @@
+{
+  "title": "Vidish.Space - My Portfolio, But Make It Cool 🚀",
+  "sections": [
+    {
+      "title": "A Hero Section That’s Actually Heroic",
+      "description": "<p class='hero-intro'>Most portfolios have a boring header. <strong>Not this one.</strong></p>\n\n<p class='hero-features'>The <strong>Hero Section</strong> of Vidish.Space is a visual treat, featuring:</p>\n<ul class='hero-list'>\n<li><strong>8 dynamic images</strong> (4 for light mode, 4 for dark mode) in a responsive grid.</li>\n<li>A <strong>rain animation</strong>—because who doesn’t love aesthetic falling particles? ☔ (Orange in light mode, white in dark mode).</li>\n<li>Buttons to <strong>control rain speed</strong>, because interactive elements are fun.</li>\n<li>A <strong>dark/light mode toggle</strong>—so you can choose your vibe.</li>\n</ul>\n<p class='hero-optimization'>The animations are inspired by <strong>Aceternity UI</strong> but massively optimized (the original spiked memory up to 2GB—ouch!). Plus, all text uses the sleek <strong>Zain font</strong> for a consistent, modern look.</p>",
+      "imgSrc": "src/assets/vidishSpaceModal/vidishSpace_hero.png"
+    },
+    {
+      "title": "The Timeline - Because My Journey Deserves Style",
+      "description": "<p class='timeline-intro'>A plain text resume? <strong>Boring.</strong> That’s why the <strong>Timeline Section</strong> brings my education and work experience to life with:</p>\n<ul class='timeline-features'>\n<li><strong>Wobbled Cards</strong> (because static cards are too mainstream 🎭).</li>\n<li>A <strong>highly customized Aceternity UI timeline</strong>, made responsive and polished.</li>\n<li><strong>Lottie animations</strong> sprinkled in to add a touch of motion magic ✨.</li>\n</ul>\n<p class='timeline-summary'>Whether it’s my <strong>school days, PwC internship, or current job at Société Générale</strong>, the timeline makes it all engaging.</p>",
+      "imgSrc": "src/assets/vidishSpaceModal/vidishSpace_timeline.png"
+    },
+    {
+      "title": "Showcasing Projects - Because My Work Deserves the Spotlight",
+      "description": "<p class='projects-intro'>The <strong>Projects Section</strong> is where my creations shine. It features:</p>\n<ul class='projects-features'>\n<li><strong>4 custom-built project cards</strong>—each representing one of my key projects.</li>\n<li>Clicking a card opens a <strong>modal</strong> (built with Tailwind) displaying detailed project info.</li>\n<li><strong>Framer Motion animations</strong> for smooth scrolling and transitions.</li>\n</ul>\n<p class='projects-summary'>It’s fully responsive, ensuring my projects look great on any screen size. 🚀</p>",
+      "imgSrc": "src/assets/vidishSpaceModal/vidishSpace_projects.png"
+    },
+    {
+      "title": "Contact Me - Because Networking is Key",
+      "description": "<p class='contact-intro'>The <strong>Contact Me Section</strong> is where people can connect with me easily. It includes:</p>\n<ul class='contact-details'>\n<li>Links to my <strong>socials</strong> (GitHub, LinkedIn, etc.).</li>\n<li>A <strong>skill box</strong> listing my technical abilities, complete with proficiency levels.</li>\n<li><strong>Lottie animations and icons</strong> for a smooth user experience.</li>\n</ul>\n<p class='contact-summary'>Simple, clean, and effective. Just like a good portfolio should be. 💼</p>",
+      "imgSrc": "src/assets/vidishSpaceModal/vidishSpaceContact.png"
+    },
+    {
+      "title": "Technical Details - The Power Behind the Page",
+      "description": "<p class='tech-intro'>Vidish.Space isn’t just about looks—it’s built on <strong>solid tech</strong>:</p>\n<ul class='tech-stack'>\n<li><strong>Frontend:</strong> React 18, with a heavy use of Tailwind for styling.</li>\n<li><strong>Animations:</strong> Framer Motion for smooth transitions and Lottie for interactive elements.</li>\n<li><strong>Dark/Light Mode:</strong> Fully integrated, with <strong>WEBP images</strong> instead of SVGs to prevent layout shifts.</li>\n<li><strong>Custom Design:</strong> Backgrounds sourced from <strong>MagicPattern.design</strong>, and <strong>AI-generated images</strong> from OpenArt.ai.</li>\n</ul>\n<p class='tech-summary'>Built to be <strong>fast, smooth, and visually striking</strong>—because portfolios should be as impressive as the developer behind them. 😉</p>",
+      "imgSrc": "src/assets/vidishSpaceModal/vidishSpaceModal.png"
+    },
+    {
+      "title": "Performance Optimizations - Coming Soon!",
+      "description": "<p class='performance-intro'>This section will be updated later with details on how the page was optimized for speed and efficiency. 🚀</p>",
+      "imgSrc": ""
+    }
+  ],
+  "links": {
+    "github": "https://github.com/vidishraj/vidish.space",
+    "designDoc": "",
+    "website": "https://vidish.space"
+  }
+}

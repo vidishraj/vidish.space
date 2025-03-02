@@ -1,0 +1,20 @@
+.section3 {
+  display: flex;
+  height: fit-content;
+  justify-content: center;
+  align-items: flex-start !important;
+  overflow: hidden;
+  background-image: url('/src/assets/backgrounds/projectBg.png');
+  background-size: cover;
+  //background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.section3Dark {
+  background-image: url('/src/assets/backgrounds/darkProjectBg.png');
+}
+
+.baseAnimatedCard {
+  background-color: whitesmoke;
+}
+

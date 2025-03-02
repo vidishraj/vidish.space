@@ -1,0 +1,74 @@
+.scrambleText {
+  font-family: 'Zain';
+  display: inline-block;
+  //padding: 0.5rem;
+  letter-spacing: 0.05em;
+  transition: opacity 0.3s ease;
+
+  // Animation when text appears
+  animation: fadeIn 0.5s ease-in-out;
+
+  // Character-specific animations can be added
+  span {
+    display: inline-block;
+
+    &.revealed {
+      animation: popIn 0.2s ease-out forwards;
+    }
+
+    &.scrambling {
+      animation: shake 0.1s ease-in-out infinite;
+    }
+  }
+}
+
+// Animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  70% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes shake {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-1px);
+  }
+  50% {
+    transform: translateX(0);
+  }
+  75% {
+    transform: translateX(1px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+// Media queries for responsive design
+@media (max-width: 768px) {
+  .scrambleText {
+    font-size: 0.9em;
+    padding: 0.3rem;
+  }
+
+}
