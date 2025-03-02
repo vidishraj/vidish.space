@@ -1,9 +1,9 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {marked} from "marked";
-import '/assets/akkountantModal/akkountantModal.css?url'
-import '/assets/tripsplitModal/tripsplitModal.css?url'
-import '/assets/vidishSpaceModal/vidishSpaceModal.css?url'
-import '/assets/leetcodeToGitModal/leetcodeToGitModal.css?url'
+import '../assets/modalStyles/akkountantModal.css'
+import '../assets/modalStyles/tripsplitModal.css'
+import '../assets/modalStyles/vidishSpaceModal.css'
+import '../assets/modalStyles/leetcodeToGitModal.css'
 
 // Data structure for the modal
 interface Section {
