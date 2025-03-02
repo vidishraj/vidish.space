@@ -2,7 +2,7 @@ import './App.css';
 import {lazy, Suspense} from "react";
 import ScrollTracker from "./components/ScrollTracker.tsx";
 import FullPageLoader from "./components/FullPageLoader.tsx";
-import loader from '/assets/loader.json?url'
+import loader from './assets/lottieAnimations/loader.json';
 
 const HeroSection = lazy(() => import("./pages/HeroSection.tsx"));
 const TimelineSection = lazy(() => import("./pages/AboutMe.tsx"));

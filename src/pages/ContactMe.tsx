@@ -1,6 +1,6 @@
 import styles from './ContactMe.module.scss'
 import Lottie from "lottie-react";
-import animationData from '/assets/lottieAnimations/lastAnimation.json'
+import animationData from '../assets/lottieAnimations/lastAnimation.json'
 import {useGlobal} from "../GlobalContext.tsx";
 import SocialLinks from "../components/ContactLinks.tsx";
 
