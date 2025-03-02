@@ -5,7 +5,7 @@
 
 @font-face {
     font-family: 'Zain'; /* Replace with your font name */
-    src: url('./assets/Zain-Regular.ttf') format('truetype');
+    src: url('../public/assets/Zain-Regular.ttf') format('truetype');
     /*src: url('/fonts/CustomFont-Regular.woff2') format('woff2'),*/
     font-weight: normal;
     font-style: normal;

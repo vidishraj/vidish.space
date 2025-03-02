@@ -1,13 +1,13 @@
 import {motion} from 'framer-motion';
-import Code2 from '../assets/contacts/code-xml.png';
-import Linkedin from '../assets/contacts/linkedin.png';
-import Instagram from '../assets/contacts/instagram.png';
-import Mail from '../assets/contacts/mail.png';
-import Github from '../assets/contacts/github.png';
-import Resume from '../assets/contacts/file-user.png';
+import Code2 from '../../public/assets/contacts/code-xml.png';
+import Linkedin from '../../public/assets/contacts/linkedin.png';
+import Instagram from '../../public/assets/contacts/instagram.png';
+import Mail from '../../public/assets/contacts/mail.png';
+import Github from '../../public/assets/contacts/github.png';
+import Resume from '../../public/assets/contacts/file-user.png';
 import {useGlobal} from "../GlobalContext.tsx";
 
-import resumePDF from '../assets/Resume_SDE_Vidish_Raj.pdf'
+import resumePDF from '../../public/assets/Resume_SDE_Vidish_Raj.pdf'
 
 const SocialLinks = () => {
     const {isToggled: isDarkMode} = useGlobal();

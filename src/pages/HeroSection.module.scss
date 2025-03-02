@@ -18,11 +18,11 @@
 .section2 {
   width: 100%;
   height: 100%;
-  background-image: url('/src/assets/timelineBG/bg1.png'),
-  url('/src/assets/timelineBG/bg2.png'),
-  url('/src/assets/timelineBG/bg3.png'),
-  url('/src/assets/timelineBG/bg4.png'),
-  url('/src/assets/timelineBG/bg5.png');
+  background-image: url('/public/assets/timelineBG/bg1.png'),
+  url('/public/assets/timelineBG/bg2.png'),
+  url('/public/assets/timelineBG/bg3.png'),
+  url('/public/assets/timelineBG/bg4.png'),
+  url('/public/assets/timelineBG/bg5.png');
   background-position: 0% 0%, /* First image at the top */
   0% 25%, /* Second image at 25% from the top */
   0% 50%, /* Third image at 50% from the top */
@@ -40,7 +40,7 @@
 
 .section2Dark {
   color: white !important;
-  background-image: url('/src/assets/backgrounds/darkModebg1.png');
+  background-image: url('/public/assets/backgrounds/darkModebg1.png');
 }
 
 .icon {
@@ -216,7 +216,7 @@
 }
 
 .darkTextContainer {
-  background-image: url("src/assets/backgrounds/darkHeroBg.png ") !important;
+  background-image: url("../../public/assets/backgrounds/darkHeroBg.png ") !important;
 }
 
 .lightContainer {

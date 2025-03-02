@@ -2,7 +2,7 @@
 import {useEffect, useState} from 'react';
 import styles from './ScrollTracker.module.scss';
 import {useGlobal} from "../GlobalContext.tsx";
-import resumePDF from '../assets/Resume_SDE_Vidish_Raj.pdf'
+import resumePDF from '../../public/assets/Resume_SDE_Vidish_Raj.pdf'
 
 const ScrollTracker = () => {
     const [activeSection, setActiveSection] = useState('section1');
@@ -82,7 +82,7 @@ const ScrollTracker = () => {
                     aria-label="Download Resume"
                 >
                     <img
-                        src={'src/assets/contacts/file-user.png'}
+                        src={'../../public/assets/contacts/file-user.png'}
                         className="w-6 h-6 object-contain"
                         style={{
                             filter: isDarkMode ? 'brightness(1.2)' : 'none'

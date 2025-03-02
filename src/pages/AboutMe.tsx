@@ -3,10 +3,10 @@ import {ContainerScroll} from "../components/TimeLine3DCard.tsx";
 import {TextGenerateEffect} from "../components/TextGenerate.tsx";
 import {Timeline} from "../components/Timeline.tsx";
 import {motion} from "framer-motion";
-import earlyDaysAnimation from '../assets/lottieAnimations/earlyDays.json'
-import jobAnimation from '../assets/lottieAnimations/job.json'
-import internshipAnimation from '../assets/lottieAnimations/internship.json'
-import collegeDaysAnimation from '../assets/lottieAnimations/college.json'
+import earlyDaysAnimation from '../../public/assets/lottieAnimations/earlyDays.json'
+import jobAnimation from '../../public/assets/lottieAnimations/job.json'
+import internshipAnimation from '../../public/assets/lottieAnimations/internship.json'
+import collegeDaysAnimation from '../../public/assets/lottieAnimations/college.json'
 import {useGlobal} from "../GlobalContext.tsx";
 import {ReactNode} from "react";
 
