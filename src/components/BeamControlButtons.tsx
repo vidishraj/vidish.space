@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {motion} from "framer-motion";
 import Zap from "/assets/zap.png";
 import {useGlobal} from "../GlobalContext.tsx";
@@ -16,10 +16,43 @@ const BeamControlButtons: React.FC<BeamControlButtonsProps> = ({
                                                                    maxSpeed,
                                                                    minSpeed
                                                                }) => {
-    const {isToggled} = useGlobal()
+    const {isToggled} = useGlobal();
+    const [buttonSize, setButtonSize] = useState("60px");
+    const [zapSize, setZapSize] = useState("24px");
+    const [spacing, setSpacing] = useState("space-x-4");
+
+    // Update sizes based on viewport width
+    useEffect(() => {
+        const updateSizes = () => {
+            const viewportWidth = window.innerWidth;
+
+            if (viewportWidth < 480) { // Mobile screens
+                setButtonSize("45px");
+                setZapSize("18px");
+                setSpacing("space-x-2");
+            } else if (viewportWidth < 768) { // Tablet screens
+                setButtonSize("50px");
+                setZapSize("20px");
+                setSpacing("space-x-3");
+            } else { // Desktop screens
+                setButtonSize("45px");
+                setZapSize("22px");
+                setSpacing("space-x-4");
+            }
+        };
+
+        // Set initial sizes
+        updateSizes();
+
+        // Add event listener for window resize
+        window.addEventListener('resize', updateSizes);
+
+        // Cleanup
+        return () => window.removeEventListener('resize', updateSizes);
+    }, []);
 
     return (
-        <div className="flex items-center justify-center space-x-4 mt-4">
+        <div className={`flex items-center justify-center ${spacing} mt-4`}>
             <button
                 onClick={() => onSpeedChange(-1)}
                 disabled={currentSpeed <= minSpeed}
@@ -30,8 +63,8 @@ const BeamControlButtons: React.FC<BeamControlButtonsProps> = ({
                     backgroundImage: "url(/assets/heroPage/slowDown.webp)",
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
-                    width: '60px',
-                    height: '60px'
+                    width: buttonSize,
+                    height: buttonSize
                 }}
                 aria-label="Decrease beam speed"
             >
@@ -44,23 +77,28 @@ const BeamControlButtons: React.FC<BeamControlButtonsProps> = ({
                 </motion.div>
             </button>
 
-            <div className="flex items-center space-x-3">
+            <div className={`flex items-center ${spacing.replace('4', '2')}`}>
                 {Array.from({length: maxSpeed - minSpeed}).map((_, index) => (
                     <div
                         key={index}
                         className="flex flex-col items-center"
                     >
-                        <img src={Zap} style={{
-                            color: 'yellow',
-                            backgroundColor: index < (currentSpeed - minSpeed) ? isToggled ? 'white' : 'white' : 'gray',
-                            borderRadius: '50%'
-                        }}
-                             className={`mb-1 ${
-                                 index < (currentSpeed - minSpeed)
-                                     ? 'text-yellow-400'
-                                     : 'text-gray-300'
-                             }`}/>
-
+                        <img
+                            src={Zap}
+                            alt={`Speed level ${index + 1}`}
+                            style={{
+                                width: zapSize,
+                                height: zapSize,
+                                color: 'yellow',
+                                backgroundColor: index < (currentSpeed - minSpeed) ? isToggled ? 'white' : 'white' : 'gray',
+                                borderRadius: '50%'
+                            }}
+                            className={`mb-1 ${
+                                index < (currentSpeed - minSpeed)
+                                    ? 'text-yellow-400'
+                                    : 'text-gray-300'
+                            }`}
+                        />
                     </div>
                 ))}
             </div>
@@ -75,8 +113,8 @@ const BeamControlButtons: React.FC<BeamControlButtonsProps> = ({
                     backgroundImage: "url(/assets/heroPage/speedUp.webp)",
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
-                    width: '60px',
-                    height: '60px'
+                    width: buttonSize,
+                    height: buttonSize
                 }}
                 aria-label="Increase beam speed"
             >

@@ -132,8 +132,8 @@ const HeroSection = () => {
                             checkedImage={"/assets/heroPage/lightMode.png"}
                             uncheckedImage={"/assets/heroPage/darkMode.png"}
                             onChange={handleToggle}
-                            width={'150px'}
-                            height={'44px'}
+                            width={'30%'}
+                            height={'34px'}
                             initialChecked={!isToggled}
                         />
 
