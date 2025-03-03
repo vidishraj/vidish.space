@@ -3,7 +3,7 @@ import {motion, useScroll, useTransform,} from "framer-motion";
 import React, {useEffect, useRef, useState} from "react";
 import {cn} from "../utils/utils";
 import './random.scss'
-import Lottie from "lottie-react";
+import {LazyLottie} from "./TimelineData.tsx";
 
 interface TimelineEntry {
     title: string;
@@ -75,14 +75,17 @@ export const Timeline = ({data, titleClassName, containerClassname}: {
                             <h3 className={cn("hidden md:block text-xl md:pl-20 md:text-5xl font-bold text-light-100 dark:text-neutral-500 ", titleClassName)}>
                                 {item.title}
                             </h3>
-                            <Lottie animationData={item.animationData}
-                                    style={{
-                                        height: '100px',
-                                        width: '100%',
-                                        position: 'absolute',
-                                        top: "150px",
-                                        zIndex: -500
-                                    }}/>
+                            <LazyLottie
+                                className={"md:hidden block"}
+                                animationImport={item.animationData}
+                                style={{
+                                    height: '150px',
+                                    width: '100%',
+                                    position: 'absolute',
+                                    top: "50px",
+                                    right: 0
+                                }}
+                            />
                         </div>
 
                         <div className="relative pl-20 pr-4 md:pl-4 w-full flex-col"
@@ -90,14 +93,14 @@ export const Timeline = ({data, titleClassName, containerClassname}: {
                             <h3 className={cn("md:hidden block text-2xl mb-4 text-left font-bold text-neutral-500 dark:text-neutral-500", titleClassName)}>
                                 {item.title}
                             </h3>
-                            <Lottie className={"md:hidden block"} animationData={item.animationData}
-                                    style={{
-                                        height: '150px',
-                                        width: '100%',
-                                        position: 'absolute',
-                                        top: "50px",
-                                        right: 0
-                                    }}/>
+                            <LazyLottie className={"md:hidden block"} animationImport={item.animationData}
+                                        style={{
+                                            height: '150px',
+                                            width: '100%',
+                                            position: 'absolute',
+                                            top: "50px",
+                                            right: 0
+                                        }}/>
                             {item.content}{" "}
 
                         </div>
