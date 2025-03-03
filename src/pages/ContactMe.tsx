@@ -4,7 +4,7 @@ import animationData from '../assets/lottieAnimations/lastAnimation.json'
 import {useGlobal} from "../GlobalContext.tsx";
 import SocialLinks from "../components/ContactLinks.tsx";
 
-export const Section4 = () => {
+export const ContactMe = () => {
     const {isToggled} = useGlobal();
     return (
 
@@ -27,4 +27,4 @@ export const Section4 = () => {
 };
 
 
-export default Section4;
+export default ContactMe;

@@ -5,7 +5,7 @@ import {ProjectsGrid} from "../components/Carousel.tsx";
 import {useGlobal} from "../GlobalContext.tsx";
 import ParallaxText from "../components/LetterScroll.tsx";
 
-export const Section3 = () => {
+export const Projects = () => {
     const sectionRef = useRef<HTMLElement>(null);
     const {isToggled} = useGlobal()
     // Adjust the height of the section to accommodate all slides
@@ -90,4 +90,4 @@ export const Section3 = () => {
     );
 };
 
-export default Section3;
+export default Projects;

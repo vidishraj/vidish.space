@@ -1,13 +1,13 @@
 import './App.css';
 import {lazy, Suspense} from "react";
-import ScrollTracker from "./components/ScrollTracker.tsx";
 import FullPageLoader from "./components/FullPageLoader.tsx";
 import loader from './assets/lottieAnimations/loader.json';
+import ScrollTracker from "./components/ScrollTracker.tsx";
 
 const HeroSection = lazy(() => import("./pages/HeroSection.tsx"));
 const TimelineSection = lazy(() => import("./pages/AboutMe.tsx"));
-const Section3 = lazy(() => import("./pages/Projects.tsx"));
-const Section4 = lazy(() => import("./pages/ContactMe.tsx"));
+const Projects = lazy(() => import("./pages/Projects.tsx"));
+const Contact = lazy(() => import("./pages/ContactMe.tsx"));
 
 function App() {
     return (
@@ -16,8 +16,8 @@ function App() {
                 <ScrollTracker/>
                 <HeroSection/>
                 <TimelineSection/>
-                <Section3/>
-                <Section4/>
+                <Projects/>
+                <Contact/>
             </Suspense>
         </>
     );
