@@ -1,3 +1,4 @@
+import {JSX} from "react";
 import styles from "./TextBoxes.module.scss";
 import {motion} from "framer-motion";
 
