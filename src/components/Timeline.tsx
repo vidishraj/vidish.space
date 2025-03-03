@@ -76,14 +76,13 @@ export const Timeline = ({data, titleClassName, containerClassname}: {
                                 {item.title}
                             </h3>
                             <LazyLottie
-                                className={"md:hidden block"}
                                 animationImport={item.animationData}
                                 style={{
-                                    height: '150px',
+                                    height: '100px',
                                     width: '100%',
                                     position: 'absolute',
-                                    top: "50px",
-                                    right: 0
+                                    top: "150px",
+                                    zIndex: -500
                                 }}
                             />
                         </div>
