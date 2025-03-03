@@ -1,10 +1,11 @@
+@use "sass:math"; // Import math module
+
 $purple: rgb(212, 206, 214);
 $blue: rgb(96, 165, 250);
 $green: rgb(94, 234, 212);
 
 $animationtime: 45s;
 $length: 25;
-
 
 .rainbow {
   height: inherit;
@@ -17,26 +18,30 @@ $length: 25;
 
   @for $i from 1 through $length {
     &:nth-child(#{$i}) {
-      $colors: 0;
-      $r: random(6);
+      $colors: ();
+      $r: math.random(6); // Use math.random()
+
       @if $r == 1 {
-        $colors: $purple, $blue, $green;
+        $colors: ($purple, $blue, $green);
       } @else if $r == 2 {
-        $colors: $purple, $green, $blue;
+        $colors: ($purple, $green, $blue);
       } @else if $r == 3 {
-        $colors: $green, $purple, $blue;
+        $colors: ($green, $purple, $blue);
       } @else if $r == 4 {
-        $colors: $green, $blue, $purple;
+        $colors: ($green, $blue, $purple);
       } @else if $r == 5 {
-        $colors: $blue, $green, $purple;
+        $colors: ($blue, $green, $purple);
       } @else if $r == 6 {
-        $colors: $blue, $purple, $green;
+        $colors: ($blue, $purple, $green);
       }
-      box-shadow: -130px 0 80px 40px white, -50px 0 50px 25px nth($colors, 1),
-      0 0 50px 25px nth($colors, 2), 50px 0 50px 25px nth($colors, 3),
+
+      box-shadow: -130px 0 80px 40px white,
+      -50px 0 50px 25px nth($colors, 1),
+      0 0 50px 25px nth($colors, 2),
+      50px 0 50px 25px nth($colors, 3),
       130px 0 80px 40px white;
 
-      animation: #{$animationtime - $animationtime / $length / 2 * $i} linear infinite slide;
+      animation: #{math.div($animationtime, $length) - math.div($animationtime, 2) * $i} linear infinite slide;
     }
   }
 }
@@ -67,4 +72,3 @@ $length: 25;
   left: 0;
   position: absolute;
 }
-
