@@ -236,10 +236,10 @@ const Modal: React.FC<ModalProps> = ({isOpen, onClose, data, darkMode = false}) 
                                         index === activeSection
                                             ? darkMode
                                                 ? ' border-b-2 border-blue-400 text-blue-300 font-semibold bg-[#161f27] '
-                                                : ' border-b-2 border-blue-600 text-blue-700 font-semibold'
+                                                : ' border-b-2 border-blue-600 text-blue-700 font-semibold bg-[whitesmoke]'
                                             : darkMode
                                                 ? ' text-white hover:text-white bg-black '
-                                                : ' text-gray-700 hover:text-gray-900 '
+                                                : ' text-gray-700 hover:text-gray-900 bg-[white]'
                                     }`}
                                 >
                                     {section.title}
