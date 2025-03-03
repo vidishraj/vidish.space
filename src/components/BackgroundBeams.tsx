@@ -18,101 +18,107 @@ export const BackgroundBeamsWithCollision = ({
 }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const parentRef = useRef<HTMLDivElement>(null);
-    const windowSizeRef = useRef(typeof window !== 'undefined' ? window.outerWidth : 1000);
-    const resizeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-    const [windowWidth, setWindowWidth] = useState(windowSizeRef.current);
+    const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.outerWidth : 1000);
+    const [modeKey, setModeKey] = useState(lightMode ? 'light' : 'dark'); // Add mode key to force re-render
 
-    // Handle window resize with improved memory management
+    // Handle window resize with debouncing for performance
     useEffect(() => {
         const handleResize = () => {
-            windowSizeRef.current = window.outerWidth;
-
-            // Clear any existing timeout to prevent memory leaks
-            if (resizeTimeoutRef.current) {
-                clearTimeout(resizeTimeoutRef.current);
-                resizeTimeoutRef.current = null;
-            }
-
-            // Set new timeout and store reference
-            resizeTimeoutRef.current = setTimeout(() => {
-                setWindowWidth(windowSizeRef.current);
-                resizeTimeoutRef.current = null;
+            const debounce = setTimeout(() => {
+                setWindowWidth(window.outerWidth);
             }, 200);
+
+            return () => clearTimeout(debounce);
         };
 
         window.addEventListener('resize', handleResize);
-
-        // Proper cleanup to prevent memory leaks
-        return () => {
-            window.removeEventListener('resize', handleResize);
-            if (resizeTimeoutRef.current) {
-                clearTimeout(resizeTimeoutRef.current);
-                resizeTimeoutRef.current = null;
-            }
-        };
+        return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    // Calculate speed factor based on beamSpeed (1-8)
+    // Reset particles when light mode changes to prevent incorrect splashes
+    useEffect(() => {
+        setModeKey(lightMode ? 'light' : 'dark');
+    }, [lightMode]);
+
+    // Improved speed calculation that provides smoother transitions
+    // Lower values = faster animation (inverse relationship)
     const speedFactor = useMemo(() => {
-        return 2 - ((beamSpeed - 1) * 0.25);
+        // Ensure beamSpeed is within range 1-8
+        const normalizedSpeed = Math.max(1, Math.min(8, beamSpeed));
+
+        // Create a non-linear mapping for more natural speed progression
+        // At speed 1: factor = 1.4 (slower)
+        // At speed 8: factor = 0.4 (faster)
+        return 1.5 - (normalizedSpeed * 0.14);
     }, [beamSpeed]);
 
-    // Memoize beam calculations with windowWidth dependency
-    // Limit beam count based on device capacity
+    // Optimize beam count based on device capabilities
     const adaptedBeamCount = useMemo(() => {
-        // Reduce beam count on smaller screens to save memory
-        return window.innerWidth < 768 ? Math.min(30, beamCount) : beamCount;
-    }, [beamCount]);
+        if (typeof window !== 'undefined') {
+            if (window.innerWidth < 480) {
+                return Math.min(20, beamCount); // More conservative for mobile
+            } else if (window.innerWidth < 768) {
+                return Math.min(30, beamCount);
+            }
+        }
+        return beamCount;
+    }, [beamCount, windowWidth]);
 
-    // Generate raindrops with varying sizes - now much larger
-    const raindrops = useMemo(() => {
+    // Generate particles with optimized size calculations
+    const particles = useMemo(() => {
         return Array.from({length: adaptedBeamCount}, () => {
             const randomPosition = Math.random();
 
-            // Randomize raindrop properties
-            const isSmall = Math.random() > 0.7; // 30% chance for smaller raindrops
-            const isVerySmall = Math.random() > 0.9; // 10% chance for very small raindrops
-            const isLarge = Math.random() > 0.8; // 20% chance for extra large raindrops
+            // Randomize particle properties
+            const isSmall = Math.random() > 0.5; // 50% chance for smaller particles
+            const isVerySmall = Math.random() > 0.8; // 20% chance for very small particles
 
-            // Set raindrop dimensions based on screen size and random factors
-            // Significantly increased all sizes
+            // Set particle dimensions based on screen size to maintain proportion
+            const baseScale = typeof window !== 'undefined' && window.innerWidth < 480 ? 0.7 : 1;
+
             let dropWidth, dropHeight, dropOpacity;
 
-            if (isLarge) {
-                dropWidth = window.innerWidth < 480 ? 12 : 22;
-                dropHeight = window.innerWidth < 480 ? 20 : 38;
-                dropOpacity = 0.85 + Math.random() * 0.15;
-            } else if (isVerySmall) {
-                dropWidth = window.innerWidth < 480 ? 5 : 10;
-                dropHeight = window.innerWidth < 480 ? 10 : 18;
-                dropOpacity = 0.7 + Math.random() * 0.2;
+            if (isVerySmall) {
+                dropWidth = 5 * baseScale;
+                dropHeight = lightMode ? 8 * baseScale : 10 * baseScale; // Shorter fire particles
+                dropOpacity = 0.6 + Math.random() * 0.3;
             } else if (isSmall) {
-                dropWidth = window.innerWidth < 480 ? 8 : 15;
-                dropHeight = window.innerWidth < 480 ? 15 : 25;
-                dropOpacity = 0.75 + Math.random() * 0.2;
+                dropWidth = 8 * baseScale;
+                dropHeight = lightMode ? 12 * baseScale : 14 * baseScale;
+                dropOpacity = 0.7 + Math.random() * 0.3;
             } else {
-                dropWidth = window.innerWidth < 480 ? 10 : 18;
-                dropHeight = window.innerWidth < 480 ? 18 : 32;
-                dropOpacity = 0.8 + Math.random() * 0.2;
+                dropWidth = 14 * baseScale;
+                dropHeight = lightMode ? 20 * baseScale : 24 * baseScale;
+                dropOpacity = 0.75 + Math.random() * 0.25;
             }
 
-            // Calculate fall speed based on size (larger drops fall faster)
-            const baseSpeed = (Math.random() * 2 + 6) * speedFactor;
-            const speedModifier = isSmall ? 0.9 : (isVerySmall ? 0.8 : (isLarge ? 1.3 : 1.1));
+            // Calculate fall speed based on size and speed factor
+            // Improved physics model with better size-to-speed relationship
+            const sizeRatio = dropHeight / 24; // Normalize to the size of large drops
+
+            // Apply speed factor with a more natural curve
+            // In light mode (fire), particles rise slightly faster
+            const baseSpeed = lightMode
+                ? (3.5 + (sizeRatio * 2)) * speedFactor
+                : (4 + (sizeRatio * 2.5)) * speedFactor;
+
+            // Add slight variation to prevent uniform movement
+            const speedVariation = 0.85 + (Math.random() * 0.3);
+            const finalSpeed = baseSpeed * speedVariation;
 
             return {
                 initialX: randomPosition * windowWidth,
-                translateX: (randomPosition * windowWidth) + (Math.random() * 10 - 5), // Add slight horizontal variation
-                duration: baseSpeed * speedModifier,
-                repeatDelay: Math.random() * 1.5 + 0.5,
-                delay: Math.random() * 2,
+                translateX: (randomPosition * windowWidth) + (Math.random() * 6 - 3), // Reduced horizontal drift
+                duration: finalSpeed, // Physics-based speed with variation
+                repeatDelay: Math.random() * 0.6, // Reduced delay for smoother flow
+                delay: Math.random() * 1, // Staggered start for natural effect
                 width: dropWidth,
                 height: dropHeight,
                 opacity: dropOpacity,
-                blur: isSmall ? '0.5px' : (isVerySmall ? '0px' : '1px'),
+                blur: isSmall ? '0.5px' : (isVerySmall ? '0px' : '0.7px'), // Reduced blur
             };
         });
-    }, [windowWidth, adaptedBeamCount, speedFactor]);
+    }, [windowWidth, adaptedBeamCount, speedFactor, lightMode]);
 
     return (
         <div
@@ -122,10 +128,10 @@ export const BackgroundBeamsWithCollision = ({
                 className
             )}
         >
-            {raindrops.map((raindrop, index) => (
-                <RaindropCollision
-                    key={`raindrop-${index}-${windowWidth}-${beamSpeed}`}
-                    raindropOptions={raindrop}
+            {particles.map((particle, index) => (
+                <ParticleCollision
+                    key={`particle-${index}-${windowWidth}-${modeKey}-${beamSpeed}`} // Include beamSpeed in key to force re-render
+                    particleOptions={particle}
                     containerRef={containerRef}
                     parentRef={parentRef}
                     lightMode={lightMode}
@@ -134,323 +140,320 @@ export const BackgroundBeamsWithCollision = ({
             {children}
             <div
                 ref={containerRef}
-                className="absolute bottom-0 bg-neutral-100 w-full inset-x-0 pointer-events-none"
+                className="absolute bottom-0 w-full inset-x-0 h-2 pointer-events-none"
+                // Increased height to 2px for better collision detection
                 style={{
-                    boxShadow:
-                        "0 0 24px rgba(34, 42, 53, 0.06), 0 1px 1px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(34, 42, 53, 0.04), 0 0 4px rgba(34, 42, 53, 0.08), 0 16px 68px rgba(47, 48, 55, 0.05), 0 1px 0 rgba(255, 255, 255, 0.1) inset",
+                    opacity: 0,
+                    background: 'transparent'
                 }}
             />
         </div>
     );
 };
 
-// Renamed to RaindropCollision to better reflect the new appearance
-const RaindropCollision = React.memo(
-    React.forwardRef<
-        HTMLDivElement,
-        {
-            containerRef: React.RefObject<HTMLDivElement | null>;
-            parentRef: React.RefObject<HTMLDivElement | null>;
-            raindropOptions?: {
-                initialX?: number;
-                translateX?: number;
-                initialY?: number;
-                translateY?: number;
-                rotate?: number;
-                duration?: number;
-                delay?: number;
-                repeatDelay?: number;
-                width?: number;
-                height?: number;
-                opacity?: number;
-                blur?: string;
-            };
-            lightMode: boolean;
-        }
-    >(({parentRef, containerRef, raindropOptions = {}, lightMode}) => {
-        const raindropRef = useRef<HTMLDivElement>(null);
-        const animationFrameRef = useRef<number | null>(null);
-        const timeoutsRef = useRef<NodeJS.Timeout[]>([]);
-        const isActiveRef = useRef(true);
-        const collisionCheckedRef = useRef(false);
-
-        // Consolidated collision state
+// Optimized ParticleCollision component
+const ParticleCollision = React.memo(
+    ({parentRef, containerRef, particleOptions = {}, lightMode}: {
+        containerRef: React.RefObject<HTMLDivElement | null>;
+        parentRef: React.RefObject<HTMLDivElement | null>;
+        particleOptions?: {
+            initialX?: number;
+            translateX?: number;
+            initialY?: number;
+            translateY?: number;
+            rotate?: number;
+            duration?: number;
+            delay?: number;
+            repeatDelay?: number;
+            width?: number;
+            height?: number;
+            opacity?: number;
+            blur?: string;
+        };
+        lightMode: boolean;
+    }) => {
+        const particleRef = useRef<HTMLDivElement>(null);
         const [collisionState, setCollisionState] = useState({
             detected: false,
             coordinates: null as { x: number; y: number } | null,
         });
 
-        // Helper function to clear all timeouts safely
-        const clearAllTimeouts = useCallback(() => {
-            timeoutsRef.current.forEach(timeout => {
-                clearTimeout(timeout);
-            });
-            timeoutsRef.current = [];
-        }, []);
+        // Track animation phase to better manage collision timing
+        const animationPhaseRef = useRef({
+            active: true,
+            collided: false,
+            startTime: Date.now(),
+            duration: (particleOptions.duration || 8) * 1000, // Convert to ms
+            delay: (particleOptions.delay || 0) * 1000, // Convert to ms
+        });
 
-        // Helper function to safely add a new timeout
-        const safeSetTimeout = useCallback((callback: () => void, delay: number): NodeJS.Timeout => {
-            const timeoutId = setTimeout(() => {
-                // Remove this timeout from our tracking array when it completes
-                timeoutsRef.current = timeoutsRef.current.filter(id => id !== timeoutId);
-                callback();
-            }, delay);
+        const animationFrameRef = useRef<number | null>(null);
 
-            // Add to our tracking array
-            timeoutsRef.current.push(timeoutId);
-            return timeoutId;
-        }, []);
+        // Reset animation tracking when component mounts or key properties change
+        useEffect(() => {
+            animationPhaseRef.current = {
+                active: true,
+                collided: false,
+                startTime: Date.now(),
+                duration: (particleOptions.duration || 8) * 1000,
+                delay: (particleOptions.delay || 0) * 1000,
+            };
 
-        // Memoize the checkCollision function
-        const checkCollision = useCallback(() => {
-            if (collisionCheckedRef.current) return false;
-
-            if (raindropRef.current && containerRef.current && parentRef.current) {
-                const raindropRect = raindropRef.current.getBoundingClientRect();
-                const containerRect = containerRef.current.getBoundingClientRect();
-                const parentRect = parentRef.current.getBoundingClientRect();
-
-                if (raindropRect.bottom >= containerRect.top) {
-                    const relativeX = raindropRect.left - parentRect.left + raindropRect.width / 2;
-                    const relativeY = raindropRect.bottom - parentRect.top;
-
-                    setCollisionState({
-                        detected: true,
-                        coordinates: {x: relativeX, y: relativeY},
-                    });
-
-                    collisionCheckedRef.current = true;
-                    return true;
+            return () => {
+                animationPhaseRef.current.active = false;
+                if (animationFrameRef.current) {
+                    cancelAnimationFrame(animationFrameRef.current);
                 }
+            };
+        }, [particleOptions.duration, particleOptions.delay, lightMode]);
+
+        // Improved collision detection with better timing and accuracy
+        const checkCollision = useCallback(() => {
+            const {active, collided, startTime, duration, delay} = animationPhaseRef.current;
+
+            if (!active || collided) return;
+            if (!particleRef.current || !containerRef.current || !parentRef.current) return;
+
+            const now = Date.now();
+            // Don't check for collisions until delay has passed and animation is active
+            if (now - startTime < delay) return;
+
+            // Calculate animation progress as a percentage (0-1)
+            const animationProgress = Math.min(1, (now - startTime - delay) / duration);
+
+            // Only start checking for collisions in the later part of the animation
+            // This prevents false positives when the particle is still high up
+            if (animationProgress < 0.65) return;
+
+            const particleRect = particleRef.current.getBoundingClientRect();
+            const containerRect = containerRef.current.getBoundingClientRect();
+            const parentRect = parentRef.current.getBoundingClientRect();
+
+            // Calculate the bottom position of the container relative to the parent
+            const bottomY = containerRect.top - parentRect.top + containerRect.height;
+
+            // Check if particle has reached the collision surface
+            // Add a small tolerance to ensure detection isn't missed
+            if (particleRect.bottom >= containerRect.top - 2) {
+                animationPhaseRef.current.collided = true;
+
+                // Calculate position for splash effect
+                const splashX = particleRect.left - parentRect.left + (particleRect.width / 2);
+
+                setCollisionState({
+                    detected: true,
+                    coordinates: {x: splashX, y: bottomY}
+                });
+
+                // Reset collision state after animation completes
+                const timeout = setTimeout(() => {
+                    if (animationPhaseRef.current.active) {
+                        setCollisionState({
+                            detected: false,
+                            coordinates: null
+                        });
+                    }
+                }, 600); // Better timing matched with splash animation duration
+
+                return () => clearTimeout(timeout);
             }
-            return false;
         }, [containerRef, parentRef]);
 
-        // Optimized RAF for collision detection
+        // Set up RAF loop for collision detection with adaptive timing
         useEffect(() => {
-            isActiveRef.current = true;
+            let lastRafTime = 0;
 
-            // Only run collision detection every n milliseconds for performance
-            let lastCheckTime = 0;
-            const checkInterval = 50; // ms between checks
+            const rafCallback = (time: number) => {
+                if (!animationPhaseRef.current.active) return;
 
-            const animate = (timestamp: number) => {
-                if (!isActiveRef.current || collisionCheckedRef.current) return;
+                // Adjust check frequency based on animation speed
+                // Faster animations need more frequent checks
+                const checkInterval = Math.min(33, 15 + (animationPhaseRef.current.duration / 1000 * 2));
 
-                // Throttle collision checks
-                if (timestamp - lastCheckTime > checkInterval) {
-                    lastCheckTime = timestamp;
-                    const hasCollision = checkCollision();
-                    if (hasCollision) return;
+                if (time - lastRafTime > checkInterval) {
+                    lastRafTime = time;
+                    checkCollision();
                 }
 
-                if (isActiveRef.current) {
-                    animationFrameRef.current = requestAnimationFrame(animate);
-                }
+                animationFrameRef.current = requestAnimationFrame(rafCallback);
             };
 
-            animationFrameRef.current = requestAnimationFrame(animate);
+            animationFrameRef.current = requestAnimationFrame(rafCallback);
 
-            // Comprehensive cleanup
             return () => {
-                isActiveRef.current = false;
-
+                animationPhaseRef.current.active = false;
                 if (animationFrameRef.current) {
                     cancelAnimationFrame(animationFrameRef.current);
-                    animationFrameRef.current = null;
                 }
-
-                clearAllTimeouts();
             };
-        }, [checkCollision, clearAllTimeouts]);
+        }, [checkCollision]);
 
-        // Handle collision state
-        useEffect(() => {
-            if (collisionState.detected) {
-                // Use our safe setTimeout helper
-                safeSetTimeout(() => {
-                    setCollisionState({
-                        detected: false,
-                        coordinates: null,
-                    });
+        // Create water drop or fire particle depending on light mode
+        const particleStyle = lightMode
+            ? `linear-gradient(to bottom, rgba(255, 180, 60, 0.5), rgba(255, 80, 0, 0.8))`
+            : `linear-gradient(to bottom, rgba(140, 200, 255, 0.3), rgba(140, 200, 255, 0.8))`;
 
-                    safeSetTimeout(() => {
-                        collisionCheckedRef.current = false;
-                    }, 100);
-                }, 1000); // Reduce splash duration for raindrops
-            }
+        // Adjust particle shape for fire vs water
+        const particleShape = lightMode
+            ? "50% 50% 20% 80% / 60% 30% 70% 40%" // More flame-like in light mode
+            : "50% 50% 50% 50% / 60% 60% 40% 40%"; // Teardrop for water in dark mode
 
-            // No cleanup needed here since clearAllTimeouts is called in the animation effect cleanup
-        }, [collisionState.detected, safeSetTimeout]);
-
-        // Cleanup on unmount
-        useEffect(() => {
-            return () => {
-                isActiveRef.current = false;
-
-                if (animationFrameRef.current) {
-                    cancelAnimationFrame(animationFrameRef.current);
-                    animationFrameRef.current = null;
-                }
-
-                clearAllTimeouts();
-            };
-        }, [clearAllTimeouts]);
-
-        // Define the colors based on lightMode - making them more vibrant
-        const dropGradient = lightMode
-            ? "linear-gradient(to bottom, rgba(255, 140, 50, 0.4), rgba(255, 80, 10, 0.95))" // More intense fiery orange for light mode
-            : "linear-gradient(to bottom, rgba(60, 180, 255, 0.5), rgba(140, 230, 255, 0.95))"; // Brighter blue for dark mode
-
-        const dropShadow = lightMode
-            ? "0 0 6px rgba(255, 140, 30, 0.8)" // Stronger orange glow for light mode
-            : "0 0 6px rgba(120, 230, 255, 0.8)"; // Stronger blue glow for dark mode
+        // Improved calculation for travel distance based on container height
+        const travelDistance = typeof window !== 'undefined'
+            ? Math.max(window.innerHeight * 1.1, 800) // Ensure enough distance regardless of screen size
+            : 1800;
 
         return (
             <>
                 <motion.div
-                    ref={raindropRef}
+                    ref={particleRef}
                     initial={{
-                        translateY: raindropOptions.initialY || "-200px",
-                        translateX: raindropOptions.initialX || "0px",
-                        rotate: raindropOptions.rotate || 0,
+                        translateY: particleOptions.initialY || "-100px",
+                        translateX: particleOptions.initialX || "0px",
                     }}
                     animate={{
-                        translateY: raindropOptions.translateY || "1800px",
-                        translateX: raindropOptions.translateX || "0px",
-                        rotate: raindropOptions.rotate || 0,
+                        translateY: particleOptions.translateY || `${travelDistance}px`,
+                        translateX: particleOptions.translateX || "0px",
                     }}
                     transition={{
-                        duration: raindropOptions.duration || 8,
+                        duration: particleOptions.duration || 8,
                         repeat: Infinity,
                         repeatType: "loop",
                         ease: "linear",
-                        delay: raindropOptions.delay || 0,
-                        repeatDelay: raindropOptions.repeatDelay || 0,
+                        delay: particleOptions.delay || 0,
+                        repeatDelay: particleOptions.repeatDelay || 0,
                     }}
                     style={{
                         position: "absolute",
                         left: 0,
                         top: "20px",
-                        width: `${raindropOptions.width || 18}px`,
-                        height: `${raindropOptions.height || 32}px`,
-                        background: dropGradient,
-                        borderRadius: "50% 50% 50% 50% / 60% 60% 40% 40%", // Teardrop shape
-                        opacity: raindropOptions.opacity || 0.9,
-                        filter: `blur(${raindropOptions.blur || '0.5px'})`,
-                        boxShadow: dropShadow
+                        width: `${particleOptions.width || 14}px`,
+                        height: `${particleOptions.height || 24}px`,
+                        background: particleStyle,
+                        borderRadius: particleShape,
+                        opacity: particleOptions.opacity || 0.8,
+                        filter: `blur(${particleOptions.blur || '0.5px'})`,
+                        willChange: "transform", // Optimization for animation performance
+                    }}
+                    onAnimationComplete={() => {
+                        // Reset collision state at the end of each animation cycle
+                        if (animationPhaseRef.current.active) {
+                            animationPhaseRef.current.collided = false;
+                        }
                     }}
                 />
-                <AnimatePresence>
+                <AnimatePresence mode="wait">
                     {collisionState.detected && collisionState.coordinates && (
-                        <WaterSplash
+                        <ParticleSplash
                             style={{
                                 left: `${collisionState.coordinates.x}px`,
-                                top: `${collisionState.coordinates.y}px`,
-                                transform: "translate(-50%, -50%)",
+                                bottom: "0px", // Position at bottom
+                                transform: "translate(-50%, 0)",
                             }}
                             lightMode={lightMode}
-                            smallScreen={window.innerWidth < 768}
-                            dropSize={raindropOptions.width || 18}
+                            smallScreen={typeof window !== 'undefined' && window.innerWidth < 768}
+                            particleSize={particleOptions.width || 14}
                         />
                     )}
                 </AnimatePresence>
             </>
         );
-    })
+    }
 );
 
-RaindropCollision.displayName = "RaindropCollision";
+ParticleCollision.displayName = "ParticleCollision";
 
-// Renamed to WaterSplash for the raindrop theme
-const WaterSplash = React.memo(({
-                                    lightMode,
-                                    smallScreen = false,
-                                    dropSize = 18,
-                                    ...props
-                                }: React.HTMLProps<HTMLDivElement> & {
+// Optimized ParticleSplash component
+const ParticleSplash = React.memo(({
+                                       lightMode,
+                                       smallScreen = false,
+                                       particleSize = 14,
+                                       ...props
+                                   }: React.HTMLProps<HTMLDivElement> & {
     lightMode: boolean,
     smallScreen?: boolean,
-    dropSize?: number
+    particleSize?: number
 }) => {
-    // Scale splash size based on drop size
+    // Scale splash based on particleSize but limit maximum scale for performance
     const splashScale = useMemo(() => {
-        return dropSize / 8; // Base scaling on default size of 8px
-    }, [dropSize]);
+        return Math.min(particleSize / 10, 2.0);
+    }, [particleSize]);
 
-    // Determine particle count based on device capabilities and drop size
+    // Optimize particle count based on device capabilities
     const particleCount = useMemo(() => {
-        const baseCount = smallScreen ? 8 : 16;
-        return Math.max(6, Math.round(baseCount * splashScale * 0.7));
-    }, [smallScreen, splashScale]);
+        return smallScreen ? 6 : 10;
+    }, [smallScreen]);
 
-    // Define splash colors based on mode - make more vivid
+    // Set colors based on theme
     const splashColor = lightMode
-        ? "rgba(255, 100, 20, 0.9)" // More vivid fiery orange for light mode
-        : "rgba(100, 210, 255, 0.95)"; // Brighter blue for dark mode
+        ? "rgba(255, 120, 40, 0.8)" // Orange-red for fire in light mode
+        : "rgba(140, 200, 255, 0.8)"; // Blue for water in dark mode
 
-    // Generate splash particles with memoization
-    const splashParticles = useMemo(() =>
-            Array.from({length: particleCount}, (_, index) => {
-                // Create a radial pattern - particles spread out in all directions
-                const angle = (index / particleCount) * Math.PI * 2;
-                const distance = Math.random() * 22 * splashScale + 8; // Increased splash distance
+    // Generate splash particles more efficiently
+    const splashParticles = useMemo(() => {
+        return Array.from({length: particleCount}, (_, index) => {
+            // Create a radial pattern with physics-based properties
+            const angle = (index / particleCount) * Math.PI * 2;
 
-                return {
-                    id: index,
-                    directionX: Math.cos(angle) * distance * (smallScreen ? 0.7 : 1),
-                    directionY: Math.sin(angle) * distance * (smallScreen ? 0.7 : 1) - 8, // More upward bias
-                    duration: Math.random() * 0.7 + 0.4, // Slightly longer animation
-                    scale: Math.random() * 0.6 + 0.6, // Larger particle sizes
-                };
-            }),
-        [particleCount, smallScreen, splashScale]
-    );
+            // Use trigonometry for a natural splash arc
+            const distance = (Math.random() * 0.5 + 0.7) * 20 * splashScale;
+
+            return {
+                id: index,
+                directionX: Math.cos(angle) * distance,
+                directionY: Math.sin(angle) * distance - (distance * 0.3), // Upward bias
+                duration: 0.4 + (Math.random() * 0.3), // Faster for better performance
+                size: smallScreen ? 2 + Math.random() * 2 : 3 + Math.random() * 3,
+            };
+        });
+    }, [particleCount, smallScreen, splashScale]);
 
     return (
-        <div {...props} className={cn("absolute z-50", props.className)}>
-            {/* Larger circular ripple effect */}
+        <div {...props} className={cn("absolute z-10", props.className)}>
+            {/* Circular ripple effect */}
             <motion.div
-                initial={{scale: 0, opacity: 0.9}}
-                animate={{scale: 3 * splashScale, opacity: 0}}
+                initial={{scale: 0, opacity: 0.7}}
+                animate={{scale: 2 * splashScale, opacity: 0}}
                 exit={{opacity: 0}}
-                transition={{duration: 0.8, ease: "easeOut"}}
+                transition={{duration: 0.6, ease: "easeOut"}}
                 style={{
                     position: "absolute",
-                    width: smallScreen ? "12px" : "16px", // Larger ripple
-                    height: smallScreen ? "3px" : "4px",
+                    width: smallScreen ? "8px" : "12px",
+                    height: smallScreen ? "2px" : "3px",
                     borderRadius: "50%",
                     background: splashColor,
                     left: "50%",
-                    top: "50%",
-                    transform: "translate(-50%, -50%)",
+                    bottom: "2px",
+                    transform: "translateX(-50%)",
+                    willChange: "transform, opacity", // Performance optimization
                 }}
             />
 
-            {/* Larger splash particles */}
+            {/* Splash particles */}
             {splashParticles.map((particle) => (
                 <motion.span
                     key={particle.id}
-                    initial={{x: 0, y: 0, opacity: 0.9, scale: 0}}
+                    initial={{x: 0, y: 0, opacity: 0.8, scale: 0}}
                     animate={{
                         x: particle.directionX,
-                        y: particle.directionY,
+                        y: -particle.directionY, // Invert for bottom-up splash
                         opacity: 0,
-                        scale: particle.scale,
+                        scale: 1,
                     }}
                     transition={{
                         duration: particle.duration,
-                        ease: "easeOut"
+                        ease: "circOut" // More natural physics
                     }}
                     style={{
                         position: "absolute",
-                        width: smallScreen ? "3px" : "5px", // Larger particles
-                        height: smallScreen ? "3px" : "5px",
+                        width: `${particle.size}px`,
+                        height: `${particle.size}px`,
                         borderRadius: "50%",
                         background: splashColor,
                         left: "50%",
-                        top: "50%",
-                        transform: "translate(-50%, -50%)",
+                        bottom: "1px",
+                        transform: "translateX(-50%)",
+                        willChange: "transform, opacity", // Performance optimization
                     }}
                 />
             ))}
@@ -458,6 +461,6 @@ const WaterSplash = React.memo(({
     );
 });
 
-WaterSplash.displayName = "WaterSplash";
+ParticleSplash.displayName = "ParticleSplash";
 
-export default WaterSplash;
+export default ParticleSplash;
