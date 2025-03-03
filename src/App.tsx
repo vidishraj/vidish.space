@@ -12,11 +12,21 @@ const Contact = lazy(() => import("./pages/ContactMe.tsx"));
 function App() {
     return (
         <>
-            <Suspense fallback={<FullPageLoader animationData={loader} message={""}/>}>
-                <ScrollTracker/>
+            <ScrollTracker/>
+
+            <Suspense fallback={<FullPageLoader animationData={loader} message="Loading Hero Section..."/>}>
                 <HeroSection/>
+            </Suspense>
+
+            <Suspense fallback={<FullPageLoader animationData={loader} message="Loading Timeline..."/>}>
                 <TimelineSection/>
+            </Suspense>
+
+            <Suspense fallback={<FullPageLoader animationData={loader} message="Loading Projects..."/>}>
                 <Projects/>
+            </Suspense>
+
+            <Suspense fallback={<FullPageLoader animationData={loader} message="Loading Contact..."/>}>
                 <Contact/>
             </Suspense>
         </>
