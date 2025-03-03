@@ -60,7 +60,6 @@
 
 .tech-details {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
     gap: 10px;
     color: #1c1c1c;
     padding-left: 0;
