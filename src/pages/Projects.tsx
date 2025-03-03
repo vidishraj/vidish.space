@@ -22,7 +22,7 @@ export const Projects = () => {
             title: "Akkountant – Your Personal Finance Tracker",
             description:
                 "Managing finances across multiple banks and investments is a hassle. Akkountant simplifies it by automatically tracking your transactions and investments, fetching real-time data, and storing everything securely. Whether it's keeping an eye on your spending or monitoring your portfolio, Akkountant ensures you're always in control.",
-            img: "/assets/akkountantModal/akkountant.png",
+            img: "/assets/akkountantModal/akkountant.webp",
             content: (
                 <div
                     className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--cyan-500),var(--emerald-500))] flex items-center justify-center text-white">
@@ -45,7 +45,7 @@ export const Projects = () => {
             title: "Vidish.Space - A little about me 👨‍💻",
             description:
                 "A simple and clean portfolio built with React 18, featuring sections for my experience, projects, and contact info. It includes smooth animations, dark/light mode support, and a responsive design for a seamless browsing experience.",
-            img: "/assets/vidishSpaceModal/vidishSpaceDark.png",
+            img: "/assets/vidishSpaceModal/vidishSpaceDark.webp",
             content: (
                 <div
                     className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--orange-500),var(--yellow-500))] flex items-center justify-center text-white">
@@ -57,7 +57,7 @@ export const Projects = () => {
             title: "LeetcodeToGit - Hard-Earned Solutions Deserve a Home 🏡",
             description:
                 "Never lose a LeetCode solution again! 🚀 LeetCodeToGit is a CLI tool that fetches your best LeetCode submissions and syncs them to a Git repository—automatically! It uses GraphQL APIs, your session cookies, and Git commands to ensure your solutions are always backed up. Solve, sync, and flex your repository with ease!",
-            img: "/assets/leetcodeToGitModal/gitLeet.jpeg",
+            img: "/assets/leetcodeToGitModal/gitLeet.webp",
             content: (
                 <div
                     className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--cyan-500),var(--emerald-500))] flex items-center justify-center text-white">

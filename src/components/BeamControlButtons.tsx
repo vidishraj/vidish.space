@@ -27,7 +27,7 @@ const BeamControlButtons: React.FC<BeamControlButtonsProps> = ({
                     currentSpeed <= minSpeed ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-opacity-80'
                 }`}
                 style={{
-                    backgroundImage: "url(/assets/heroPage/slowDown.png)",
+                    backgroundImage: "url(/assets/heroPage/slowDown.webp)",
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     width: '60px',
@@ -72,7 +72,7 @@ const BeamControlButtons: React.FC<BeamControlButtonsProps> = ({
                     currentSpeed >= maxSpeed ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-opacity-80'
                 }`}
                 style={{
-                    backgroundImage: "url(/assets/heroPage/speedUp.png)",
+                    backgroundImage: "url(/assets/heroPage/speedUp.webp)",
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     width: '60px',
