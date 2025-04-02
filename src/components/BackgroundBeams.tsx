@@ -18,7 +18,7 @@ export const BackgroundBeamsWithCollision = ({
 }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const parentRef = useRef<HTMLDivElement>(null);
-    const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.outerWidth : 1000);
+    const [windowWidth, setWindowWidth] = useState(1400);
     const [modeKey, setModeKey] = useState(lightMode ? 'light' : 'dark'); // Add mode key to force re-render
 
     // Handle window resize with debouncing for performance

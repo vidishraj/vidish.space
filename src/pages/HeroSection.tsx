@@ -53,7 +53,7 @@ const HeroSection = () => {
     };
 
     return (
-        <section id="section1" style={{}}>
+        <section id="section1">
             <div className={isToggled ? `${styles.iconContainer} ${styles.darkMode}` : styles.iconContainer}>
                 <img alt={'img1'} src={IconD1}
                      style={{
