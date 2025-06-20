@@ -6,12 +6,14 @@ export const TextGenerateEffect = ({
                                        words,
                                        className,
                                        filter = true,
-                                       duration = 0.5,
+    duration = 0.5,
+                                       parentStyle
                                    }: {
     words: string;
     className?: string;
     filter?: boolean;
     duration?: number;
+    parentStyle?: React.CSSProperties;
 }) => {
     const [scope, animate] = useAnimate();
     const isInView = useInView(scope);
@@ -54,6 +56,7 @@ export const TextGenerateEffect = ({
                             className="opacity-0"
                             style={{
                                 filter: filter ? "blur(10px)" : "none",
+                                ...parentStyle
                             }}
                         >
                             {word}{" "}

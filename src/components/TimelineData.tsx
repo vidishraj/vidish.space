@@ -73,7 +73,8 @@ export const timelineData = (isDarkMode: boolean) => {
                     className={styles.timelineContent}>
                     <div className="flex flex-col space-y-6">
                         <TextGenerateEffect
-                            className={`flex align-center justify-center underline text-${isDarkMode ? 'white' : 'black'}`}
+                            className={`flex align-center justify-center underline`}
+                            parentStyle={{color: isDarkMode ? 'white' : 'black'}}
                             words={"The Humble Beginnings of a Tech Nerd"}/>
 
                         <AnimatedText delay={0.2}>
@@ -84,7 +85,7 @@ export const timelineData = (isDarkMode: boolean) => {
                                         <h3 className="font-semibold text-lg text-purple-200"
                                             style={{color: isDarkMode ? 'white' : 'black'}}>St. Xaviers, Bokaro (1st-4th
                                             grade)</h3>
-                                        <p>Rocking an ancient Windows XP with 2GB RAM and a CRT monitor. Got my first
+                                        <p style={{color: isDarkMode ? 'white' : 'black'}}>Rocking an ancient Windows XP with 2GB RAM and a CRT monitor. Got my first
                                             taste
                                             of the internet—love at first dial-up tone.</p>
                                     </div>
@@ -100,7 +101,7 @@ export const timelineData = (isDarkMode: boolean) => {
                                         <h3 className="font-semibold text-lg text-purple-200"
                                             style={{color: isDarkMode ? 'white' : 'black'}}>Queens, NY (5th-8th grade,
                                             PS120 & IS237)</h3>
-                                        <p>High-speed WiFi unlocked! Became the family tech support, fixing routers for
+                                        <p style={{color: isDarkMode ? 'white' : 'black'}}>High-speed WiFi unlocked! Became the family tech support, fixing routers for
                                             uncles and figuring out torrents (for educational purposes, of course 😉).
                                             Learned about storage, operating systems, and the art of data transfers.</p>
                                     </div>
@@ -116,7 +117,7 @@ export const timelineData = (isDarkMode: boolean) => {
                                         <h3 className="font-semibold text-lg text-purple-200"
                                             style={{color: isDarkMode ? 'white' : 'black'}}>DPS South, Bengaluru
                                             (9th-12th grade)</h3>
-                                        <p>Brief tech rebellion phase. CS in 11th grade? Nah. Switched to Economics
+                                        <p style={{color: isDarkMode ? 'white' : 'black'}}>Brief tech rebellion phase. CS in 11th grade? Nah. Switched to Economics
                                             instead.
                                             Regrets? Maybe. But hey, life's about twists and turns!</p>
                                     </div>
@@ -137,7 +138,8 @@ export const timelineData = (isDarkMode: boolean) => {
                     className={styles.timelineContent}>
                     <div className="flex flex-col space-y-6">
                         <TextGenerateEffect
-                            className={`flex align-center justify-center underline text-${isDarkMode ? 'white' : 'black'}`}
+                            className={`flex align-center justify-center underline`}
+                            parentStyle={{color: isDarkMode ? 'white' : 'black'}}
                             words={"Becoming a Full-Stack Wizard 🧙‍♂️"}/>
 
                         <AnimatedText delay={0.2}>
@@ -148,7 +150,7 @@ export const timelineData = (isDarkMode: boolean) => {
                                         <h3 className="font-semibold text-lg text-purple-200"
                                             style={{color: isDarkMode ? 'white' : 'black'}}>PES University,
                                             Bengaluru</h3>
-                                        <p>Developed an obsession with C, Python, and frontend development. Code became
+                                        <p style={{color: isDarkMode ? 'white' : 'black'}}>Developed an obsession with C, Python, and frontend development. Code became
                                             poetry, and debugging became therapy.</p>
                                     </div>
                                 </div>
@@ -162,7 +164,7 @@ export const timelineData = (isDarkMode: boolean) => {
                                     <div>
                                         <h3 className="font-semibold text-lg text-purple-200"
                                             style={{color: isDarkMode ? 'white' : 'black'}}>Achievements</h3>
-                                        <ul className="list-disc pl-6">
+                                        <ul className="list-disc pl-6" style={{color: isDarkMode ? 'white' : 'black'}}>
                                             <li>MDR Scholarship (2x) – They paid me to be a nerd.</li>
                                             <li>Distinction Award (2x) – More proof I actually studied.</li>
                                         </ul>
@@ -178,7 +180,7 @@ export const timelineData = (isDarkMode: boolean) => {
                                     <div>
                                         <h3 className="font-semibold text-lg text-purple-200"
                                             style={{color: isDarkMode ? 'white' : 'black'}}>Placement Wins</h3>
-                                        <ul className="list-disc pl-6">
+                                        <ul className="list-disc pl-6" style={{color: isDarkMode ? 'white' : 'black'}}>
                                             <li>Landed an internship at PwC.</li>
                                             <li>Bagged a job at Societe Generale before even graduating. Mission
                                                 accomplished. 🎯
@@ -202,7 +204,8 @@ export const timelineData = (isDarkMode: boolean) => {
                     className={styles.timelineContent}>
                     <div className="flex flex-col space-y-6">
                         <TextGenerateEffect
-                            className={`flex align-center justify-center underline text-${isDarkMode ? 'white' : 'black'}`}
+                            className={`flex align-center justify-center underline`}
+                            parentStyle={{color: isDarkMode ? 'white' : 'black'}}
                             words={"PwC: From Intern to POC Wizard"}/>
 
                         <AnimatedText delay={0.2}>
@@ -212,7 +215,7 @@ export const timelineData = (isDarkMode: boolean) => {
                                     <div>
                                         <h3 className="font-semibold text-lg text-purple-200"
                                             style={{color: isDarkMode ? 'white' : 'black'}}>PwC India</h3>
-                                        <p>Built a Proof of Concept (POC) for an internal tool using Python + Tkinter
+                                        <p style={{color: isDarkMode ? 'white' : 'black'}}>Built a Proof of Concept (POC) for an internal tool using Python + Tkinter
                                             (old
                                             school but effective).</p>
                                     </div>
@@ -227,7 +230,7 @@ export const timelineData = (isDarkMode: boolean) => {
                                     <div>
                                         <h3 className="font-semibold text-lg text-purple-200"
                                             style={{color: isDarkMode ? 'white' : 'black'}}>Project Deployment</h3>
-                                        <p>Contributed to the final design of the tool and deployed it on Windows Server
+                                        <p style={{color: isDarkMode ? 'white' : 'black'}}>Contributed to the final design of the tool and deployed it on Windows Server
                                             using uWSGI + IIS (yes, it worked!).</p>
                                     </div>
                                 </div>
@@ -241,7 +244,7 @@ export const timelineData = (isDarkMode: boolean) => {
                                     <div>
                                         <h3 className="font-semibold text-lg text-purple-200"
                                             style={{color: isDarkMode ? 'white' : 'black'}}>Corporate Life Skills</h3>
-                                        <p>First exposure to corporate life, where I mastered the sacred arts of Git,
+                                        <p style={{color: isDarkMode ? 'white' : 'black'}}>First exposure to corporate life, where I mastered the sacred arts of Git,
                                             Teams,
                                             and Jira. Also discovered meetings could've been emails.</p>
                                     </div>
@@ -262,7 +265,8 @@ export const timelineData = (isDarkMode: boolean) => {
                     className={styles.timelineContent}>
                     <div className="flex flex-col space-y-6">
                         <TextGenerateEffect
-                            className={`flex align-center justify-center underline text-${isDarkMode ? 'white' : 'black'}`}
+                            className={`flex align-center justify-center underline`}
+                            parentStyle={{color: isDarkMode ? 'white' : 'black'}}
                             words={"Societe Generale: Microservices, AWS, and French Colleagues 🇫🇷️"}/>
 
                         <AnimatedText delay={0.2}>
@@ -272,7 +276,7 @@ export const timelineData = (isDarkMode: boolean) => {
                                     <div>
                                         <h3 className="font-semibold text-lg text-purple-200"
                                             style={{color: isDarkMode ? 'white' : 'black'}}>Initial Role</h3>
-                                        <p>Started as a Software Engineer, maintaining a chain of microservices that
+                                        <p style={{color: isDarkMode ? 'white' : 'black'}}>Started as a Software Engineer, maintaining a chain of microservices that
                                             crunched huge amounts of banking data.</p>
                                     </div>
                                 </div>
@@ -286,7 +290,7 @@ export const timelineData = (isDarkMode: boolean) => {
                                     <div>
                                         <h3 className="font-semibold text-lg text-purple-200"
                                             style={{color: isDarkMode ? 'white' : 'black'}}>New Project</h3>
-                                        <p>6 months in – Got a new project: Rebuilding an old JSP application using
+                                        <p style={{color: isDarkMode ? 'white' : 'black'}}>6 months in – Got a new project: Rebuilding an old JSP application using
                                             ReactJS
                                             + Spring Boot with AWS as our cloud provider.</p>
                                     </div>
@@ -301,7 +305,7 @@ export const timelineData = (isDarkMode: boolean) => {
                                     <div>
                                         <h3 className="font-semibold text-lg text-purple-200"
                                             style={{color: isDarkMode ? 'white' : 'black'}}>Key Projects</h3>
-                                        <ul className="list-disc pl-6">
+                                        <ul className="list-disc pl-6" style={{color: isDarkMode ? 'white' : 'black'}}>
                                             <li>Containerization – Everything in Docker, deployed via AWS ECS & ECR.
                                             </li>
                                             <li>CI/CD Mastery – Pipelines built with Jenkins.</li>
@@ -320,7 +324,7 @@ export const timelineData = (isDarkMode: boolean) => {
                                         <h3 className="font-semibold text-lg text-purple-200"
                                             style={{color: isDarkMode ? 'white' : 'black'}}>International
                                             Collaboration</h3>
-                                        <p>Cross-functional teams, mostly working with French colleagues—meaning I've
+                                        <p style={{color: isDarkMode ? 'white' : 'black'}}>Cross-functional teams, mostly working with French colleagues—meaning I've
                                             learned more French phrases than I ever expected to (Mostly "Ça marche?" and
                                             "Ça
                                             ne marche pas.")</p>
@@ -336,7 +340,7 @@ export const timelineData = (isDarkMode: boolean) => {
                                     <div>
                                         <h3 className="font-semibold text-lg text-purple-200"
                                             style={{color: isDarkMode ? 'white' : 'black'}}>Current Status</h3>
-                                        <p>Currently in the pre-prod phase of the project, which means more coffee, more
+                                        <p style={{color: isDarkMode ? 'white' : 'black'}}>Currently in the pre-prod phase of the project, which means more coffee, more
                                             debugging, and more Jenkins logs.</p>
                                     </div>
                                 </div>
