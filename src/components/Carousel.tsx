@@ -1,24 +1,20 @@
 "use client";
 import React, {useEffect, useId, useRef, useState} from "react";
 import {motion, useAnimation, useInView} from "framer-motion";
-import styles from "../pages/Projects.module.scss";
-import AnimatedCard from "./AnimatedCard";
 import Modal from "./Modal.tsx";
-import akkountantData from '../assets/modalInfo/akkountantInfo.json';
-import tripsplitData from '../assets/modalInfo/tripsplitInfo.json';
-import leetcodeToGitData from '../assets/modalInfo/leetcodeToGitInfo.json';
-import vidishSpaceData from '../assets/modalInfo/vidishSpaceInfo.json';
+import {useThemeContext} from '../App';
+import {akkountantData, tripsplitData, vidishSpaceData, leetcodeToGitData} from "../assets/modalInfo";
+import AnimatedCard from "./AnimatedCard.tsx";
+import styles from "../pages/Projects.module.scss";
 
-import {useGlobal} from "../GlobalContext.tsx";
-
-interface SlideData {
-    title: string;
-    description: string;
-    img: string;
-}
 
 interface ProjectsGridProps {
-    slides: SlideData[];
+    slides: Array<{
+        title: string;
+        description: string;
+        img: string;
+        content: React.ReactNode;
+    }>;
     sectionRef?: React.RefObject<HTMLElement>;
 }
 
@@ -26,13 +22,12 @@ export function ProjectsGrid({slides}: ProjectsGridProps) {
     const gridRef = useRef<HTMLDivElement>(null);
     const id = useId();
     const [isOpen, setIsOpen] = useState(false);
-    const {isToggled} = useGlobal();
+    const { isDarkMode } = useThemeContext();
     const isInView = useInView(gridRef, {once: false, amount: 0.2});
     const controls = useAnimation();
     const [windowWidth, setWindowWidth] = useState(0);
     const [cardsPerRow, setCardsPerRow] = useState(3);
     const [modalData, setModalData] = useState(akkountantData);
-
 
     // Update window width on resize
     useEffect(() => {
@@ -174,7 +169,7 @@ export function ProjectsGrid({slides}: ProjectsGridProps) {
                                         title={item.title}
                                         description={item.description}
                                         image={item.img}
-                                        darkMode={isToggled}
+                                        darkMode={isDarkMode}
                                         className={styles.baseAnimatedCard}
                                     />
                                 </div>
@@ -193,7 +188,6 @@ export function ProjectsGrid({slides}: ProjectsGridProps) {
             >
             </motion.div>
 
-
             {/* Modal component */}
             <Modal
                 isOpen={isOpen}
@@ -203,7 +197,7 @@ export function ProjectsGrid({slides}: ProjectsGridProps) {
                     setIsOpen(false);
                 }}
                 data={modalData}
-                darkMode={isToggled}
+                darkMode={isDarkMode}
             />
         </div>
     );

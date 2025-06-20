@@ -12,8 +12,8 @@ import styles from './HeroSection.module.scss';
 import {TextScramble} from "../components/TextScramble.tsx";
 import {BackgroundBeamsWithCollision} from "../components/BackgroundBeams.tsx";
 import ImageToggleButton from "../components/ImageToggleButton.tsx";
-import {useGlobal} from "../GlobalContext.tsx";
 import BeamControlButtons from "../components/BeamControlButtons.tsx";
+import { useThemeContext } from '../App';
 
 const HeroSection = () => {
     const lottieRef = useRef<LottieRefCurrentProps>(null);
@@ -21,16 +21,17 @@ const HeroSection = () => {
     const [beamSpeed, setBeamSpeed] = useState(5);
     // Default beam count
     const [beamCount, setBeamCount] = useState(50);
-    const {isToggled, setIsToggled} = useGlobal()
+    const { isDarkMode, setTheme } = useThemeContext();
+    
     const handleToggle = () => {
         if (lottieRef.current) {
-            if (isToggled) {
+            if (isDarkMode) {
                 lottieRef.current.playSegments([80, 20], true);
             } else {
                 lottieRef.current.playSegments([50, 100], true);
             }
         }
-        setIsToggled(!isToggled);
+        setTheme(isDarkMode ? 'light' : 'dark');
     };
 
     // Handle speed changes
@@ -54,35 +55,35 @@ const HeroSection = () => {
 
     return (
         <section id="section1">
-            <div className={isToggled ? `${styles.iconContainer} ${styles.darkMode}` : styles.iconContainer}>
+            <div className={isDarkMode ? `${styles.iconContainer} ${styles.darkMode}` : styles.iconContainer}>
                 <img alt={'img1'} src={IconD1}
                      style={{
-                         display: isToggled ? 'block' : 'none',
+                         display: isDarkMode ? 'block' : 'none',
                          position: 'absolute',
                          left: 0
                      }}
                      className={styles.icon}/>
                 <img alt={'img1'} src={IconD2} style={{
-                    display: isToggled ? 'block' : 'none',
+                    display: isDarkMode ? 'block' : 'none',
                     position: 'absolute',
                     left: "25%"
                 }}
                      className={styles.icon}/>
                 <img alt={'img1'} src={IconD3} style={{
-                    display: isToggled ? 'block' : 'none',
+                    display: isDarkMode ? 'block' : 'none',
                     position: 'absolute',
                     left: "50%"
                 }}
                      className={styles.icon}/>
                 <img alt={'img1'} src={IconD4} style={{
-                    display: isToggled ? 'block' : 'none',
+                    display: isDarkMode ? 'block' : 'none',
                     position: 'absolute',
                     left: "75%"
                 }}
                      className={styles.icon}/>
                 <img alt={'img1'} src={Icon1}
                      style={{
-                         display: !isToggled ? 'block' : 'none',
+                         display: !isDarkMode ? 'block' : 'none',
                          position: 'absolute',
                          left: 0
                      }}
@@ -90,31 +91,31 @@ const HeroSection = () => {
                      className={styles.icon}/>
                 <img alt={'img1'} src={Icon2}
                      style={{
-                         display: !isToggled ? 'block' : 'none',
+                         display: !isDarkMode ? 'block' : 'none',
                          position: 'absolute',
                          left: "25%"
                      }}
                      className={styles.icon}/>
                 <img alt={'img1'} src={Icon3}
                      style={{
-                         display: !isToggled ? 'block' : 'none', position: 'absolute',
+                         display: !isDarkMode ? 'block' : 'none', position: 'absolute',
                          left: "50%"
                      }}
                      className={styles.icon}/>
                 <img alt={'img1'} src={Icon4}
                      style={{
-                         display: !isToggled ? 'block' : 'none', position: 'absolute',
+                         display: !isDarkMode ? 'block' : 'none', position: 'absolute',
                          left: "75%"
                      }}
                      className={styles.icon}/>
             </div>
             <BackgroundBeamsWithCollision
-                lightMode={!isToggled}
+                lightMode={!isDarkMode}
                 beamSpeed={beamSpeed}
                 beamCount={beamCount}
-                className={!isToggled ? styles.textContainer : `${styles.textContainer} ${styles.darkTextContainer}`}
+                className={!isDarkMode ? styles.textContainer : `${styles.textContainer} ${styles.darkTextContainer}`}
             >
-                <div className={!isToggled ? styles.textContainer : styles.darkContainer}>
+                <div className={!isDarkMode ? styles.textContainer : styles.darkContainer}>
                     <h1 id="startPoint" className={styles.title}>
                         <TextScramble text="Vidish Raj"/>
                     </h1>
@@ -134,7 +135,7 @@ const HeroSection = () => {
                             onChange={handleToggle}
                             width={'100px'}
                             height={'34px'}
-                            initialChecked={!isToggled}
+                            initialChecked={!isDarkMode}
                         />
 
                         {/* Add beam control buttons */}
@@ -150,6 +151,5 @@ const HeroSection = () => {
         </section>
     );
 };
-
 
 export default HeroSection;

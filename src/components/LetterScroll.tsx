@@ -1,7 +1,7 @@
 import {useEffect, useRef, useState} from "react";
 import {useAnimationFrame} from "framer-motion";
 import styles from './LetterScroll.module.scss';
-import {useGlobal} from "../GlobalContext.tsx";
+import { useThemeContext } from '../App';
 
 interface ParallaxProps {
     children: string;
@@ -18,7 +18,7 @@ function ParallaxText({
     const [position, setPosition] = useState(0);
     const directionFactor = direction === 'left' ? -1 : 1;
     const speed = baseVelocity * directionFactor;
-    const {isToggled} = useGlobal()
+    const { isDarkMode } = useThemeContext();
     // Container and content measurement references
     const containerRef = useRef<HTMLDivElement>(null);
     const innerRef = useRef<HTMLDivElement>(null);
@@ -79,8 +79,8 @@ function ParallaxText({
             ref={containerRef}
             className={styles.parallaxContainer}
             style={{
-                background: isToggled ? '#161f27' : '#f5f5f5',
-                color: isToggled ? '#ffffff' : '#000000'
+                background: isDarkMode ? '#161f27' : '#f5f5f5',
+                color: isDarkMode ? '#ffffff' : '#000000'
             }}
         >
             <div

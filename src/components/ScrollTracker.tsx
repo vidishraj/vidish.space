@@ -1,12 +1,12 @@
 // ScrollTracker.jsx
 import {useEffect, useState} from 'react';
 import styles from './ScrollTracker.module.scss';
-import {useGlobal} from "../GlobalContext.tsx";
 import resumePDF from '/assets/Resume_SDE_Vidish_Raj.pdf'
+import { useThemeContext } from '../App';
 
 const ScrollTracker = () => {
     const [activeSection, setActiveSection] = useState('section1');
-    const {isToggled: isDarkMode} = useGlobal(); // Get theme from context
+    const { isDarkMode } = useThemeContext();
 
     const sections = [
         {id: 'section1', label: 'Home'},

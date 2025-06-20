@@ -5,12 +5,11 @@ import Instagram from '/assets/contacts/instagram.png';
 import Mail from '/assets/contacts/mail.png';
 import Github from '/assets/contacts/github.png';
 import Resume from '/assets/contacts/file-user.png';
-import {useGlobal} from "../GlobalContext.tsx";
-
 import resumePDF from '/assets/Resume_SDE_Vidish_Raj.pdf'
+import { useThemeContext } from '../App';
 
 const SocialLinks = () => {
-    const {isToggled: isDarkMode} = useGlobal();
+    const { isDarkMode } = useThemeContext();
 
     // Social media links data
     const socialLinks = [
@@ -58,40 +57,24 @@ const SocialLinks = () => {
     };
 
     const itemVariants = {
-        hidden: {y: 20, opacity: 0},
+        hidden: {opacity: 0, y: 20},
         visible: {
-            y: 0,
             opacity: 1,
-            transition: {
-                type: 'spring',
-                stiffness: 300,
-                damping: 24
-            }
-        },
-        hover: {
-            scale: 1.1,
-            y: -5,
-            transition: {
-                type: 'spring',
-                stiffness: 400,
-                damping: 10
-            }
-        },
-        tap: {
-            scale: 0.95
+            y: 0
         }
     };
+
     const downloadResume = () => {
-        // Create a link to the resume and trigger download
         const link = document.createElement('a');
         link.href = resumePDF;
-        link.download = 'vidish_raj_resume.pdf'; // The name the file will download as
+        link.download = 'vidish_raj_resume.pdf';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
     };
+
     return (
-        <div className="w-full flex justify-center items-center py-8">
+         <div className="w-full flex justify-center items-center py-8">
             <motion.div
                 className={`flex flex-wrap justify-center gap-6 p-6 rounded-xl shadow-lg max-w-2xl mx-auto ${
                     isDarkMode

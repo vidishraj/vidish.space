@@ -2,12 +2,13 @@
 import {useEffect, useRef} from 'react';
 import styles from './Projects.module.scss';
 import {ProjectsGrid} from "../components/Carousel.tsx";
-import {useGlobal} from "../GlobalContext.tsx";
 import ParallaxText from "../components/LetterScroll.tsx";
+import { useThemeContext } from '../App';
 
 export const Projects = () => {
     const sectionRef = useRef<HTMLElement>(null);
-    const {isToggled} = useGlobal()
+    const { isDarkMode } = useThemeContext();
+    
     // Adjust the height of the section to accommodate all slides
     useEffect(() => {
         const section = document.getElementById('section3');
@@ -70,21 +71,18 @@ export const Projects = () => {
     return (
         <section
             id="section3"
-            className={!isToggled ? styles.section3 : `${styles.section3Dark} ${styles.section3}`}
+            className={`${styles.section3} ${isDarkMode ? styles.section3Dark : ''}`}
             style={{
                 maxHeight: "max-content",
                 width: '100vw',
                 display: 'flex',
                 flexDirection: 'column',
             }}
-            ref={sectionRef}
-        >
-
+            ref={sectionRef}>
             <div style={{width: '100%', height: '100%'}}>
-                {/*<ParallaxText baseVelocity={-5}>My Work</ParallaxText>*/}
-                <ParallaxText baseVelocity={200}>My Work</ParallaxText>
+                <ParallaxText baseVelocity={200}>MY WORK</ParallaxText>
                 <ProjectsGrid slides={content}/>
-                <ParallaxText baseVelocity={200} direction={"right"}>Projects</ParallaxText>
+                <ParallaxText baseVelocity={200}  direction={"right"}>Projects</ParallaxText>
             </div>
         </section>
     );

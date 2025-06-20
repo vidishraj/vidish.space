@@ -1,20 +1,19 @@
 import styles from './ContactMe.module.scss'
 import Lottie from "lottie-react";
 import animationData from '../assets/lottieAnimations/lastAnimation.json'
-import {useGlobal} from "../GlobalContext.tsx";
 import SocialLinks from "../components/ContactLinks.tsx";
+import { useThemeContext } from '../App';
 
 export const ContactMe = () => {
-    const {isToggled} = useGlobal();
+    const { isDarkMode } = useThemeContext();
+    
     return (
-
-        <section className={!isToggled ? styles.section4 : `${styles.section4Dark} ${styles.section4}`}
+        <section className={!isDarkMode ? styles.section4 : `${styles.section4Dark} ${styles.section4}`}
                  id="section4"
                  style={{height: '100vh', display: 'flex', flexDirection: 'column'}}>
             {/* Your section 4 content */}
             <div className={"flex item-center justify-center"} style={{height: '60vh', backgroundColor: ''}}>
                 <SocialLinks/>
-
             </div>
             <Lottie animationData={animationData}
                     style={{
@@ -25,6 +24,5 @@ export const ContactMe = () => {
         </section>
     );
 };
-
 
 export default ContactMe;

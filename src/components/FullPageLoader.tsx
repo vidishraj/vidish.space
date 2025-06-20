@@ -1,9 +1,9 @@
 import Lottie from 'lottie-react';
 import {motion} from 'framer-motion';
-import {useGlobal} from '../GlobalContext'; // Adjust import path as needed
+import { useThemeContext } from '../App';
 
 const FullPageLoader = ({animationData, message = 'Loading...'}: { animationData: unknown, message: string }) => {
-    const {isToggled: isDarkMode} = useGlobal();
+    const { isDarkMode } = useThemeContext();
 
     return (
         <motion.div
@@ -29,41 +29,9 @@ const FullPageLoader = ({animationData, message = 'Loading...'}: { animationData
                     }}
                 />
             </div>
-
-            <motion.div
-                initial={{opacity: 0, y: 10}}
-                animate={{opacity: 1, y: 0}}
-                transition={{delay: 0.2, duration: 0.4}}
-            >
-                <p className={`text-lg font-medium mt-4 text-center ${
-                    isDarkMode ? 'text-gray-200' : 'text-gray-800'
-                }`}>
-                    {message}
-                </p>
-                <div className="flex justify-center mt-2">
-                    <div className="flex space-x-2">
-                        {[0, 0.2, 0.4].map((delay, index) => (
-                            <motion.div
-                                key={index}
-                                className={`w-3 h-3 rounded-full ${
-                                    isDarkMode ? 'bg-blue-400' : 'bg-blue-500'
-                                }`}
-                                animate={{
-                                    scale: [1, 1.2, 1],
-                                    opacity: [0.7, 1, 0.7],
-                                }}
-                                transition={{
-                                    duration: 1.2,
-                                    repeat: Infinity,
-                                    repeatDelay: 0,
-                                    ease: 'easeInOut',
-                                    delay,
-                                }}
-                            />
-                        ))}
-                    </div>
-                </div>
-            </motion.div>
+            <p className={`text-lg mt-4 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+                {message}
+            </p>
         </motion.div>
     );
 };

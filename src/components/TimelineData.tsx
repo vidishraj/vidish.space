@@ -1,9 +1,3 @@
-// import earlyDaysAnimation from '../assets/lottieAnimations/earlyDays.json'
-// import jobAnimation from '../assets/lottieAnimations/job.json'
-// import internshipAnimation from '../assets/lottieAnimations/internship.json'
-// import collegeDaysAnimation from '../assets/lottieAnimations/college.json'
-
-
 import {ContainerScroll} from "./TimeLine3DCard.tsx";
 import styles from '../pages/HeroSection.module.scss'
 import {TextGenerateEffect} from "./TextGenerate.tsx";
@@ -67,21 +61,19 @@ export const LazyLottie = ({animationImport, className = "", style = {}}: LazyLo
     return <Lottie className={className} animationData={animationData} style={style}/>;
 };
 
-export const timelineData = (isToggled: boolean) => {
+export const timelineData = (isDarkMode: boolean) => {
     return [
-
         {
             title: 'The Early Days (Till 2018)',
             subtitle: 'The Humble Beginnings of a Tech Nerd',
             animationData: earlyDaysAnimation,
-
             content: [
                 <ContainerScroll
-                    containerClassName={!isToggled ? `${styles.timelineCard} ${styles.firstCard}` : styles.timelineCardDark}
+                    containerClassName={!isDarkMode ? `${styles.timelineCard} ${styles.firstCard}` : styles.timelineCardDark}
                     className={styles.timelineContent}>
                     <div className="flex flex-col space-y-6">
                         <TextGenerateEffect
-                            className={`flex align-center justify-center underline text-${isToggled ? 'white' : 'black'}`}
+                            className={`flex align-center justify-center underline text-${isDarkMode ? 'white' : 'black'}`}
                             words={"The Humble Beginnings of a Tech Nerd"}/>
 
                         <AnimatedText delay={0.2}>
@@ -90,7 +82,7 @@ export const timelineData = (isToggled: boolean) => {
                                     <span className="text-xl mr-2">📍</span>
                                     <div>
                                         <h3 className="font-semibold text-lg text-purple-200"
-                                            style={{color: isToggled ? 'white' : 'black'}}>St. Xaviers, Bokaro (1st-4th
+                                            style={{color: isDarkMode ? 'white' : 'black'}}>St. Xaviers, Bokaro (1st-4th
                                             grade)</h3>
                                         <p>Rocking an ancient Windows XP with 2GB RAM and a CRT monitor. Got my first
                                             taste
@@ -106,7 +98,7 @@ export const timelineData = (isToggled: boolean) => {
                                     <span className="text-xl mr-2">📍</span>
                                     <div>
                                         <h3 className="font-semibold text-lg text-purple-200"
-                                            style={{color: isToggled ? 'white' : 'black'}}>Queens, NY (5th-8th grade,
+                                            style={{color: isDarkMode ? 'white' : 'black'}}>Queens, NY (5th-8th grade,
                                             PS120 & IS237)</h3>
                                         <p>High-speed WiFi unlocked! Became the family tech support, fixing routers for
                                             uncles and figuring out torrents (for educational purposes, of course 😉).
@@ -122,7 +114,7 @@ export const timelineData = (isToggled: boolean) => {
                                     <span className="text-xl mr-2">📍</span>
                                     <div>
                                         <h3 className="font-semibold text-lg text-purple-200"
-                                            style={{color: isToggled ? 'white' : 'black'}}>DPS South, Bengaluru
+                                            style={{color: isDarkMode ? 'white' : 'black'}}>DPS South, Bengaluru
                                             (9th-12th grade)</h3>
                                         <p>Brief tech rebellion phase. CS in 11th grade? Nah. Switched to Economics
                                             instead.
@@ -141,11 +133,11 @@ export const timelineData = (isToggled: boolean) => {
             animationData: collegeDaysAnimation,
             content: [
                 <ContainerScroll
-                    containerClassName={!isToggled ? `${styles.timelineCard} ${styles.secondCard}` : styles.timelineCardDark}
+                    containerClassName={!isDarkMode ? `${styles.timelineCard} ${styles.secondCard}` : styles.timelineCardDark}
                     className={styles.timelineContent}>
                     <div className="flex flex-col space-y-6">
                         <TextGenerateEffect
-                            className={`flex align-center justify-center underline text-${isToggled ? 'white' : 'black'}`}
+                            className={`flex align-center justify-center underline text-${isDarkMode ? 'white' : 'black'}`}
                             words={"Becoming a Full-Stack Wizard 🧙‍♂️"}/>
 
                         <AnimatedText delay={0.2}>
@@ -154,7 +146,7 @@ export const timelineData = (isToggled: boolean) => {
                                     <span className="text-xl mr-2">🎓</span>
                                     <div>
                                         <h3 className="font-semibold text-lg text-purple-200"
-                                            style={{color: isToggled ? 'white' : 'black'}}>PES University,
+                                            style={{color: isDarkMode ? 'white' : 'black'}}>PES University,
                                             Bengaluru</h3>
                                         <p>Developed an obsession with C, Python, and frontend development. Code became
                                             poetry, and debugging became therapy.</p>
@@ -169,7 +161,7 @@ export const timelineData = (isToggled: boolean) => {
                                     <span className="text-xl mr-2">🏆</span>
                                     <div>
                                         <h3 className="font-semibold text-lg text-purple-200"
-                                            style={{color: isToggled ? 'white' : 'black'}}>Achievements</h3>
+                                            style={{color: isDarkMode ? 'white' : 'black'}}>Achievements</h3>
                                         <ul className="list-disc pl-6">
                                             <li>MDR Scholarship (2x) – They paid me to be a nerd.</li>
                                             <li>Distinction Award (2x) – More proof I actually studied.</li>
@@ -185,7 +177,7 @@ export const timelineData = (isToggled: boolean) => {
                                     <span className="text-xl mr-2">📌</span>
                                     <div>
                                         <h3 className="font-semibold text-lg text-purple-200"
-                                            style={{color: isToggled ? 'white' : 'black'}}>Placement Wins</h3>
+                                            style={{color: isDarkMode ? 'white' : 'black'}}>Placement Wins</h3>
                                         <ul className="list-disc pl-6">
                                             <li>Landed an internship at PwC.</li>
                                             <li>Bagged a job at Societe Generale before even graduating. Mission
@@ -206,11 +198,11 @@ export const timelineData = (isToggled: boolean) => {
             animationData: internshipAnimation,
             content: [
                 <ContainerScroll
-                    containerClassName={!isToggled ? `${styles.timelineCard} ${styles.thirdCard}` : styles.timelineCardDark}
+                    containerClassName={!isDarkMode ? `${styles.timelineCard} ${styles.thirdCard}` : styles.timelineCardDark}
                     className={styles.timelineContent}>
                     <div className="flex flex-col space-y-6">
                         <TextGenerateEffect
-                            className={`flex align-center justify-center underline text-${isToggled ? 'white' : 'black'}`}
+                            className={`flex align-center justify-center underline text-${isDarkMode ? 'white' : 'black'}`}
                             words={"PwC: From Intern to POC Wizard"}/>
 
                         <AnimatedText delay={0.2}>
@@ -219,7 +211,7 @@ export const timelineData = (isToggled: boolean) => {
                                     <span className="text-xl mr-2">💼</span>
                                     <div>
                                         <h3 className="font-semibold text-lg text-purple-200"
-                                            style={{color: isToggled ? 'white' : 'black'}}>Software Engineer Intern</h3>
+                                            style={{color: isDarkMode ? 'white' : 'black'}}>PwC India</h3>
                                         <p>Built a Proof of Concept (POC) for an internal tool using Python + Tkinter
                                             (old
                                             school but effective).</p>
@@ -234,7 +226,7 @@ export const timelineData = (isToggled: boolean) => {
                                     <span className="text-xl mr-2">🚀</span>
                                     <div>
                                         <h3 className="font-semibold text-lg text-purple-200"
-                                            style={{color: isToggled ? 'white' : 'black'}}>Project Deployment</h3>
+                                            style={{color: isDarkMode ? 'white' : 'black'}}>Project Deployment</h3>
                                         <p>Contributed to the final design of the tool and deployed it on Windows Server
                                             using uWSGI + IIS (yes, it worked!).</p>
                                     </div>
@@ -248,7 +240,7 @@ export const timelineData = (isToggled: boolean) => {
                                     <span className="text-xl mr-2">💡</span>
                                     <div>
                                         <h3 className="font-semibold text-lg text-purple-200"
-                                            style={{color: isToggled ? 'white' : 'black'}}>Corporate Life Skills</h3>
+                                            style={{color: isDarkMode ? 'white' : 'black'}}>Corporate Life Skills</h3>
                                         <p>First exposure to corporate life, where I mastered the sacred arts of Git,
                                             Teams,
                                             and Jira. Also discovered meetings could've been emails.</p>
@@ -266,11 +258,11 @@ export const timelineData = (isToggled: boolean) => {
             animationData: jobAnimation,
             content: [
                 <ContainerScroll
-                    containerClassName={!isToggled ? `${styles.timelineCard} ${styles.fourthCard}` : styles.timelineCardDark}
+                    containerClassName={!isDarkMode ? `${styles.timelineCard} ${styles.fourthCard}` : styles.timelineCardDark}
                     className={styles.timelineContent}>
                     <div className="flex flex-col space-y-6">
                         <TextGenerateEffect
-                            className={`flex align-center justify-center underline text-${isToggled ? 'white' : 'black'}`}
+                            className={`flex align-center justify-center underline text-${isDarkMode ? 'white' : 'black'}`}
                             words={"Societe Generale: Microservices, AWS, and French Colleagues 🇫🇷️"}/>
 
                         <AnimatedText delay={0.2}>
@@ -279,7 +271,7 @@ export const timelineData = (isToggled: boolean) => {
                                     <span className="text-xl mr-2">💻</span>
                                     <div>
                                         <h3 className="font-semibold text-lg text-purple-200"
-                                            style={{color: isToggled ? 'white' : 'black'}}>Initial Role</h3>
+                                            style={{color: isDarkMode ? 'white' : 'black'}}>Initial Role</h3>
                                         <p>Started as a Software Engineer, maintaining a chain of microservices that
                                             crunched huge amounts of banking data.</p>
                                     </div>
@@ -293,7 +285,7 @@ export const timelineData = (isToggled: boolean) => {
                                     <span className="text-xl mr-2">🔄</span>
                                     <div>
                                         <h3 className="font-semibold text-lg text-purple-200"
-                                            style={{color: isToggled ? 'white' : 'black'}}>New Project</h3>
+                                            style={{color: isDarkMode ? 'white' : 'black'}}>New Project</h3>
                                         <p>6 months in – Got a new project: Rebuilding an old JSP application using
                                             ReactJS
                                             + Spring Boot with AWS as our cloud provider.</p>
@@ -308,7 +300,7 @@ export const timelineData = (isToggled: boolean) => {
                                     <span className="text-xl mr-2">⚡</span>
                                     <div>
                                         <h3 className="font-semibold text-lg text-purple-200"
-                                            style={{color: isToggled ? 'white' : 'black'}}>Tech Stack Power-Up</h3>
+                                            style={{color: isDarkMode ? 'white' : 'black'}}>Key Projects</h3>
                                         <ul className="list-disc pl-6">
                                             <li>Containerization – Everything in Docker, deployed via AWS ECS & ECR.
                                             </li>
@@ -326,7 +318,7 @@ export const timelineData = (isToggled: boolean) => {
                                     <span className="text-xl mr-2">🇫🇷</span>
                                     <div>
                                         <h3 className="font-semibold text-lg text-purple-200"
-                                            style={{color: isToggled ? 'white' : 'black'}}>International
+                                            style={{color: isDarkMode ? 'white' : 'black'}}>International
                                             Collaboration</h3>
                                         <p>Cross-functional teams, mostly working with French colleagues—meaning I've
                                             learned more French phrases than I ever expected to (Mostly "Ça marche?" and
@@ -343,7 +335,7 @@ export const timelineData = (isToggled: boolean) => {
                                     <span className="text-xl mr-2">☕</span>
                                     <div>
                                         <h3 className="font-semibold text-lg text-purple-200"
-                                            style={{color: isToggled ? 'white' : 'black'}}>Current Status</h3>
+                                            style={{color: isDarkMode ? 'white' : 'black'}}>Current Status</h3>
                                         <p>Currently in the pre-prod phase of the project, which means more coffee, more
                                             debugging, and more Jenkins logs.</p>
                                     </div>

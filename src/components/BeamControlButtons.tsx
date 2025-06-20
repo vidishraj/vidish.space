@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {motion} from "framer-motion";
 import Zap from "/assets/zap.png";
-import {useGlobal} from "../GlobalContext.tsx";
+import { useThemeContext } from '../App';
 
 interface BeamControlButtonsProps {
     onSpeedChange: (change: number) => void;
@@ -16,7 +16,7 @@ const BeamControlButtons: React.FC<BeamControlButtonsProps> = ({
                                                                    maxSpeed,
                                                                    minSpeed
                                                                }) => {
-    const {isToggled} = useGlobal();
+    const { isDarkMode } = useThemeContext();
     const [buttonSize, setButtonSize] = useState("60px");
     const [zapSize, setZapSize] = useState("24px");
     const [spacing, setSpacing] = useState("space-x-4");
@@ -90,7 +90,7 @@ const BeamControlButtons: React.FC<BeamControlButtonsProps> = ({
                                 width: zapSize,
                                 height: zapSize,
                                 color: 'yellow',
-                                backgroundColor: index < (currentSpeed - minSpeed) ? isToggled ? 'white' : 'white' : 'gray',
+                                backgroundColor: index < (currentSpeed - minSpeed) ? !isDarkMode ? 'white' : 'white' : 'gray',
                                 borderRadius: '50%'
                             }}
                             className={`mb-1 ${
