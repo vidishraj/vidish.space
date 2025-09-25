@@ -18,21 +18,30 @@ export const BackgroundBeamsWithCollision = ({
 }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const parentRef = useRef<HTMLDivElement>(null);
-    const [windowWidth, setWindowWidth] = useState(1400);
+    const [windowWidth, setWindowWidth] = useState(() => {
+        return typeof window !== 'undefined' ? window.innerWidth : 1400;
+    });
     const [modeKey, setModeKey] = useState(lightMode ? 'light' : 'dark'); // Add mode key to force re-render
 
     // Handle window resize with debouncing for performance
     useEffect(() => {
-        const handleResize = () => {
-            const debounce = setTimeout(() => {
-                setWindowWidth(window.outerWidth);
-            }, 200);
+        let debounceTimeout: number;
 
-            return () => clearTimeout(debounce);
+        const handleResize = () => {
+            clearTimeout(debounceTimeout);
+            debounceTimeout = window.setTimeout(() => {
+                setWindowWidth(window.innerWidth);
+            }, 200);
         };
 
+        // Set initial width
+        setWindowWidth(window.innerWidth);
+
         window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+            clearTimeout(debounceTimeout);
+        };
     }, []);
 
     // Reset particles when light mode changes to prevent incorrect splashes
@@ -108,7 +117,7 @@ export const BackgroundBeamsWithCollision = ({
 
             return {
                 initialX: randomPosition * windowWidth,
-                translateX: (randomPosition * windowWidth) + (Math.random() * 6 - 3), // Reduced horizontal drift
+                translateX: (randomPosition * windowWidth) + (Math.random() * 8 - 4), // Slightly more drift for large screens
                 duration: finalSpeed, // Physics-based speed with variation
                 repeatDelay: Math.random() * 0.6, // Reduced delay for smoother flow
                 delay: Math.random() * 1, // Staggered start for natural effect
@@ -124,7 +133,7 @@ export const BackgroundBeamsWithCollision = ({
         <div
             ref={parentRef}
             className={cn(
-                "h-96 md:h-[40rem] from-white to-neutral-100 dark:from-neutral-950 dark:to-neutral-800 relative flex items-center w-full justify-center overflow-hidden",
+                "h-[50vh] from-white to-neutral-100 dark:from-neutral-950 dark:to-neutral-800 relative flex items-center w-full justify-center overflow-hidden",
                 className
             )}
         >
@@ -300,7 +309,7 @@ const ParticleCollision = React.memo(
 
         // Improved calculation for travel distance based on container height
         const travelDistance = typeof window !== 'undefined'
-            ? Math.max(window.innerHeight * 1.1, 800) // Ensure enough distance regardless of screen size
+            ? Math.max(window.innerHeight * 1.2, 1000) // Increase for larger screens
             : 1800;
 
         return (
