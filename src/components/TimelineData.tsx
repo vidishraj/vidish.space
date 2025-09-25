@@ -11,13 +11,13 @@ const internshipAnimation = () => import('../assets/lottieAnimations/internship.
 const collegeDaysAnimation = () => import('../assets/lottieAnimations/college.json');
 
 interface LazyLottieProps {
-    animationImport: () => Promise<{ default: any }>;
+    animationImport: () => Promise<{ default: object }>;
     className?: string;
     style?: CSSProperties;
 }
 
 export const LazyLottie = ({animationImport, className = "", style = {}}: LazyLottieProps) => {
-    const [animationData, setAnimationData] = useState<any | null>(null);
+    const [animationData, setAnimationData] = useState<object | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {

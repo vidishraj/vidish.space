@@ -1,5 +1,5 @@
 // ScrollTracker.jsx
-import {useEffect, useState} from 'react';
+import {useEffect, useState, useMemo} from 'react';
 import styles from './ScrollTracker.module.scss';
 import resumePDF from '/assets/Resume_SDE_Vidish_Raj.pdf'
 import { useThemeContext } from '../App';
@@ -8,12 +8,12 @@ const ScrollTracker = () => {
     const [activeSection, setActiveSection] = useState('section1');
     const { isDarkMode } = useThemeContext();
 
-    const sections = [
+    const sections = useMemo(() => [
         {id: 'section1', label: 'Home'},
         {id: 'section2', label: 'Career'},
         {id: 'section3', label: 'Projects'},
         {id: 'section4', label: 'Contact'},
-    ];
+    ], []);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -36,7 +36,7 @@ const ScrollTracker = () => {
         handleScroll();
 
         return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+    }, [sections]);
 
     const scrollToSection = (sectionId: string) => {
         const element = document.getElementById(sectionId);

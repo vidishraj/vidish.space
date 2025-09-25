@@ -1,4 +1,5 @@
-@use "sass:math"; // Import math module
+@use "sass:math";
+@use "sass:list";
 
 $purple: rgb(212, 206, 214);
 $blue: rgb(96, 165, 250);
@@ -36,9 +37,9 @@ $length: 25;
       }
 
       box-shadow: -130px 0 80px 40px white,
-      -50px 0 50px 25px nth($colors, 1),
-      0 0 50px 25px nth($colors, 2),
-      50px 0 50px 25px nth($colors, 3),
+      -50px 0 50px 25px list.nth($colors, 1),
+      0 0 50px 25px list.nth($colors, 2),
+      50px 0 50px 25px list.nth($colors, 3),
       130px 0 80px 40px white;
 
       animation: #{math.div($animationtime, $length) - math.div($animationtime, 2) * $i} linear infinite slide;

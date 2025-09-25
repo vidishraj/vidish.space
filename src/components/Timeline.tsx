@@ -8,7 +8,7 @@ import {LazyLottie} from "./TimelineData.tsx";
 interface TimelineEntry {
     title: string;
     subtitle: string;
-    animationData: any;
+    animationData: () => Promise<{ default: object }>;
     content: React.ReactNode;
 }
 
@@ -30,7 +30,7 @@ export const Timeline = ({data, titleClassName, containerClassname}: {
             const rect = ref.current.getBoundingClientRect();
             setHeight(rect.height);
         }
-    }, [ref, containerRef, cardRef]);
+    }, [ref, containerRef, cardRef, lastHeight]);
     useEffect(() => {
         function handleResize() {
             if (containerRef.current && cardRef.current.length == 4) {
@@ -43,7 +43,7 @@ export const Timeline = ({data, titleClassName, containerClassname}: {
         return () => {
             window.removeEventListener('resize', handleResize);
         };
-    }, []);
+    }, [lastHeight]);
 
     const {scrollYProgress} = useScroll({
         target: containerRef,

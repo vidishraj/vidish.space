@@ -62,7 +62,7 @@ export const BackgroundBeamsWithCollision = ({
             }
         }
         return beamCount;
-    }, [beamCount, windowWidth]);
+    }, [beamCount]);
 
     // Generate particles with optimized size calculations
     const particles = useMemo(() => {

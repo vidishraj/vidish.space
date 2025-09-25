@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useRef, useState, useCallback} from 'react';
 import styles from './TextScramble.module.scss';
 
 export const TextScramble = ({text}: { text: string }) => {
@@ -38,7 +38,7 @@ export const TextScramble = ({text}: { text: string }) => {
         return () => observer.disconnect();
     }, [text]);
 
-    const runScrambleAnimation = () => {
+    const runScrambleAnimation = useCallback(() => {
         // Don't run if already running or animation has been completed
         if (animationRunning.current || animationCompletedRef.current) return;
         animationRunning.current = true;
@@ -70,7 +70,7 @@ export const TextScramble = ({text}: { text: string }) => {
                 setDisplayedText(text);
             }
         }, 33);
-    };
+    }, [text]);
 
     // Reset animation state when text changes
     useEffect(() => {
@@ -83,7 +83,7 @@ export const TextScramble = ({text}: { text: string }) => {
         return () => {
             if (intervalRef.current) clearInterval(intervalRef.current);
         };
-    }, [isVisible, text]);
+    }, [isVisible, text, runScrambleAnimation]);
 
     return (
         <div ref={elementRef} className={styles.scramble}>

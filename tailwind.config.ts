@@ -9,9 +9,9 @@ export default {
     plugins: [addVariablesForColors],
 };
 
-function addVariablesForColors({addBase, theme}: any) {
-    const allColors: any = flattenColorPalette(theme("colors"));
-    const newVars: any = Object.fromEntries(
+function addVariablesForColors({addBase, theme}: {addBase: (obj: Record<string, Record<string, string>>) => void, theme: (key: string) => Record<string, string>}) {
+    const allColors: Record<string, string> = flattenColorPalette(theme("colors"));
+    const newVars: Record<string, string> = Object.fromEntries(
         Object.entries(allColors).map(([key, val]) => [`--${key}`, val])
     );
 
