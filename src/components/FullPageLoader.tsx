@@ -7,16 +7,15 @@ const FullPageLoader = ({animationData, message = 'Loading...'}: { animationData
 
     return (
         <motion.div
-            className={`fixed inset-0 w-full h-full flex flex-col items-center justify-center ${
-                isDarkMode ? 'bg-gray-900' : 'bg-white'
-            }`}
+            className={`fixed inset-0 w-full h-full flex flex-col items-center justify-center`}
+            style={{
+                backgroundColor: isDarkMode ? '#111827' : '#ffffff',
+                zIndex: 9999,
+            }}
             initial={{opacity: 0}}
             animate={{opacity: 1}}
             exit={{opacity: 0}}
             transition={{duration: 0.3}}
-            style={{
-                zIndex: 9999,
-            }}
         >
             <div className="w-full max-w-md p-6">
                 <Lottie

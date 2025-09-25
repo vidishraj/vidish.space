@@ -4,7 +4,6 @@ body, html, #root {
 }
 
 #root {
-    background-color: #F2E2CE;
     min-height: 50px;
     min-width: 50px;
     height: 100%;

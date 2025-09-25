@@ -26,6 +26,7 @@ export const useThemeContext = () => {
 function App() {
     const themeContext = useTheme();
 
+
     return (
         <ThemeContext.Provider value={themeContext}>
             <ScrollTracker/>
