@@ -1,15 +1,14 @@
 import {motion} from 'framer-motion';
 import Code2 from '/assets/contacts/code-xml.png';
 import Linkedin from '/assets/contacts/linkedin.png';
-import Instagram from '/assets/contacts/instagram.png';
 import Mail from '/assets/contacts/mail.png';
 import Github from '/assets/contacts/github.png';
 import Resume from '/assets/contacts/file-user.png';
 import resumePDF from '/assets/Resume_SDE_Vidish_Raj.pdf'
-import { useThemeContext } from '../App';
+import {useThemeContext} from '../App';
 
 const SocialLinks = () => {
-    const { isDarkMode } = useThemeContext();
+    const {isDarkMode} = useThemeContext();
 
     // Social media links data
     const socialLinks = [
@@ -74,7 +73,7 @@ const SocialLinks = () => {
     };
 
     return (
-         <div className="w-full flex justify-center items-center py-8">
+        <div className="w-full flex justify-center items-center py-8">
             <motion.div
                 className={`flex flex-wrap justify-center gap-6 p-6 rounded-xl shadow-lg max-w-2xl mx-auto ${
                     isDarkMode
