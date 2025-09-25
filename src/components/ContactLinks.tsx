@@ -36,13 +36,13 @@ const SocialLinks = () => {
             icon: Mail,
             url: 'mailto:vidishraj@gmail.com',
             color: '#EA4335'
-        },
-        {
-            name: 'Instagram',
-            icon: Instagram,
-            url: 'https://instagram.com/vidish.raj',
-            color: '#E1306C'
         }
+        // {
+        //     name: 'Instagram',
+        //     icon: Instagram,
+        //     url: 'https://instagram.com/vidish.raj',
+        //     color: '#E1306C'
+        // }
     ];
 
     // Animation variants
