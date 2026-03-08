@@ -1,5 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {marked} from "marked";
+import DOMPurify from "dompurify";
 import '../assets/modalStyles/akkountantModal.css'
 import '../assets/modalStyles/tripsplitModal.css'
 import '../assets/modalStyles/vidishSpaceModal.css'
@@ -30,7 +31,7 @@ interface ModalData {
 
 interface ModalProps {
     isOpen: boolean;
-    onClose: (e: React.MouseEvent) => void;
+    onClose: (e: React.MouseEvent | KeyboardEvent) => void;
     data: ModalData;
     darkMode?: boolean;
 }
@@ -71,7 +72,7 @@ const Modal: React.FC<ModalProps> = ({isOpen, onClose, data, darkMode = false}) 
     useEffect(() => {
         const handleEscape = (e: KeyboardEvent) => {
             if (e.key === 'Escape') {
-                onClose(e as unknown as React.MouseEvent);
+                onClose(e);
             }
         };
 
@@ -292,7 +293,7 @@ const Modal: React.FC<ModalProps> = ({isOpen, onClose, data, darkMode = false}) 
                                     <div
                                         className={`prose max-w-none text-sm sm:text-base ${darkMode ? 'prose-invert' : ''} ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}
                                         dangerouslySetInnerHTML={{
-                                            __html: marked(data.sections[activeSection].description),
+                                            __html: DOMPurify.sanitize(marked(data.sections[activeSection].description) as string),
                                         }}>
                                     </div>
                                 </div>

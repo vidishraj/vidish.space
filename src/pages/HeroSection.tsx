@@ -46,9 +46,9 @@ const HeroSection = () => {
         // More beams when faster, fewer when slower
         setBeamCount(() => {
             const baseCount = 50;
-            const newSpeed = beamSpeed + change;
+            const clampedSpeed = Math.max(1, Math.min(8, beamSpeed + change));
             // Adjust count by 5 beams per speed level from the middle (50 at speed 5)
-            const adjustment = (newSpeed - 5) * 5;
+            const adjustment = (clampedSpeed - 5) * 5;
             return baseCount + adjustment;
         });
     };
@@ -56,32 +56,32 @@ const HeroSection = () => {
     return (
         <section id="section1">
             <div className={isDarkMode ? `${styles.iconContainer} ${styles.darkMode}` : styles.iconContainer}>
-                <img alt={'img1'} src={IconD1}
+                <img alt="Dark mode hero illustration 1" src={IconD1}
                      style={{
                          display: isDarkMode ? 'block' : 'none',
                          position: 'absolute',
                          left: 0
                      }}
                      className={styles.icon}/>
-                <img alt={'img1'} src={IconD2} style={{
+                <img alt="Dark mode hero illustration 2" src={IconD2} style={{
                     display: isDarkMode ? 'block' : 'none',
                     position: 'absolute',
                     left: "25%"
                 }}
                      className={styles.icon}/>
-                <img alt={'img1'} src={IconD3} style={{
+                <img alt="Dark mode hero illustration 3" src={IconD3} style={{
                     display: isDarkMode ? 'block' : 'none',
                     position: 'absolute',
                     left: "50%"
                 }}
                      className={styles.icon}/>
-                <img alt={'img1'} src={IconD4} style={{
+                <img alt="Dark mode hero illustration 4" src={IconD4} style={{
                     display: isDarkMode ? 'block' : 'none',
                     position: 'absolute',
                     left: "75%"
                 }}
                      className={styles.icon}/>
-                <img alt={'img1'} src={Icon1}
+                <img alt="Light mode hero illustration 1" src={Icon1}
                      style={{
                          display: !isDarkMode ? 'block' : 'none',
                          position: 'absolute',
@@ -89,20 +89,20 @@ const HeroSection = () => {
                      }}
                      loading={'eager'}
                      className={styles.icon}/>
-                <img alt={'img1'} src={Icon2}
+                <img alt="Light mode hero illustration 2" src={Icon2}
                      style={{
                          display: !isDarkMode ? 'block' : 'none',
                          position: 'absolute',
                          left: "25%"
                      }}
                      className={styles.icon}/>
-                <img alt={'img1'} src={Icon3}
+                <img alt="Light mode hero illustration 3" src={Icon3}
                      style={{
                          display: !isDarkMode ? 'block' : 'none', position: 'absolute',
                          left: "50%"
                      }}
                      className={styles.icon}/>
-                <img alt={'img1'} src={Icon4}
+                <img alt="Light mode hero illustration 4" src={Icon4}
                      style={{
                          display: !isDarkMode ? 'block' : 'none', position: 'absolute',
                          left: "75%"

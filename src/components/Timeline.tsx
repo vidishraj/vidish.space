@@ -1,4 +1,3 @@
-"use client";
 import {motion, useScroll, useTransform,} from "framer-motion";
 import React, {useEffect, useRef, useState} from "react";
 import {cn} from "../utils/utils";
@@ -20,20 +19,21 @@ export const Timeline = ({data, titleClassName, containerClassname}: {
     const ref = useRef<HTMLDivElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     const [height, setHeight] = useState(0);
-    const cardRef = useRef<HTMLCollectionOf<Element>>(document.getElementsByClassName('py-10 md:py-40 w-full relative'));
     const [lastHeight, setLastHeight] = useState(20);
     useEffect(() => {
-        if (containerRef.current && cardRef.current.length == 4) {
+        const cards = containerRef.current?.querySelectorAll('.py-10.md\\:py-40.w-full.relative');
+        if (containerRef.current && cards && cards.length === 4) {
             setLastHeight(containerRef.current.scrollHeight - containerRef.current.clientHeight + lastHeight);
         }
         if (ref.current) {
             const rect = ref.current.getBoundingClientRect();
             setHeight(rect.height);
         }
-    }, [ref, containerRef, cardRef, lastHeight]);
+    }, [ref, containerRef, lastHeight]);
     useEffect(() => {
         function handleResize() {
-            if (containerRef.current && cardRef.current.length == 4) {
+            const cards = containerRef.current?.querySelectorAll('.py-10.md\\:py-40.w-full.relative');
+            if (containerRef.current && cards && cards.length === 4) {
                 setLastHeight(containerRef.current.scrollHeight - containerRef.current.clientHeight - lastHeight);
             }
         }

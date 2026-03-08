@@ -11,8 +11,7 @@ export const ContactMe = () => {
         <section className={!isDarkMode ? styles.section4 : `${styles.section4Dark} ${styles.section4}`}
                  id="section4"
                  style={{height: '100vh', display: 'flex', flexDirection: 'column'}}>
-            {/* Your section 4 content */}
-            <div className={"flex item-center justify-center"} style={{height: '60vh', backgroundColor: ''}}>
+            <div className={"flex items-center justify-center"} style={{height: '60vh'}}>
                 <SocialLinks/>
             </div>
             <Lottie animationData={animationData}

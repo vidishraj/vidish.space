@@ -1,6 +1,6 @@
 import {useEffect} from "react";
 import {motion, stagger, useAnimate, useInView} from "framer-motion";
-import {cn} from "../utils//utils";
+import {cn} from "../utils/utils";
 
 export const TextGenerateEffect = ({
                                        words,

@@ -1,4 +1,3 @@
-"use client";
 import React, {useEffect, useId, useRef, useState} from "react";
 import {motion, useAnimation, useInView} from "framer-motion";
 import Modal from "./Modal.tsx";
@@ -14,7 +13,7 @@ interface ProjectsGridProps {
         description: string;
         img: string;
         content: React.ReactNode;
-    }>;
+    } | null>;
     sectionRef?: React.RefObject<HTMLElement>;
 }
 
@@ -119,7 +118,6 @@ export function ProjectsGrid({slides}: ProjectsGridProps) {
 
         // Pad with null values to maintain equal cards per row
         while (rowCards.length < cardsPerRow) {
-            // @ts-expect-error - Null value is fine. Fckin tsx
             rowCards.push(null);
         }
 
@@ -179,21 +177,10 @@ export function ProjectsGrid({slides}: ProjectsGridProps) {
                 </motion.div>
             ))}
 
-            {/* "Load more" button with animation */}
-            <motion.div
-                initial={{opacity: 0, y: 20}}
-                animate={isInView ? {opacity: 1, y: 0} : {opacity: 0, y: 20}}
-                transition={{delay: 0.5, duration: 0.5}}
-                className="flex justify-center mt-12"
-            >
-            </motion.div>
-
             {/* Modal component */}
             <Modal
                 isOpen={isOpen}
-                onClose={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
+                onClose={() => {
                     setIsOpen(false);
                 }}
                 data={modalData}

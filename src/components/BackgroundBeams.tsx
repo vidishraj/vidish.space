@@ -1,4 +1,3 @@
-"use client";
 import {cn} from "../utils/utils";
 import {AnimatePresence, motion} from "framer-motion";
 import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";

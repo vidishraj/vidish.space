@@ -1,5 +1,5 @@
 // Section3.tsx
-import {useEffect, useRef} from 'react';
+import {useRef} from 'react';
 import styles from './Projects.module.scss';
 import {ProjectsGrid} from "../components/Carousel.tsx";
 import ParallaxText from "../components/LetterScroll.tsx";
@@ -8,15 +8,6 @@ import { useThemeContext } from '../App';
 export const Projects = () => {
     const sectionRef = useRef<HTMLElement>(null);
     const { isDarkMode } = useThemeContext();
-    
-    // Adjust the height of the section to accommodate all slides
-    useEffect(() => {
-        const section = document.getElementById('section3');
-        if (section) {
-            // Save the original reference
-            sectionRef.current = section;
-        }
-    }, []);
 
     const content = [
         {
