@@ -26,7 +26,7 @@ export const BackgroundBeamsWithCollision = ({
     style,
     particleMode = 'rain',
     beamSpeed = 1,
-    beamCount = 50,
+    beamCount = 35,
 }: {
     children: React.ReactNode;
     className?: string;
@@ -83,15 +83,14 @@ export const BackgroundBeamsWithCollision = ({
     }, [beamSpeed]);
 
     const adaptedBeamCount = useMemo(() => {
-        if (windowWidth < 480) return Math.min(20, beamCount);
-        if (windowWidth < 768) return Math.min(30, beamCount);
+        if (windowWidth < 480) return Math.min(15, beamCount);
+        if (windowWidth < 768) return Math.min(22, beamCount);
         return beamCount;
     }, [beamCount, windowWidth]);
 
     const checkInterval = useMemo(() => {
-        const avgDuration = 5 * speedFactor;
-        return Math.min(33, 15 + avgDuration * 2);
-    }, [speedFactor]);
+        return windowWidth < 768 ? 16 : 25;
+    }, [windowWidth]);
 
     // --- Collision detection (rain only) ---
     useEffect(() => {
@@ -234,7 +233,7 @@ export const BackgroundBeamsWithCollision = ({
                 ? (2.5 + sizeRatio * 1.5) * speedFactor
                 : particleMode === 'leaves'
                     ? (2.5 + sizeRatio * 2) * speedFactor
-                    : (4 + sizeRatio * 2.5) * speedFactor;
+                    : (1.5 + sizeRatio * 1.2) * speedFactor;
             const speedVariation = 0.85 + Math.random() * 0.3;
 
             const horizontalDrift = particleMode === 'snow'
@@ -284,10 +283,10 @@ export const BackgroundBeamsWithCollision = ({
         return () => window.removeEventListener('resize', measure);
     }, []);
 
-    // Rain can overshoot (it splashes at collision line), but leaves/snow must land inside
+    // Rain overshoots slightly past collision line; leaves/snow land inside
     const travelDistance = isRain
-        ? Math.max(window.innerHeight * 1.2, 1000)
-        : containerHeight - 40; // stop ~40px from bottom edge so they visibly rest
+        ? containerHeight + 20
+        : containerHeight - 40;
     const smallScreen = windowWidth < 768;
 
     return (
@@ -509,10 +508,10 @@ const FallingParticle = React.memo(({
             style={{
                 position: "absolute",
                 left: `${options.positionPct}%`,
-                top: "20px",
+                top: 0,
                 width: `${size}px`,
                 height: `${size}px`,
-                willChange: size >= 14 ? "transform" : undefined,
+                // willChange removed — GPU layer per particle is too expensive
             }}
         >
             {particleMode === 'leaves' ? (
@@ -545,7 +544,7 @@ const RainDrop = React.memo(({
         <motion.div
             ref={refCallback}
             initial={{
-                translateY: -100,
+                translateY: -80,
                 translateX: 0,
             }}
             animate={{
@@ -563,14 +562,12 @@ const RainDrop = React.memo(({
             style={{
                 position: "absolute",
                 left: `${options.positionPct}%`,
-                top: "20px",
+                top: 0,
                 width: `${options.width}px`,
                 height: `${options.height}px`,
                 background: 'linear-gradient(to bottom, rgba(140, 200, 255, 0.3), rgba(140, 200, 255, 0.8))',
                 borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%',
                 opacity: options.opacity,
-                filter: `blur(${options.blur})`,
-                willChange: Math.max(options.width, options.height) >= 14 ? "transform" : undefined,
             }}
         />
     );
