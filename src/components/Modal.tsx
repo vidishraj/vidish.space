@@ -5,6 +5,7 @@ import '../assets/modalStyles/akkountantModal.css'
 import '../assets/modalStyles/tripsplitModal.css'
 import '../assets/modalStyles/vidishSpaceModal.css'
 import '../assets/modalStyles/leetcodeToGitModal.css'
+import {Season} from '../utils/seasonConfig';
 
 // Data structure for the modal
 interface Section {
@@ -21,7 +22,6 @@ interface ModalData {
         designDoc?: string;
         website?: string;
     };
-    // New color props for gradient
     gradientColors?: {
         color1: string;
         color2: string;
@@ -33,166 +33,121 @@ interface ModalProps {
     isOpen: boolean;
     onClose: (e: React.MouseEvent | KeyboardEvent) => void;
     data: ModalData;
-    darkMode?: boolean;
+    season?: Season;
 }
 
-const Modal: React.FC<ModalProps> = ({isOpen, onClose, data, darkMode = false}) => {
+const Modal: React.FC<ModalProps> = ({isOpen, onClose, data, season = 'summer'}) => {
     const [activeSection, setActiveSection] = useState(0);
     const tabsContainerRef = useRef<HTMLDivElement>(null);
     const [showLeftArrow, setShowLeftArrow] = useState(false);
     const [showRightArrow, setShowRightArrow] = useState(false);
 
-    // Default gradient colors
-    const defaultGradient = darkMode ?
+    const isMonsoon = season === 'monsoon';
+
+    // Default gradient colors based on season
+    const defaultGradient = isMonsoon ?
         {color1: '#1e293b', color2: '#0f172a', color3: '#020617'} :
         {color1: '#f0f9ff', color2: '#e0f2fe', color3: '#bae6fd'};
 
     const gradientColors = data.gradientColors || defaultGradient;
 
-    // Reset active section when modal opens and disable body scroll
     useEffect(() => {
         if (isOpen) {
             setActiveSection(0);
-            // Disable body scroll
             document.body.style.overflow = 'hidden';
-            // Check arrow visibility after a short delay to ensure DOM is updated
             setTimeout(checkArrowsVisibility, 100);
         } else {
-            // Re-enable body scroll when modal closes
             document.body.style.overflow = 'auto';
         }
-
-        // Cleanup function to ensure scroll is re-enabled
         return () => {
             document.body.style.overflow = 'auto';
         };
     }, [isOpen]);
 
-    // Handle ESC key to close modal
     useEffect(() => {
         const handleEscape = (e: KeyboardEvent) => {
             if (e.key === 'Escape') {
                 onClose(e);
             }
         };
-
         window.addEventListener('keydown', handleEscape);
         return () => window.removeEventListener('keydown', handleEscape);
     }, [onClose]);
 
-    // Check if arrows should be visible
     const checkArrowsVisibility = () => {
         const container = tabsContainerRef.current;
         if (!container) return;
-
-        // Check if content overflows
         const hasOverflow = container.scrollWidth > container.clientWidth;
-
-        // Show right arrow if there's overflow and not at the end
         setShowRightArrow(hasOverflow && container.scrollLeft < container.scrollWidth - container.clientWidth);
-
-        // Show left arrow if not at the beginning
         setShowLeftArrow(container.scrollLeft > 0);
     };
 
-    // Scroll tabs left or right
     const scrollTabs = (direction: 'left' | 'right') => {
         const container = tabsContainerRef.current;
         if (!container) return;
-
-        const scrollAmount = 200; // Adjust scroll amount as needed
+        const scrollAmount = 200;
         const newScrollLeft = direction === 'left'
             ? container.scrollLeft - scrollAmount
             : container.scrollLeft + scrollAmount;
-
-        container.scrollTo({
-            left: newScrollLeft,
-            behavior: 'smooth'
-        });
-
-        // Update arrow visibility after scrolling
+        container.scrollTo({left: newScrollLeft, behavior: 'smooth'});
         setTimeout(checkArrowsVisibility, 300);
     };
 
-    // Listen for scroll events to update arrow visibility
     useEffect(() => {
         const container = tabsContainerRef.current;
         if (!container) return;
-
-        const handleScroll = () => {
-            checkArrowsVisibility();
-        };
-
+        const handleScroll = () => checkArrowsVisibility();
         container.addEventListener('scroll', handleScroll);
-
-        // Initial check
         checkArrowsVisibility();
-
-        return () => {
-            container.removeEventListener('scroll', handleScroll);
-        };
+        return () => container.removeEventListener('scroll', handleScroll);
     }, [isOpen]);
 
-    // Handle window resize
     useEffect(() => {
-        const handleResize = () => {
-            checkArrowsVisibility();
-        };
-
+        const handleResize = () => checkArrowsVisibility();
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    // Scroll to active tab when it changes
     useEffect(() => {
         const container = tabsContainerRef.current;
         if (!container) return;
-
         const activeTab = container.children[activeSection] as HTMLElement;
         if (!activeTab) return;
-
-        // Calculate position to center the active tab
         const containerWidth = container.clientWidth;
         const tabWidth = activeTab.clientWidth;
         const tabLeft = activeTab.offsetLeft;
-
         container.scrollTo({
             left: tabLeft - (containerWidth / 2) + (tabWidth / 2),
             behavior: 'smooth'
         });
-
-        // Update arrow visibility after scrolling
         setTimeout(checkArrowsVisibility, 300);
     }, [activeSection]);
 
     if (!isOpen) return null;
 
-    // Generate gradient background style
     const gradientBackground = `linear-gradient(135deg, ${gradientColors.color1}, ${gradientColors.color2}, ${gradientColors.color3})`;
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-1 sm:p-4 overflow-y-auto">
-            {/* Overlay - capturing all clicks */}
             <div
                 className="fixed inset-0 bg-black/70 transition-opacity backdrop-blur-sm"
                 onClick={onClose}
             ></div>
 
-            {/* Modal content */}
             <div
                 className="relative mx-auto rounded-lg shadow-2xl overflow-hidden transition-all transform scale-100 w-[100vw] h-[75vh] max-h-[75vh] md:max-w-4xl"
                 style={{background: gradientBackground}}
             >
                 {/* Header */}
                 <div
-                    className={`px-4 sm:px-8 py-3 sm:py-5 border-b ${darkMode ? 'border-gray-700/50' : 'border-gray-200/50'} backdrop-blur-sm flex items-center justify-between`}>
-                    <h2 className={`text-xl sm:text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} tracking-tight font-serif truncate pr-10`}>
+                    className={`px-4 sm:px-8 py-3 sm:py-5 border-b ${isMonsoon ? 'border-gray-700/50' : 'border-gray-200/50'} backdrop-blur-sm flex items-center justify-between`}>
+                    <h2 className={`text-xl sm:text-2xl font-bold ${isMonsoon ? 'text-white' : 'text-gray-800'} tracking-tight font-serif truncate pr-10`}>
                         {data.title}
                     </h2>
                     <button
                         onClick={onClose}
                         className={`p-0.5 rounded-full ${
-                            darkMode ? 'hover:bg-gray-700/50 text-gray-300 hover:text-white' : 'hover:bg-gray-200/50 text-gray-600 hover:text-gray-800'
+                            isMonsoon ? 'hover:bg-gray-700/50 text-gray-300 hover:text-white' : 'hover:bg-gray-200/50 text-gray-600 hover:text-gray-800'
                         } transition-colors duration-200`}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -206,13 +161,12 @@ const Modal: React.FC<ModalProps> = ({isOpen, onClose, data, darkMode = false}) 
                 {/* Section navigation with arrows */}
                 {data.sections.length > 1 && (
                     <div
-                        className={`relative ${darkMode ? 'bg-gray-900/30' : 'bg-gray-100/30'} border-b ${darkMode ? 'border-gray-700/50' : 'border-gray-200/50'} backdrop-blur-sm`}>
-                        {/* Left navigation arrow */}
+                        className={`relative ${isMonsoon ? 'bg-gray-900/30' : 'bg-gray-100/30'} border-b ${isMonsoon ? 'border-gray-700/50' : 'border-gray-200/50'} backdrop-blur-sm`}>
                         {showLeftArrow && (
                             <button
                                 onClick={() => scrollTabs('left')}
                                 className={`absolute left-0 top-[10%] bottom-0 z-10 px-1 flex items-center justify-center h-[75%] ${
-                                    darkMode ? 'bg-[whitesmoke]' : 'bg-gray-300'
+                                    isMonsoon ? 'bg-[whitesmoke]' : 'bg-gray-300'
                                 }`}
                                 aria-label="Scroll tabs left"
                             >
@@ -224,7 +178,6 @@ const Modal: React.FC<ModalProps> = ({isOpen, onClose, data, darkMode = false}) 
                             </button>
                         )}
 
-                        {/* Tabs container */}
                         <div
                             ref={tabsContainerRef}
                             className="flex overflow-x-hidden scroll-smooth px-4 sm:px-8"
@@ -235,10 +188,10 @@ const Modal: React.FC<ModalProps> = ({isOpen, onClose, data, darkMode = false}) 
                                     onClick={() => setActiveSection(index)}
                                     className={`px-3 sm:px-5 py-2 sm:py-3 text-xs sm:text-sm font-medium whitespace-nowrap transition-colors${
                                         index === activeSection
-                                            ? darkMode
+                                            ? isMonsoon
                                                 ? ' border-b-2 border-blue-400 text-blue-300 font-semibold bg-[#161f27] '
                                                 : ' border-b-2 border-blue-600 text-blue-700 font-semibold bg-[whitesmoke]'
-                                            : darkMode
+                                            : isMonsoon
                                                 ? ' text-white hover:text-white bg-black '
                                                 : ' text-gray-700 hover:text-gray-900 bg-[white]'
                                     }`}
@@ -248,13 +201,12 @@ const Modal: React.FC<ModalProps> = ({isOpen, onClose, data, darkMode = false}) 
                             ))}
                         </div>
 
-                        {/* Right navigation arrow */}
                         {showRightArrow && (
                             <button
                                 onClick={() => scrollTabs('right')}
                                 className={`absolute right-0 top-[10%] bottom-0 z-10 px-1 flex items-center justify-center h-[75%]
                                  ${
-                                    darkMode ? ' bg-[whitesmoke] ' : 'bg-gray-300'
+                                    isMonsoon ? ' bg-[whitesmoke] ' : 'bg-gray-300'
                                 }`}
                                 aria-label="Scroll tabs right"
                             >
@@ -271,13 +223,11 @@ const Modal: React.FC<ModalProps> = ({isOpen, onClose, data, darkMode = false}) 
                 {/* Section content */}
                 <div className="h-[calc(75vh-12rem)] overflow-y-auto backdrop-blur-sm bg-opacity-50"
                      style={{
-                         background: darkMode ? 'rgba(15, 23, 42, 0.4)' : 'rgba(255, 255, 255, 0.4)'
+                         background: isMonsoon ? 'rgba(15, 23, 42, 0.4)' : 'rgba(255, 255, 255, 0.4)'
                      }}>
                     {data.sections.length > 0 && (
                         <div className="p-4 sm:p-8">
-                            {/* Updated layout: Column on mobile, Row on larger screens */}
                             <div className="flex flex-col md:flex-row gap-4 sm:gap-8 h-full">
-                                {/* Image container - optimized to take available space without expanding height */}
                                 {data.sections[activeSection].imgSrc && (
                                     <div className="md:w-1/2 flex-shrink-0 flex items-start justify-center">
                                         <img
@@ -288,10 +238,9 @@ const Modal: React.FC<ModalProps> = ({isOpen, onClose, data, darkMode = false}) 
                                     </div>
                                 )}
 
-                                {/* Content container */}
-                                <div className="md:w-1/2" style={{color: darkMode ? 'white' : 'black'}}>
+                                <div className="md:w-1/2" style={{color: isMonsoon ? 'white' : 'black'}}>
                                     <div
-                                        className={`prose max-w-none text-sm sm:text-base ${darkMode ? 'prose-invert' : ''} ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}
+                                        className={`prose max-w-none text-sm sm:text-base ${isMonsoon ? 'prose-invert' : ''} ${isMonsoon ? 'text-gray-200' : 'text-gray-700'}`}
                                         dangerouslySetInnerHTML={{
                                             __html: DOMPurify.sanitize(marked(data.sections[activeSection].description) as string),
                                         }}>
@@ -304,22 +253,20 @@ const Modal: React.FC<ModalProps> = ({isOpen, onClose, data, darkMode = false}) 
 
                 {/* Footer with links */}
                 <div
-                    className={`px-4 sm:px-8 py-3 sm:py-5 border-t ${darkMode ? 'border-gray-700/50' : 'border-gray-200/50'} flex justify-between items-center backdrop-blur-sm`}
+                    className={`px-4 sm:px-8 py-3 sm:py-5 border-t ${isMonsoon ? 'border-gray-700/50' : 'border-gray-200/50'} flex justify-between items-center backdrop-blur-sm`}
                     style={{
-                        background: darkMode ? 'rgba(15, 23, 42, 0.5)' : 'rgba(255, 255, 255, 0.5)',
+                        background: isMonsoon ? 'rgba(15, 23, 42, 0.5)' : 'rgba(255, 255, 255, 0.5)',
                         flexWrap: 'wrap'
                     }}
                 >
-                    {/* Social Links */}
                     <div className="flex items-center gap-3 sm:gap-4">
-                        {/* GitHub Link */}
                         {data.links?.github && (
                             <a
                                 href={data.links.github}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className={`p-1 sm:p-2 rounded-full ${
-                                    darkMode ? 'text-gray-300 hover:text-white hover:bg-gray-800/50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200/50'
+                                    isMonsoon ? 'text-gray-300 hover:text-white hover:bg-gray-800/50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200/50'
                                 } transition-colors`}
                                 aria-label="GitHub"
                             >
@@ -332,14 +279,13 @@ const Modal: React.FC<ModalProps> = ({isOpen, onClose, data, darkMode = false}) 
                             </a>
                         )}
 
-                        {/* Design Doc Link */}
                         {data.links?.designDoc && (
                             <a
                                 href={data.links.designDoc}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className={`p-1 sm:p-2 rounded-full ${
-                                    darkMode ? 'text-gray-300 hover:text-white hover:bg-gray-800/50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200/50'
+                                    isMonsoon ? 'text-gray-300 hover:text-white hover:bg-gray-800/50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200/50'
                                 } transition-colors`}
                                 aria-label="Design Document"
                             >
@@ -355,14 +301,13 @@ const Modal: React.FC<ModalProps> = ({isOpen, onClose, data, darkMode = false}) 
                             </a>
                         )}
 
-                        {/* Website Link */}
                         {data.links?.website && (
                             <a
                                 href={data.links.website}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className={`p-1 sm:p-2 rounded-full ${
-                                    darkMode ? 'text-gray-300 hover:text-white hover:bg-gray-800/50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200/50'
+                                    isMonsoon ? 'text-gray-300 hover:text-white hover:bg-gray-800/50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200/50'
                                 } transition-colors`}
                                 aria-label="Website"
                             >
@@ -378,9 +323,7 @@ const Modal: React.FC<ModalProps> = ({isOpen, onClose, data, darkMode = false}) 
                         )}
                     </div>
 
-                    {/* Page indicators and close button */}
                     <div className="flex items-center gap-3 sm:gap-6">
-                        {/* Page indicators */}
                         <div className="flex items-center gap-1 sm:gap-2">
                             {data.sections.length > 1 && Array.from({length: data.sections.length}).map((_, index) => (
                                 <button
@@ -388,10 +331,10 @@ const Modal: React.FC<ModalProps> = ({isOpen, onClose, data, darkMode = false}) 
                                     onClick={() => setActiveSection(index)}
                                     className={`w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full transition-all duration-300 ${
                                         index === activeSection
-                                            ? darkMode
+                                            ? isMonsoon
                                                 ? 'bg-blue-400 w-3 sm:w-4'
                                                 : 'bg-blue-600 w-3 sm:w-4'
-                                            : darkMode
+                                            : isMonsoon
                                                 ? 'bg-gray-600 hover:bg-gray-500'
                                                 : 'bg-gray-300 hover:bg-gray-400'
                                     }`}
@@ -400,11 +343,10 @@ const Modal: React.FC<ModalProps> = ({isOpen, onClose, data, darkMode = false}) 
                             ))}
                         </div>
 
-                        {/* Close button */}
                         <button
                             onClick={onClose}
                             className={`px-3 sm:px-5 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-colors duration-200 ${
-                                darkMode
+                                isMonsoon
                                     ? 'bg-gray-700 hover:bg-gray-600 text-white'
                                     : 'bg-gray-200 hover:bg-gray-300 text-gray-800'
                             }`}

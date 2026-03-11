@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {motion} from "framer-motion";
 import Zap from "/assets/zap.png";
-import { useThemeContext } from '../App';
 
 interface BeamControlButtonsProps {
     onSpeedChange: (change: number) => void;
@@ -16,38 +15,31 @@ const BeamControlButtons: React.FC<BeamControlButtonsProps> = ({
                                                                    maxSpeed,
                                                                    minSpeed
                                                                }) => {
-    const { isDarkMode } = useThemeContext();
     const [buttonSize, setButtonSize] = useState("60px");
     const [zapSize, setZapSize] = useState("24px");
     const [spacing, setSpacing] = useState("space-x-4");
 
-    // Update sizes based on viewport width
     useEffect(() => {
         const updateSizes = () => {
             const viewportWidth = window.innerWidth;
 
-            if (viewportWidth < 480) { // Mobile screens
+            if (viewportWidth < 480) {
                 setButtonSize("45px");
                 setZapSize("18px");
                 setSpacing("space-x-2");
-            } else if (viewportWidth < 768) { // Tablet screens
+            } else if (viewportWidth < 768) {
                 setButtonSize("50px");
                 setZapSize("20px");
                 setSpacing("space-x-3");
-            } else { // Desktop screens
+            } else {
                 setButtonSize("45px");
                 setZapSize("22px");
                 setSpacing("space-x-4");
             }
         };
 
-        // Set initial sizes
         updateSizes();
-
-        // Add event listener for window resize
         window.addEventListener('resize', updateSizes);
-
-        // Cleanup
         return () => window.removeEventListener('resize', updateSizes);
     }, []);
 
@@ -79,10 +71,7 @@ const BeamControlButtons: React.FC<BeamControlButtonsProps> = ({
 
             <div className={`flex items-center ${spacing.replace('4', '2')}`}>
                 {Array.from({length: maxSpeed - minSpeed}).map((_, index) => (
-                    <div
-                        key={index}
-                        className="flex flex-col items-center"
-                    >
+                    <div key={index} className="flex flex-col items-center">
                         <img
                             src={Zap}
                             alt={`Speed level ${index + 1}`}
@@ -90,7 +79,7 @@ const BeamControlButtons: React.FC<BeamControlButtonsProps> = ({
                                 width: zapSize,
                                 height: zapSize,
                                 color: 'yellow',
-                                backgroundColor: index < (currentSpeed - minSpeed) ? !isDarkMode ? 'white' : 'white' : 'gray',
+                                backgroundColor: index < (currentSpeed - minSpeed) ? 'white' : 'gray',
                                 borderRadius: '50%'
                             }}
                             className={`mb-1 ${

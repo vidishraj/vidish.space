@@ -6,11 +6,18 @@
   left: 50%;
   display: flex;
   justify-content: center;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateY(0);
   z-index: 50;
+  opacity: 1;
 
-  // Add a transition for smooth theme switching
-  transition: all 0.3s ease;
+  // Smooth transition for theme switching and hide/show
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.hidden {
+  transform: translateX(-50%) translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
 }
 
 .tracker {

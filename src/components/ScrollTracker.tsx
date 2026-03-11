@@ -1,22 +1,34 @@
-// ScrollTracker.jsx
-import {useEffect, useState, useMemo} from 'react';
+import {useEffect, useRef, useState, useMemo} from 'react';
 import styles from './ScrollTracker.module.scss';
 import resumePDF from '/assets/Resume_SDE_Vidish_Raj.pdf'
-import { useThemeContext } from '../App';
+import {useThemeContext} from '../App';
 
 const ScrollTracker = () => {
     const [activeSection, setActiveSection] = useState('section1');
-    const { isDarkMode } = useThemeContext();
+    const [visible, setVisible] = useState(true);
+    const lastScrollY = useRef(0);
+    const {season} = useThemeContext();
+    const isMonsoon = season === 'monsoon';
 
     const sections = useMemo(() => [
         {id: 'section1', label: 'Home'},
-        {id: 'section2', label: 'Career'},
-        {id: 'section3', label: 'Projects'},
-        {id: 'section4', label: 'Contact'},
+        {id: 'section2', label: 'Services'},
+        {id: 'section3', label: 'Career'},
+        {id: 'section4', label: 'Projects'},
+        {id: 'section5', label: 'Contact'},
     ], []);
 
     useEffect(() => {
         const handleScroll = () => {
+            const currentScrollY = window.scrollY;
+
+            if (currentScrollY < 100 || currentScrollY < lastScrollY.current) {
+                setVisible(true);
+            } else {
+                setVisible(false);
+            }
+            lastScrollY.current = currentScrollY;
+
             const sectionElements = sections.map(section =>
                 document.getElementById(section.id)
             );
@@ -32,7 +44,7 @@ const ScrollTracker = () => {
             }
         };
 
-        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('scroll', handleScroll, {passive: true});
         handleScroll();
 
         return () => window.removeEventListener('scroll', handleScroll);
@@ -49,17 +61,18 @@ const ScrollTracker = () => {
     };
 
     const downloadResume = () => {
-        // Create a link to the resume and trigger download
         const link = document.createElement('a');
         link.href = resumePDF;
-        link.download = 'vidish_raj_resume.pdf'; // The name the file will download as
+        link.download = 'vidish_raj_resume.pdf';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
     };
 
+    const modeClass = isMonsoon ? styles.darkMode : styles.lightMode;
+
     return (
-        <div className={`${styles.trackerContainer} ${isDarkMode ? styles.darkMode : styles.lightMode}`}>
+        <div className={`${styles.trackerContainer} ${modeClass} ${visible ? '' : styles.hidden}`}>
             <div className={styles.tracker}>
                 <div className={styles.navButtons}>
                     {sections.map((section) => (
@@ -83,9 +96,10 @@ const ScrollTracker = () => {
                 >
                     <img
                         src={'/assets/contacts/file-user.png'}
+                        alt="Resume"
                         className="w-6 h-6 object-contain"
                         style={{
-                            filter: isDarkMode ? 'brightness(1.2)' : 'none'
+                            filter: isMonsoon ? 'brightness(1.2)' : 'none'
                         }}
                     />
                     <span>Resume</span>

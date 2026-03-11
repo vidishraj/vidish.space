@@ -21,38 +21,32 @@ export function ProjectsGrid({slides}: ProjectsGridProps) {
     const gridRef = useRef<HTMLDivElement>(null);
     const id = useId();
     const [isOpen, setIsOpen] = useState(false);
-    const { isDarkMode } = useThemeContext();
+    const {season} = useThemeContext();
     const isInView = useInView(gridRef, {once: false, amount: 0.2});
     const controls = useAnimation();
     const [windowWidth, setWindowWidth] = useState(0);
     const [cardsPerRow, setCardsPerRow] = useState(3);
     const [modalData, setModalData] = useState(akkountantData);
 
-    // Update window width on resize
     useEffect(() => {
         const handleResize = () => {
             setWindowWidth(window.innerWidth);
         };
-
-        // Set initial width
         setWindowWidth(window.innerWidth);
-
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    // Determine cards per row based on window width
     useEffect(() => {
         if (windowWidth < 640) {
-            setCardsPerRow(1); // Mobile: 1 card per row
+            setCardsPerRow(1);
         } else if (windowWidth < 1024) {
-            setCardsPerRow(2); // Tablet: 2 cards per row
+            setCardsPerRow(2);
         } else {
-            setCardsPerRow(2); // Desktop: 3 cards per row
+            setCardsPerRow(2);
         }
     }, [windowWidth]);
 
-    // Set up animations when grid comes into view
     useEffect(() => {
         if (isInView) {
             controls.start("visible");
@@ -79,7 +73,6 @@ export function ProjectsGrid({slides}: ProjectsGridProps) {
         setIsOpen(true);
     };
 
-    // Container animation variants
     const containerVariants = {
         hidden: {opacity: 0},
         visible: {
@@ -91,7 +84,6 @@ export function ProjectsGrid({slides}: ProjectsGridProps) {
         }
     };
 
-    // Item animation variants
     const itemVariants = {
         hidden: {
             y: 50,
@@ -108,19 +100,14 @@ export function ProjectsGrid({slides}: ProjectsGridProps) {
         }
     };
 
-    // Calculate number of rows needed
     const numRows = Math.ceil(slides.length / cardsPerRow);
 
-    // Create a 2D array of slides organized by rows
     const rowsOfCards = Array(numRows).fill(0).map((_, rowIndex) => {
         const startIdx = rowIndex * cardsPerRow;
         const rowCards = slides.slice(startIdx, startIdx + cardsPerRow);
-
-        // Pad with null values to maintain equal cards per row
         while (rowCards.length < cardsPerRow) {
             rowCards.push(null);
         }
-
         return rowCards;
     });
 
@@ -130,7 +117,6 @@ export function ProjectsGrid({slides}: ProjectsGridProps) {
             className="relative w-full mt-5 min-h-[100vh] py-16 px-4 md:px-8"
             aria-labelledby={`projects-heading-${id}`}
         >
-            {/* Map through rows and render each row */}
             {rowsOfCards.map((row, rowIndex) => (
                 <motion.div
                     key={`row-${rowIndex}`}
@@ -141,7 +127,6 @@ export function ProjectsGrid({slides}: ProjectsGridProps) {
                 >
                     {row.map((item, colIndex) => {
                         if (item === null) {
-                            // Return empty space for padding
                             return (
                                 <div
                                     key={`empty-${rowIndex}-${colIndex}`}
@@ -167,7 +152,7 @@ export function ProjectsGrid({slides}: ProjectsGridProps) {
                                         title={item.title}
                                         description={item.description}
                                         image={item.img}
-                                        darkMode={isDarkMode}
+                                        season={season}
                                         className={styles.baseAnimatedCard}
                                     />
                                 </div>
@@ -177,14 +162,13 @@ export function ProjectsGrid({slides}: ProjectsGridProps) {
                 </motion.div>
             ))}
 
-            {/* Modal component */}
             <Modal
                 isOpen={isOpen}
                 onClose={() => {
                     setIsOpen(false);
                 }}
                 data={modalData}
-                darkMode={isDarkMode}
+                season={season}
             />
         </div>
     );
