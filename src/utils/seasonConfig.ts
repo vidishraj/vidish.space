@@ -227,7 +227,7 @@ export const seasonBackgrounds: Record<Season, {
     },
     winter: {
         heroTop: "url('/assets/backgrounds/winter_morning.webp') center/cover no-repeat",
-        heroBottom: 'linear-gradient(to bottom, #d4e4f0, #e8edf3, #f0f4f8)',
+        heroBottom: 'linear-gradient(to bottom, #b8cfe0, #c5d8e8, #d4e4f0)',
         timeline: '/assets/backgrounds/winter_morning.webp',
         whatIDo: '/assets/backgrounds/winter_evening.webp',
         projects: '/assets/backgrounds/winter_lateEvening.webp',

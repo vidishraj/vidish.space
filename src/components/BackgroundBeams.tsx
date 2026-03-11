@@ -176,8 +176,8 @@ export const BackgroundBeamsWithCollision = ({
     ], []);
 
     const snowColors = useMemo(() => [
-        '#ffffff', '#f0f8ff', '#e8f4fd', '#dbeafe',
-        '#c8ddf0', '#b8cfea', '#ffffff', '#f5faff',
+        '#8bb8d6', '#7aafc9', '#9ac4db', '#6da3c0',
+        '#85b5d2', '#a0cce3', '#78adc8', '#8fbdd8',
     ], []);
 
     const particles = useMemo(() => {
@@ -193,14 +193,14 @@ export const BackgroundBeamsWithCollision = ({
             if (particleMode === 'snow') {
                 color = snowColors[Math.floor(Math.random() * snowColors.length)];
                 if (isVerySmall) {
-                    dropWidth = 4 * baseScale; dropHeight = 4 * baseScale;
-                    dropOpacity = 0.4 + Math.random() * 0.3;
+                    dropWidth = 3 * baseScale; dropHeight = 3 * baseScale;
+                    dropOpacity = 0.6 + Math.random() * 0.2;
                 } else if (isSmall) {
-                    dropWidth = 7 * baseScale; dropHeight = 7 * baseScale;
-                    dropOpacity = 0.5 + Math.random() * 0.3;
+                    dropWidth = 8 * baseScale; dropHeight = 8 * baseScale;
+                    dropOpacity = 0.75 + Math.random() * 0.2;
                 } else {
-                    dropWidth = 12 * baseScale; dropHeight = 12 * baseScale;
-                    dropOpacity = 0.6 + Math.random() * 0.3;
+                    dropWidth = 16 * baseScale; dropHeight = 16 * baseScale;
+                    dropOpacity = 0.85 + Math.random() * 0.15;
                 }
             } else if (particleMode === 'leaves') {
                 color = leafColors[Math.floor(Math.random() * leafColors.length)];
@@ -437,7 +437,7 @@ const SnowflakeSVG = React.memo(({size, color}: {size: number; color: string}) =
         arms.push(`M${bx},${by} L${bx + Math.cos(angle - Math.PI / 4) * branch},${by + Math.sin(angle - Math.PI / 4) * branch}`);
     }
     return (
-        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{overflow: 'visible'}}>
+        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{overflow: 'visible', filter: 'drop-shadow(0 0 2px rgba(100,160,210,0.5))'}}>
             <path d={arms.join(' ')} stroke={color} strokeWidth={sw} strokeLinecap="round" fill="none" opacity={0.9} />
             <circle cx={half} cy={half} r={sw} fill={color} opacity={0.8} />
         </svg>

@@ -18,7 +18,7 @@ const HeroSection = () => {
                 className={`${styles.iconContainer} ${isMonsoon ? styles.monsoonMode : styles.defaultMode}`}
                 style={{
                     background: backgrounds.heroTop,
-                    '--hero-fade-color': isSummer ? '#5f443a' : isMonsoon ? '#0a0f1a' : undefined,
+                    '--hero-fade-color': isSummer ? '#5f443a' : isMonsoon ? '#0a0f1a' : '#b8cfe0',
                 }}
             >
                 {heroImages.map((src, i) => (
