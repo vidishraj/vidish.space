@@ -8,6 +8,19 @@
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
+
+  // Fade overlay at bottom edge to blend into the text section below
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: linear-gradient(to bottom, transparent, var(--hero-fade-color, transparent));
+    pointer-events: none;
+    z-index: 1;
+  }
 }
 
 .section2 {

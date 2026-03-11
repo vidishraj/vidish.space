@@ -211,7 +211,7 @@ export const seasonBackgrounds: Record<Season, {
 }> = {
     summer: {
         heroTop: 'linear-gradient(to bottom, #331f23, #312323, #191923, whitesmoke)',
-        heroBottom: '', // uses summer SVG texture defined in HeroSection
+        heroBottom: 'linear-gradient(160deg, #5f443a 0%, #7a5c3e 8%, #9a7a52 16%, #b8956a 24%, #d4ad78 32%, #e8c48a 40%, #f2d49a 48%, #f7dda8 56%, #f9e3b5 64%, #fae8c2 72%, #f8ebd0 80%, #f5eddd 88%, #f2efea 94%, #eff1f7 100%)',
         timeline: '',   // summer uses multi-image tiled bg via inline CSSProperties
         whatIDo: '/assets/backgrounds/projectBg.png',
         projects: '/assets/backgrounds/projectBg.png',
