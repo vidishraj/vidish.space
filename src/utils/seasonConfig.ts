@@ -115,7 +115,7 @@ export const seasonPalettes: Record<Season, SeasonPalette> = {
         tagBg: 'rgba(0,0,0,0.06)',
         tagColor: '#4a3f35',
         tagBorder: '#8b7355',
-        contactLinkBg: 'rgba(255, 248, 237, 0.9)',
+        contactLinkBg: 'whitesmoke',
         contactIconBg: 'rgba(240, 201, 137, 0.3)',
         loaderBg: '#ffffff',
         loaderText: '#2d2418',

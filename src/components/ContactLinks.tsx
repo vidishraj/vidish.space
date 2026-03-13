@@ -37,16 +37,34 @@ const SocialLinks = () => {
         document.body.removeChild(link);
     };
 
+    const isWinter = season === 'winter';
+    const isSummer = season === 'summer';
     const linkBg = isMonsoon ? 'bg-gray-700/80 hover:bg-gray-600' : 'bg-gray-100 hover:bg-gray-200';
+    const linkBorder = isSummer ? '1px solid rgba(0,0,0,0.12)' : undefined;
     const iconBgStyle = {background: isMonsoon ? 'white' : ''};
     const iconFilter = isMonsoon ? 'brightness(1.2)' : 'none';
+
+    const containerBorder = isMonsoon
+        ? '1px solid rgba(91, 155, 213, 0.2)'
+        : isWinter
+            ? '1px solid rgba(59, 130, 200, 0.15)'
+            : '1px solid rgba(180, 140, 80, 0.15)';
+
+    const containerShadow = isMonsoon
+        ? '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.05)'
+        : isWinter
+            ? '0 8px 32px rgba(30, 60, 120, 0.15), inset 0 1px 0 rgba(255,255,255,0.6)'
+            : '0 8px 32px rgba(120, 80, 20, 0.1), inset 0 1px 0 rgba(255,255,255,0.7)';
 
     return (
         <div className="w-full flex justify-center items-center py-8">
             <motion.div
-                className={`flex flex-wrap justify-center gap-6 p-6 rounded-xl shadow-lg max-w-2xl mx-auto`}
+                className={`flex flex-wrap justify-center gap-6 p-8 rounded-2xl max-w-2xl mx-auto`}
                 style={{
                     backgroundColor: palette.contactLinkBg,
+                    border: containerBorder,
+                    boxShadow: containerShadow,
+                    backdropFilter: 'blur(12px)',
                 }}
                 variants={containerVariants}
                 initial="hidden"
@@ -59,6 +77,7 @@ const SocialLinks = () => {
                         target="_blank"
                         rel="noopener noreferrer"
                         className={`flex flex-col items-center justify-center p-4 rounded-lg transition-colors ${linkBg}`}
+                        style={{border: linkBorder}}
                         variants={itemVariants}
                         whileHover="hover"
                         whileTap="tap"
@@ -91,6 +110,7 @@ const SocialLinks = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     className={`flex flex-col items-center justify-center p-4 rounded-lg transition-colors ${linkBg}`}
+                    style={{border: linkBorder}}
                     variants={itemVariants}
                     whileHover="hover"
                     whileTap="tap"

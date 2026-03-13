@@ -161,8 +161,8 @@ const FallingParticle = React.memo(({
 }) => {
     const size = Math.max(options.width, options.height);
 
-    // Snow starts at 40vh (10% above end of hero images at 50vh); others start off-screen
-    const snowStartY = particleMode === 'snow' ? window.innerHeight * 0.4 : -80;
+    // Snow starts at 45vh; others start off-screen
+    const snowStartY = particleMode === 'snow' ? window.innerHeight * 0.45 : -80;
     const snowTravel = travelDistance - (particleMode === 'snow' ? snowStartY : 0);
     // Snow: derive duration from travel distance for consistent gentle speed (~80px/s)
     const effectiveDuration = particleMode === 'snow'
@@ -566,10 +566,15 @@ export const ParticleOverlay = React.memo(({
             }
 
             const sizeRatio = dropHeight / 24;
+            // Slow down on mobile — smaller screens have shorter travel distance
+            // so same duration = visually faster. Scale up duration on small screens.
+            const mobileSlowdown = window.innerWidth < 480 ? 2
+                : window.innerWidth < 768 ? 1.5
+                : 1;
             const baseSpeed = particleMode === 'leaves'
-                    ? 2.5 + sizeRatio * 2
+                    ? (2.5 + sizeRatio * 2) * mobileSlowdown
                     : particleMode === 'rain'
-                        ? 1.5 + sizeRatio * 1.2
+                        ? (1.5 + sizeRatio * 1.2) * mobileSlowdown
                         : 0; // snow handled separately below
             const speedVariation = particleMode === 'snow' ? 1 : 0.85 + Math.random() * 0.3;
 
@@ -591,7 +596,7 @@ export const ParticleOverlay = React.memo(({
                 duration: baseSpeed * speedVariation,
                 repeatDelay: particleMode === 'snow' ? 0 : Math.random() * 0.6,
                 delay: particleMode === 'snow'
-                    ? Math.random() * 2
+                    ? (window.innerWidth < 768 ? Math.random() * 0.5 : Math.random() * 2)
                     : Math.random() * 3,
                 width: dropWidth,
                 height: dropHeight,
@@ -614,7 +619,7 @@ export const ParticleOverlay = React.memo(({
                 inset: 0,
                 overflow: 'hidden',
                 pointerEvents: 'none',
-                zIndex: isSnow ? 20 : 10,
+                zIndex: isSnow ? 5 : 10,
             }}
         >
             {particleMode === 'rain' ? (
