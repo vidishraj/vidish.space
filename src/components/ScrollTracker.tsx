@@ -1,18 +1,17 @@
-import {useEffect, useRef, useState, useMemo} from 'react';
+import {useEffect, useState, useMemo} from 'react';
 import styles from './ScrollTracker.module.scss';
 import resumePDF from '/assets/Resume_SDE_Vidish_Raj.pdf'
 import {useThemeContext} from '../App';
 
 const ScrollTracker = () => {
     const [activeSection, setActiveSection] = useState('section1');
-    const [visible, setVisible] = useState(true);
-    const lastScrollY = useRef(0);
     const {season} = useThemeContext();
     const isMonsoon = season === 'monsoon';
 
     const sections = useMemo(() => [
         {id: 'section1', label: 'Home'},
         {id: 'section2', label: 'Services'},
+        {id: 'sectionClients', label: 'Clients'},
         {id: 'section3', label: 'Career'},
         {id: 'section4', label: 'Projects'},
         {id: 'section5', label: 'Contact'},
@@ -20,15 +19,6 @@ const ScrollTracker = () => {
 
     useEffect(() => {
         const handleScroll = () => {
-            const currentScrollY = window.scrollY;
-
-            if (currentScrollY < 100 || currentScrollY < lastScrollY.current) {
-                setVisible(true);
-            } else {
-                setVisible(false);
-            }
-            lastScrollY.current = currentScrollY;
-
             const sectionElements = sections.map(section =>
                 document.getElementById(section.id)
             );
@@ -72,7 +62,7 @@ const ScrollTracker = () => {
     const modeClass = isMonsoon ? styles.darkMode : styles.lightMode;
 
     return (
-        <div className={`${styles.trackerContainer} ${modeClass} ${visible ? '' : styles.hidden}`}>
+        <div className={`${styles.trackerContainer} ${modeClass}`}>
             <div className={styles.tracker}>
                 <div className={styles.navButtons}>
                     {sections.map((section) => (

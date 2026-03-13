@@ -4,6 +4,7 @@
   flex-wrap: nowrap;
   height: 50vh;
   position: relative;
+  z-index: 11;
   justify-content: space-evenly;
   background-size: cover;
   background-repeat: no-repeat;
@@ -146,6 +147,8 @@
   background-size: cover;
   background-position: center center;
   background-repeat: repeat;
+  position: relative;
+  z-index: 3;
 }
 
 .textContainerInner {

@@ -10,6 +10,7 @@ const earlyDaysAnimation = () => import('../assets/lottieAnimations/earlyDays.js
 const jobAnimation = () => import('../assets/lottieAnimations/job.json');
 const internshipAnimation = () => import('../assets/lottieAnimations/internship.json');
 const collegeDaysAnimation = () => import('../assets/lottieAnimations/college.json');
+const freelanceAnimation = () => import('../assets/lottieAnimations/newSummer3.json');
 
 interface LazyLottieProps {
     animationImport: () => Promise<{ default: object }>;
@@ -74,7 +75,6 @@ export const timelineData = (season: Season) => {
     };
 
     const getCardStyle = (index: number): CSSProperties => {
-        if (isMonsoon) return {};
         return {background: cardColors[index]};
     };
 
@@ -275,7 +275,7 @@ export const timelineData = (season: Season) => {
             ],
         },
         {
-            title: 'The Big Leagues (July 2022 - Present)',
+            title: 'The Big Leagues (July 2022 - Feb 2026)',
             subtitle: 'Societe Generale: Microservices, AWS, and French Colleagues 🇫🇷️',
             animationData: jobAnimation,
             content: [
@@ -362,6 +362,97 @@ export const timelineData = (season: Season) => {
                                             style={{color: textColor}}>Current Status</h3>
                                         <p style={{color: textColor}}>Currently in the pre-prod phase of the project, which means more coffee, more
                                             debugging, and more Jenkins logs.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </AnimatedText>
+                    </div>
+                </ContainerScroll>
+            ],
+        },
+        {
+            title: 'Going Solo (2025 - Present)',
+            subtitle: 'Freelance: From AI Pipelines to Embedded Systems 🚀',
+            animationData: freelanceAnimation,
+            content: [
+                <ContainerScroll
+                    containerClassName={getCardClass(4)}
+                    containerStyle={getCardStyle(4)}
+                    className={styles.timelineContent}>
+                    <div className="flex flex-col space-y-6">
+                        <TextGenerateEffect
+                            className={`flex align-center justify-center underline`}
+                            parentStyle={{color: textColor}}
+                            words={"Freelance: From AI Pipelines to Embedded Systems 🚀"}/>
+
+                        <AnimatedText delay={0.2}>
+                            <div className="space-y-2">
+                                <div className="flex items-start">
+                                    <span className="text-xl mr-2">🎯</span>
+                                    <div>
+                                        <h3 className="font-semibold text-lg"
+                                            style={{color: textColor}}>The Leap</h3>
+                                        <p style={{color: textColor}}>Left the corporate world to go independent. Turns out,
+                                            being your own boss means you never get to blame anyone else for bad code.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </AnimatedText>
+
+                        <AnimatedText delay={0.4}>
+                            <div className="space-y-2">
+                                <div className="flex items-start">
+                                    <span className="text-xl mr-2">🤖</span>
+                                    <div>
+                                        <h3 className="font-semibold text-lg"
+                                            style={{color: textColor}}>AI & Full-Stack</h3>
+                                        <p style={{color: textColor}}>Built AI pipelines with vector databases and LLM integrations
+                                            for Movo. Shipped an entire wellness platform as the sole developer for SoulTalk—216
+                                            commits of pure hustle.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </AnimatedText>
+
+                        <AnimatedText delay={0.6}>
+                            <div className="space-y-2">
+                                <div className="flex items-start">
+                                    <span className="text-xl mr-2">📱</span>
+                                    <div>
+                                        <h3 className="font-semibold text-lg"
+                                            style={{color: textColor}}>Mobile & Optimization</h3>
+                                        <p style={{color: textColor}}>Refactored Raheee's mobile app in a 2-week sprint—shrunk it
+                                            from 154MB to 20MB. Also built secure data exchange connectors for Cipherome's
+                                            genomics platform.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </AnimatedText>
+
+                        <AnimatedText delay={0.8}>
+                            <div className="space-y-2">
+                                <div className="flex items-start">
+                                    <span className="text-xl mr-2">🔧</span>
+                                    <div>
+                                        <h3 className="font-semibold text-lg"
+                                            style={{color: textColor}}>Hardware Meets Software</h3>
+                                        <p style={{color: textColor}}>Went from cloud to bare metal—built a Raspberry Pi kiosk
+                                            system for Nyxidiom, talking to STM32 boards over UART. Because why not add
+                                            embedded systems to the resume?</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </AnimatedText>
+
+                        <AnimatedText delay={1.0}>
+                            <div className="space-y-2">
+                                <div className="flex items-start">
+                                    <span className="text-xl mr-2">⚡</span>
+                                    <div>
+                                        <h3 className="font-semibold text-lg"
+                                            style={{color: textColor}}>Current Status</h3>
+                                        <p style={{color: textColor}}>10+ clients, countless commits, and zero regrets. Still
+                                            shipping code, still breaking things in staging, still loving every bit of it.</p>
                                     </div>
                                 </div>
                             </div>

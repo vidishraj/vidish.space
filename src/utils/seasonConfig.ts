@@ -87,6 +87,10 @@ export interface SeasonPalette {
         tagColor: string;
         border: string;
     }>;
+    // Testimonial section
+    testimonialCardBg: string;
+    testimonialCardBorder: string;
+    testimonialQuoteColor: string;
 }
 
 export const seasonPalettes: Record<Season, SeasonPalette> = {
@@ -107,7 +111,7 @@ export const seasonPalettes: Record<Season, SeasonPalette> = {
         splashColor: 'rgba(200, 140, 40, 0.8)',
         heroTextBg: 'light',
         heroIconGradient: 'linear-gradient(135deg, #f0c989, #ec9b6d)',
-        timelineCards: ['#f0c989', '#ec9b6d', 'whitesmoke', '#95d1cf'],
+        timelineCards: ['#f0c989', '#f0c4a0', '#f5e0c0', '#f8edd8', '#f2e6d0'],
         tagBg: 'rgba(0,0,0,0.06)',
         tagColor: '#4a3f35',
         tagBorder: '#8b7355',
@@ -120,11 +124,15 @@ export const seasonPalettes: Record<Season, SeasonPalette> = {
         dividerGradient: 'linear-gradient(90deg, transparent, #c9a97c, transparent)',
         serviceCards: [
             {bg: '#f0c989', accent: '#d4880f', tagBg: 'rgba(0,0,0,0.06)', tagColor: '#4a3f35', border: 'rgba(0,0,0,0.06)'},
-            {bg: '#ec9b6d', accent: '#c97a4a', tagBg: 'rgba(0,0,0,0.06)', tagColor: '#4a3f35', border: 'rgba(0,0,0,0.06)'},
+            {bg: '#f0c4a0', accent: '#c97a4a', tagBg: 'rgba(0,0,0,0.06)', tagColor: '#4a3f35', border: 'rgba(0,0,0,0.06)'},
             {bg: '#e8e3dd', accent: '#8b7355', tagBg: 'rgba(0,0,0,0.06)', tagColor: '#4a3f35', border: 'rgba(0,0,0,0.06)'},
             {bg: '#c9dfd4', accent: '#5a8a7a', tagBg: 'rgba(0,0,0,0.06)', tagColor: '#4a3f35', border: 'rgba(0,0,0,0.06)'},
             {bg: '#d4c5b5', accent: '#8b7355', tagBg: 'rgba(0,0,0,0.06)', tagColor: '#4a3f35', border: 'rgba(0,0,0,0.06)'},
+            {bg: '#dde0ca', accent: '#6a7a45', tagBg: 'rgba(0,0,0,0.06)', tagColor: '#4a3f35', border: 'rgba(0,0,0,0.06)'},
         ],
+        testimonialCardBg: '#fff8ed',
+        testimonialCardBorder: 'rgba(180, 140, 80, 0.2)',
+        testimonialQuoteColor: '#d4880f',
     },
     monsoon: {
         pageBg: '#161f27',
@@ -143,7 +151,7 @@ export const seasonPalettes: Record<Season, SeasonPalette> = {
         splashColor: 'rgba(140, 200, 255, 0.8)',
         heroTextBg: 'dark',
         heroIconGradient: 'linear-gradient(135deg, #2a3f55, #1a2a3a)',
-        timelineCards: ['#161f27', '#161f27', '#161f27', '#161f27'],
+        timelineCards: ['#161f27', '#161f27', '#161f27', '#161f27', '#161f27'],
         tagBg: 'rgba(91, 155, 213, 0.1)',
         tagColor: '#8cbdea',
         tagBorder: '#5b9bd5',
@@ -160,7 +168,11 @@ export const seasonPalettes: Record<Season, SeasonPalette> = {
             {bg: '#172029', accent: '#95d1cf', tagBg: 'rgba(149, 209, 207, 0.09)', tagColor: '#95d1cf', border: 'rgba(149, 209, 207, 0.19)'},
             {bg: '#1a1e2c', accent: '#b8a9d4', tagBg: 'rgba(184, 169, 212, 0.09)', tagColor: '#b8a9d4', border: 'rgba(184, 169, 212, 0.19)'},
             {bg: '#1c2126', accent: '#d4a87c', tagBg: 'rgba(212, 168, 124, 0.09)', tagColor: '#d4a87c', border: 'rgba(212, 168, 124, 0.19)'},
+            {bg: '#1a2524', accent: '#7cc9a0', tagBg: 'rgba(124, 201, 160, 0.09)', tagColor: '#7cc9a0', border: 'rgba(124, 201, 160, 0.19)'},
         ],
+        testimonialCardBg: '#19232e',
+        testimonialCardBorder: 'rgba(91, 155, 213, 0.2)',
+        testimonialQuoteColor: '#5b9bd5',
     },
     winter: {
         pageBg: '#f0f4f8',
@@ -179,7 +191,7 @@ export const seasonPalettes: Record<Season, SeasonPalette> = {
         splashColor: 'rgba(200, 220, 255, 0.8)',
         heroTextBg: 'winter',
         heroIconGradient: 'linear-gradient(135deg, #d4e4f7, #b8cfe8)',
-        timelineCards: ['#e8f0fe', '#dbe8f8', '#f0f4f8', '#d4e8f0'],
+        timelineCards: ['#e8f0fe', '#dbe8f8', '#f0f4f8', '#d4e8f0', '#e0eaf4'],
         tagBg: 'rgba(59, 130, 200, 0.08)',
         tagColor: '#2563a0',
         tagBorder: '#3b82c8',
@@ -196,7 +208,11 @@ export const seasonPalettes: Record<Season, SeasonPalette> = {
             {bg: '#f0f4f8', accent: '#64748b', tagBg: 'rgba(100, 116, 139, 0.08)', tagColor: '#475569', border: 'rgba(100, 116, 139, 0.12)'},
             {bg: '#e2ecf4', accent: '#6889b0', tagBg: 'rgba(104, 137, 176, 0.08)', tagColor: '#475569', border: 'rgba(104, 137, 176, 0.12)'},
             {bg: '#d4e8f0', accent: '#4a90a0', tagBg: 'rgba(74, 144, 160, 0.08)', tagColor: '#2563a0', border: 'rgba(74, 144, 160, 0.12)'},
+            {bg: '#e0f0e8', accent: '#3a8a6a', tagBg: 'rgba(58, 138, 106, 0.08)', tagColor: '#2a6a50', border: 'rgba(58, 138, 106, 0.12)'},
         ],
+        testimonialCardBg: '#e8f0fe',
+        testimonialCardBorder: 'rgba(59, 130, 200, 0.15)',
+        testimonialQuoteColor: '#3b82c8',
     },
 };
 
@@ -206,15 +222,17 @@ export const seasonBackgrounds: Record<Season, {
     heroBottom: string;    // CSS background for hero beams container (bottom 50vh)
     timeline: string;      // background-image URL for timeline section
     whatIDo: string;       // background-image URL for WhatIDo section
+    testimonials: string;  // background-image URL for testimonials section
     projects: string;      // background-image URL for Projects section
     contact: string;       // background-image URL for Contact section
 }> = {
     summer: {
         heroTop: 'linear-gradient(to bottom, #331f23, #312323, #191923, whitesmoke)',
-        heroBottom: 'linear-gradient(160deg, #5f443a 0%, #7a5c3e 8%, #9a7a52 16%, #b8956a 24%, #d4ad78 32%, #e8c48a 40%, #f2d49a 48%, #f7dda8 56%, #f9e3b5 64%, #fae8c2 72%, #f8ebd0 80%, #f5eddd 88%, #f2efea 94%, #eff1f7 100%)',
-        timeline: '',   // summer uses multi-image tiled bg via inline CSSProperties
-        whatIDo: '/assets/backgrounds/projectBg.png',
-        projects: '/assets/backgrounds/projectBg.png',
+        heroBottom: 'linear-gradient(160deg, #5f443a 0%, #7a5c3e 8%, #9a7a52 16%, #b8956a 24%, #d4ad78 32%, #e8c48a 40%, #f2d49a 48%, #f7dda8 56%, #f9e3b5 64%, #fae8c2 72%, #f8ebd0 80%, #f6eedd 88%, #f5eddd 94%, #f5eddd 100%)',
+        timeline: '',   // uses CSS gradient (lighter yellows)
+        whatIDo: '',  // uses warm gradient via CSS
+        testimonials: '',  // uses CSS gradient
+        projects: '',  // uses CSS gradient (yellow to white)
         contact: '/assets/backgrounds/contactBg.png',
     },
     monsoon: {
@@ -222,16 +240,18 @@ export const seasonBackgrounds: Record<Season, {
         heroBottom: "url('/assets/backgrounds/darkModeBg.webp') center/cover no-repeat",
         timeline: '/assets/backgrounds/darkModeBg.webp',
         whatIDo: '/assets/backgrounds/darkProjectBg.webp',
+        testimonials: '/assets/backgrounds/darkProjectBg.webp',
         projects: '/assets/backgrounds/darkProjectBg.webp',
         contact: '/assets/backgrounds/darkContactBg.png',
     },
     winter: {
-        heroTop: "url('/assets/backgrounds/winter_morning.webp') center/cover no-repeat",
-        heroBottom: 'linear-gradient(to bottom, #b8cfe0, #c5d8e8, #d4e4f0)',
-        timeline: '/assets/backgrounds/winter_morning.webp',
-        whatIDo: '/assets/backgrounds/winter_evening.webp',
-        projects: '/assets/backgrounds/winter_lateEvening.webp',
-        contact: '/assets/backgrounds/winter_night.webp',
+        heroTop: 'linear-gradient(to bottom, #e8f0f8, #dde8f2, #d4e2ee, #cddcea)',
+        heroBottom: 'linear-gradient(to bottom, #cddcea, #c8d8e6, #c3d4e3, #bed0e0)',
+        whatIDo: '',
+        testimonials: '',
+        timeline: '',
+        projects: '',
+        contact: '',
     },
 };
 

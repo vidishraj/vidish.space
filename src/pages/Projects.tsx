@@ -65,7 +65,13 @@ export const Projects = () => {
                 width: '100vw',
                 display: 'flex',
                 flexDirection: 'column',
-                ...(backgrounds.projects ? {backgroundImage: `url('${backgrounds.projects}')`} : {}),
+                ...(backgrounds.projects
+                    ? {backgroundImage: `url('${backgrounds.projects}')`}
+                    : season === 'summer'
+                        ? {background: 'linear-gradient(170deg, #fffffe 0%, #fefefe 15%, #fcfcfd 30%, #f8f9fb 45%, #f4f6f9 60%, #f0f3f7 75%, #ecf0f5 90%, #e6ecf2 100%)'}
+                        : season === 'winter'
+                            ? {background: 'linear-gradient(170deg, #698cad 0%, #6488aa 15%, #5f84a7 30%, #5a80a4 45%, #557ca1 60%, #50789e 75%, #4b749b 90%, #467098 100%)'}
+                            : {}),
             }}
             ref={sectionRef}>
             <div style={{width: '100%', height: '100%'}}>

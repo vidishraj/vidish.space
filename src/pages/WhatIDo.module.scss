@@ -8,6 +8,7 @@
   background-repeat: no-repeat;
   background-position: center bottom;
   background-attachment: fixed;
+  position: relative;
 
   @media (max-width: 768px) {
     background-attachment: scroll;
@@ -15,11 +16,13 @@
 }
 
 .content {
+  position: relative;
+  z-index: 1;
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 2rem 1.5rem 3rem;
+  padding: 3.5rem 1.5rem 3rem;
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
@@ -28,7 +31,7 @@
 .subtitle {
   display: flex;
   align-items: center;
-  gap: 0.35em;
+  gap: 0.5em;
   font-size: 1.5rem;
   font-weight: 400;
   margin-bottom: 0.5rem;
@@ -46,20 +49,15 @@
 }
 
 .grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-wrap: wrap;
   gap: 1.5rem;
   width: 100%;
-
-  @media (max-width: 900px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  @media (max-width: 560px) {
-    grid-template-columns: 1fr;
-  }
+  justify-content: center;
 }
 
 .card {
+  width: calc(33.333% - 1rem);
   position: relative;
   border-radius: 16px;
   padding: 2rem 1.5rem 1.5rem;
@@ -70,6 +68,13 @@
   min-height: 220px;
   cursor: default;
   transition: box-shadow 0.2s;
+
+  @media (max-width: 900px) {
+    width: calc(50% - 0.75rem);
+  }
+  @media (max-width: 560px) {
+    width: 100%;
+  }
 }
 
 .index {

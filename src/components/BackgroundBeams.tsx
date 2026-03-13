@@ -1,12 +1,10 @@
 import {cn} from "../utils/utils";
-import {AnimatePresence, motion} from "framer-motion";
+import {motion} from "framer-motion";
 import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {ParticleMode} from "../utils/seasonConfig";
 
 interface ParticleOptions {
-    /** Horizontal position as percentage (0–100) */
     positionPct: number;
-    /** Horizontal drift in pixels during fall */
     horizontalDrift: number;
     duration: number;
     repeatDelay: number;
@@ -24,9 +22,6 @@ export const BackgroundBeamsWithCollision = ({
     children,
     className,
     style,
-    particleMode = 'rain',
-    beamSpeed = 1,
-    beamCount = 35,
 }: {
     children: React.ReactNode;
     className?: string;
@@ -35,309 +30,15 @@ export const BackgroundBeamsWithCollision = ({
     beamSpeed?: number;
     beamCount?: number;
 }) => {
-    const containerRef = useRef<HTMLDivElement>(null);
-    const parentRef = useRef<HTMLDivElement>(null);
-    const particleElsRef = useRef<Map<number, HTMLDivElement>>(new Map());
-    const cooldownsRef = useRef<Set<number>>(new Set());
-    const timeoutsRef = useRef<Map<number, number>>(new Map());
-    const [splashes, setSplashes] = useState<Map<number, { x: number; y: number }>>(new Map());
-    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-    const [modeKey, setModeKey] = useState(particleMode);
-
-    const isRain = particleMode === 'rain';
-
-    // Debounced resize handler
-    useEffect(() => {
-        let debounceTimeout: number;
-        const handleResize = () => {
-            clearTimeout(debounceTimeout);
-            debounceTimeout = window.setTimeout(() => {
-                setWindowWidth(window.innerWidth);
-            }, 200);
-        };
-        window.addEventListener('resize', handleResize, {passive: true});
-        return () => {
-            window.removeEventListener('resize', handleResize);
-            clearTimeout(debounceTimeout);
-        };
-    }, []);
-
-    // Reset on mode change
-    useEffect(() => {
-        setModeKey(particleMode);
-        cooldownsRef.current.clear();
-        timeoutsRef.current.forEach(t => clearTimeout(t));
-        timeoutsRef.current.clear();
-        setSplashes(new Map());
-    }, [particleMode]);
-
-    useEffect(() => {
-        return () => {
-            timeoutsRef.current.forEach(t => clearTimeout(t));
-        };
-    }, []);
-
-    const speedFactor = useMemo(() => {
-        const normalizedSpeed = Math.max(1, Math.min(8, beamSpeed));
-        return 1.5 - (normalizedSpeed * 0.14);
-    }, [beamSpeed]);
-
-    const adaptedBeamCount = useMemo(() => {
-        if (windowWidth < 480) return Math.min(15, beamCount);
-        if (windowWidth < 768) return Math.min(22, beamCount);
-        return beamCount;
-    }, [beamCount, windowWidth]);
-
-    const checkInterval = useMemo(() => {
-        return windowWidth < 768 ? 16 : 25;
-    }, [windowWidth]);
-
-    // --- Collision detection (rain only) ---
-    useEffect(() => {
-        if (!isRain) return; // leaves/snow don't need collision detection
-
-        let rafId: number;
-        let lastTime = 0;
-        let visible = true;
-
-        const onVisibilityChange = () => {
-            visible = !document.hidden;
-            if (visible) lastTime = 0;
-        };
-        document.addEventListener('visibilitychange', onVisibilityChange);
-
-        const loop = (time: number) => {
-            rafId = requestAnimationFrame(loop);
-            if (!visible || time - lastTime < checkInterval) return;
-            lastTime = time;
-
-            const container = containerRef.current;
-            const parent = parentRef.current;
-            if (!container || !parent) return;
-
-            const containerRect = container.getBoundingClientRect();
-            const parentRect = parent.getBoundingClientRect();
-            const bottomY = containerRect.top - parentRect.top + containerRect.height;
-
-            let changed = false;
-            const newSplashes = new Map<number, { x: number; y: number }>();
-
-            particleElsRef.current.forEach((el, idx) => {
-                if (cooldownsRef.current.has(idx)) return;
-                const rect = el.getBoundingClientRect();
-                if (rect.bottom >= containerRect.top - 2) {
-                    cooldownsRef.current.add(idx);
-                    const splashX = rect.left - parentRect.left + rect.width / 2;
-                    newSplashes.set(idx, {x: splashX, y: bottomY});
-                    changed = true;
-
-                    const timeoutId = window.setTimeout(() => {
-                        cooldownsRef.current.delete(idx);
-                        timeoutsRef.current.delete(idx);
-                        setSplashes(prev => {
-                            const next = new Map(prev);
-                            next.delete(idx);
-                            return next;
-                        });
-                    }, 600);
-                    timeoutsRef.current.set(idx, timeoutId);
-                }
-            });
-
-            if (changed) {
-                setSplashes(prev => {
-                    const next = new Map(prev);
-                    newSplashes.forEach((v, k) => next.set(k, v));
-                    return next;
-                });
-            }
-        };
-
-        rafId = requestAnimationFrame(loop);
-        return () => {
-            cancelAnimationFrame(rafId);
-            document.removeEventListener('visibilitychange', onVisibilityChange);
-        };
-    }, [checkInterval, isRain]);
-
-    const registerParticle = useCallback((idx: number, el: HTMLDivElement | null) => {
-        if (el) {
-            particleElsRef.current.set(idx, el);
-        } else {
-            particleElsRef.current.delete(idx);
-        }
-    }, []);
-
-    // Color palettes
-    const leafColors = useMemo(() => [
-        '#c0392b', '#e74c3c', '#d35400', '#e67e22',
-        '#f39c12', '#b7950b', '#935116', '#a04000',
-        '#cb4335', '#dc7633', '#f0b27a', '#873600',
-    ], []);
-
-    const snowColors = useMemo(() => [
-        '#8bb8d6', '#7aafc9', '#9ac4db', '#6da3c0',
-        '#85b5d2', '#a0cce3', '#78adc8', '#8fbdd8',
-    ], []);
-
-    const particles = useMemo(() => {
-        const baseScale = window.innerWidth < 480 ? 0.7 : 1;
-
-        return Array.from({length: adaptedBeamCount}, (_, idx): ParticleOptions => {
-            const positionPct = Math.random() * 100;
-            const isSmall = Math.random() > 0.5;
-            const isVerySmall = Math.random() > 0.8;
-
-            let dropWidth: number, dropHeight: number, dropOpacity: number, color: string;
-
-            if (particleMode === 'snow') {
-                color = snowColors[Math.floor(Math.random() * snowColors.length)];
-                if (isVerySmall) {
-                    dropWidth = 3 * baseScale; dropHeight = 3 * baseScale;
-                    dropOpacity = 0.6 + Math.random() * 0.2;
-                } else if (isSmall) {
-                    dropWidth = 8 * baseScale; dropHeight = 8 * baseScale;
-                    dropOpacity = 0.75 + Math.random() * 0.2;
-                } else {
-                    dropWidth = 16 * baseScale; dropHeight = 16 * baseScale;
-                    dropOpacity = 0.85 + Math.random() * 0.15;
-                }
-            } else if (particleMode === 'leaves') {
-                color = leafColors[Math.floor(Math.random() * leafColors.length)];
-                if (isVerySmall) {
-                    dropWidth = 10 * baseScale; dropHeight = 8 * baseScale;
-                    dropOpacity = 0.8 + Math.random() * 0.15;
-                } else if (isSmall) {
-                    dropWidth = 16 * baseScale; dropHeight = 13 * baseScale;
-                    dropOpacity = 0.85 + Math.random() * 0.15;
-                } else {
-                    dropWidth = 22 * baseScale; dropHeight = 18 * baseScale;
-                    dropOpacity = 0.9 + Math.random() * 0.1;
-                }
-            } else {
-                color = 'rgba(140, 200, 255, 0.8)';
-                if (isVerySmall) {
-                    dropWidth = 5 * baseScale; dropHeight = 10 * baseScale;
-                    dropOpacity = 0.6 + Math.random() * 0.3;
-                } else if (isSmall) {
-                    dropWidth = 8 * baseScale; dropHeight = 14 * baseScale;
-                    dropOpacity = 0.7 + Math.random() * 0.3;
-                } else {
-                    dropWidth = 14 * baseScale; dropHeight = 24 * baseScale;
-                    dropOpacity = 0.75 + Math.random() * 0.25;
-                }
-            }
-
-            const sizeRatio = dropHeight / 24;
-            const baseSpeed = particleMode === 'snow'
-                ? (2.5 + sizeRatio * 1.5) * speedFactor
-                : particleMode === 'leaves'
-                    ? (2.5 + sizeRatio * 2) * speedFactor
-                    : (1.5 + sizeRatio * 1.2) * speedFactor;
-            const speedVariation = 0.85 + Math.random() * 0.3;
-
-            const horizontalDrift = particleMode === 'snow'
-                ? (Math.random() * 80 - 40)
-                : particleMode === 'leaves'
-                    ? (Math.random() * 120 - 60)
-                    : (Math.random() * 8 - 4);
-
-            const rotation = particleMode === 'leaves'
-                ? (Math.random() * 540 - 270)
-                : particleMode === 'snow'
-                    ? (Math.random() * 180 - 90)
-                    : 0;
-
-            return {
-                positionPct,
-                horizontalDrift,
-                duration: baseSpeed * speedVariation,
-                repeatDelay: Math.random() * (particleMode === 'snow' ? 1.5 : 0.6),
-                delay: Math.random() * 2,
-                width: dropWidth,
-                height: dropHeight,
-                opacity: dropOpacity,
-                blur: particleMode === 'snow'
-                    ? (isVerySmall ? '0.5px' : '0px')
-                    : particleMode === 'leaves' ? '0px'
-                        : (isSmall ? '0.5px' : (isVerySmall ? '0px' : '0.7px')),
-                rotation,
-                color,
-                pathIndex: idx % LEAF_PATHS.length,
-            };
-        });
-        // Only regenerate when count, speed, or mode changes — NOT on every resize
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [adaptedBeamCount, speedFactor, particleMode]);
-
-    // Measure actual container height for travel distance
-    const [containerHeight, setContainerHeight] = useState(window.innerHeight * 0.5);
-    useEffect(() => {
-        const measure = () => {
-            if (parentRef.current) {
-                setContainerHeight(parentRef.current.offsetHeight);
-            }
-        };
-        measure();
-        window.addEventListener('resize', measure, {passive: true});
-        return () => window.removeEventListener('resize', measure);
-    }, []);
-
-    // Rain overshoots slightly past collision line; leaves/snow land inside
-    const travelDistance = isRain
-        ? containerHeight + 20
-        : containerHeight - 40;
-    const smallScreen = windowWidth < 768;
-
     return (
         <div
-            ref={parentRef}
             className={cn(
-                "h-[50vh] relative flex items-center w-full justify-center overflow-hidden",
+                "h-[50vh] relative flex items-center w-full justify-center",
                 className
             )}
             style={style}
         >
-            {particles.map((particle, index) => (
-                <React.Fragment key={`particle-${index}-${modeKey}`}>
-                    {isRain ? (
-                        <RainDrop
-                            index={index}
-                            registerRef={registerParticle}
-                            options={particle}
-                            travelDistance={travelDistance}
-                        />
-                    ) : (
-                        <FallingParticle
-                            options={particle}
-                            particleMode={particleMode}
-                            travelDistance={travelDistance}
-                        />
-                    )}
-                    {isRain && (
-                        <AnimatePresence>
-                            {splashes.has(index) && (
-                                <RainSplash
-                                    key={`splash-${index}`}
-                                    style={{
-                                        left: `${splashes.get(index)!.x}px`,
-                                        bottom: "0px",
-                                        transform: "translate(-50%, 0)",
-                                    }}
-                                    smallScreen={smallScreen}
-                                    particleSize={particle.width}
-                                />
-                            )}
-                        </AnimatePresence>
-                    )}
-                </React.Fragment>
-            ))}
             {children}
-            <div
-                ref={containerRef}
-                className="absolute bottom-0 w-full inset-x-0 h-2 pointer-events-none"
-                style={{opacity: 0, background: 'transparent'}}
-            />
         </div>
     );
 };
@@ -460,8 +161,16 @@ const FallingParticle = React.memo(({
 }) => {
     const size = Math.max(options.width, options.height);
 
+    // Snow starts at 40vh (10% above end of hero images at 50vh); others start off-screen
+    const snowStartY = particleMode === 'snow' ? window.innerHeight * 0.4 : -80;
+    const snowTravel = travelDistance - (particleMode === 'snow' ? snowStartY : 0);
+    // Snow: derive duration from travel distance for consistent gentle speed (~80px/s)
+    const effectiveDuration = particleMode === 'snow'
+        ? snowTravel / 80
+        : options.duration;
+
     const restFraction = particleMode === 'leaves' ? 0.35 : 0.3;
-    const totalDuration = options.duration / (1 - restFraction);
+    const totalDuration = effectiveDuration / (1 - restFraction);
     const fallEnd = 1 - restFraction;
     const restRotation = particleMode === 'leaves'
         ? options.rotation + (Math.random() > 0.5 ? 60 : -60)
@@ -470,14 +179,14 @@ const FallingParticle = React.memo(({
     return (
         <motion.div
             initial={{
-                translateY: -80,
+                translateY: snowStartY,
                 translateX: 0,
                 rotate: 0,
                 opacity: options.opacity,
             }}
             animate={{
                 translateY: [
-                    -80,
+                    snowStartY,
                     travelDistance,
                     travelDistance,
                 ],
@@ -648,3 +357,279 @@ const RainSplash = React.memo(({
 RainSplash.displayName = "RainSplash";
 
 export default RainSplash;
+
+// ─── Rain overlay with single shared collision loop ─────────
+const RainOverlay = React.memo(({
+    particles,
+    travelDistance,
+}: {
+    particles: ParticleOptions[];
+    travelDistance: number;
+}) => {
+    const dropRefs = useRef<(HTMLDivElement | null)[]>([]);
+    const [splashes, setSplashes] = useState<Map<number, {x: number; y: number; key: number}>>(new Map());
+    const lastSplashTime = useRef<number[]>([]);
+    const splashCounter = useRef(0);
+    const smallScreen = window.innerWidth < 480;
+
+    useEffect(() => {
+        lastSplashTime.current = new Array(particles.length).fill(0);
+    }, [particles.length]);
+
+    useEffect(() => {
+        let rafId: number;
+        let lastCheck = 0;
+
+        const check = (time: number) => {
+            // Throttle to ~30fps to save CPU
+            if (time - lastCheck < 33) {
+                rafId = requestAnimationFrame(check);
+                return;
+            }
+            lastCheck = time;
+            const now = Date.now();
+
+            for (let i = 0; i < dropRefs.current.length; i++) {
+                const el = dropRefs.current[i];
+                if (!el || now - (lastSplashTime.current[i] || 0) < 800) continue;
+
+                const transform = el.style.transform || getComputedStyle(el).transform;
+                if (!transform || transform === 'none') continue;
+
+                const match = transform.match(/translateY\(([\d.-]+)px\)/);
+                if (!match) continue;
+
+                const y = parseFloat(match[1]);
+                if (y >= travelDistance - 8 && y <= travelDistance + 2) {
+                    lastSplashTime.current[i] = now;
+                    const rect = el.getBoundingClientRect();
+                    const parentRect = el.offsetParent?.getBoundingClientRect();
+                    if (parentRect) {
+                        const id = splashCounter.current++;
+                        setSplashes(prev => {
+                            const next = new Map(prev);
+                            next.set(id, {
+                                x: rect.left - parentRect.left + rect.width / 2,
+                                y: rect.top - parentRect.top + rect.height,
+                                key: id,
+                            });
+                            return next;
+                        });
+                        setTimeout(() => {
+                            setSplashes(prev => {
+                                const next = new Map(prev);
+                                next.delete(id);
+                                return next;
+                            });
+                        }, 600);
+                    }
+                }
+            }
+            rafId = requestAnimationFrame(check);
+        };
+
+        rafId = requestAnimationFrame(check);
+        return () => cancelAnimationFrame(rafId);
+    }, [travelDistance, particles.length]);
+
+    const registerRef = useCallback((idx: number, el: HTMLDivElement | null) => {
+        dropRefs.current[idx] = el;
+    }, []);
+
+    return (
+        <>
+            {particles.map((particle, index) => (
+                <RainDrop
+                    key={`rain-${index}`}
+                    index={index}
+                    registerRef={registerRef}
+                    options={particle}
+                    travelDistance={travelDistance}
+                />
+            ))}
+            {Array.from(splashes.values()).map(s => (
+                <RainSplash
+                    key={s.key}
+                    smallScreen={smallScreen}
+                    particleSize={14}
+                    style={{
+                        left: s.x,
+                        top: s.y,
+                    }}
+                />
+            ))}
+        </>
+    );
+});
+RainOverlay.displayName = 'RainOverlay';
+
+// ─── Lightweight particle overlay for any section ────────────
+export const ParticleOverlay = React.memo(({
+    particleMode,
+    count = 20,
+}: {
+    particleMode: ParticleMode;
+    count?: number;
+}) => {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const isSnow = particleMode === 'snow';
+    const [containerHeight, setContainerHeight] = useState(
+        isSnow ? window.innerHeight : window.innerHeight
+    );
+
+    useEffect(() => {
+        if (isSnow) {
+            // Snow uses fixed positioning — only needs viewport height
+            const onResize = () => setContainerHeight(window.innerHeight);
+            onResize();
+            window.addEventListener('resize', onResize, {passive: true});
+            return () => window.removeEventListener('resize', onResize);
+        }
+        // Non-snow: measure parent container
+        const measure = () => {
+            if (containerRef.current?.parentElement) {
+                const h = containerRef.current.parentElement.offsetHeight;
+                if (h > 0) setContainerHeight(h);
+            }
+        };
+        measure();
+        const delayed = setTimeout(measure, 500);
+        const observer = new ResizeObserver(measure);
+        if (containerRef.current?.parentElement) {
+            observer.observe(containerRef.current.parentElement);
+        }
+        window.addEventListener('resize', measure, {passive: true});
+        return () => {
+            clearTimeout(delayed);
+            observer.disconnect();
+            window.removeEventListener('resize', measure);
+        };
+    }, [isSnow]);
+
+    const leafColors = useMemo(() => [
+        '#c0392b', '#e74c3c', '#d35400', '#e67e22',
+        '#f39c12', '#b7950b', '#935116', '#a04000',
+        '#cb4335', '#dc7633', '#f0b27a', '#873600',
+    ], []);
+
+    const snowColors = useMemo(() => [
+        '#8bb8d6', '#7aafc9', '#9ac4db', '#6da3c0',
+        '#85b5d2', '#a0cce3', '#78adc8', '#8fbdd8',
+    ], []);
+
+    const particles = useMemo(() => {
+        const baseScale = window.innerWidth < 480 ? 0.7 : 1;
+
+        return Array.from({length: count}, (_, idx): ParticleOptions => {
+            const positionPct = Math.random() * 100;
+            const isSmall = Math.random() > 0.5;
+            const isVerySmall = Math.random() > 0.8;
+
+            let dropWidth: number, dropHeight: number, dropOpacity: number, color: string;
+
+            if (particleMode === 'snow') {
+                color = snowColors[Math.floor(Math.random() * snowColors.length)];
+                if (isVerySmall) {
+                    dropWidth = 10 * baseScale; dropHeight = 10 * baseScale;
+                    dropOpacity = 0.5 + Math.random() * 0.2;
+                } else if (isSmall) {
+                    dropWidth = 18 * baseScale; dropHeight = 18 * baseScale;
+                    dropOpacity = 0.6 + Math.random() * 0.2;
+                } else {
+                    dropWidth = 28 * baseScale; dropHeight = 28 * baseScale;
+                    dropOpacity = 0.7 + Math.random() * 0.2;
+                }
+            } else if (particleMode === 'leaves') {
+                color = leafColors[Math.floor(Math.random() * leafColors.length)];
+                if (isVerySmall) {
+                    dropWidth = 10 * baseScale; dropHeight = 8 * baseScale;
+                    dropOpacity = 0.8 + Math.random() * 0.15;
+                } else if (isSmall) {
+                    dropWidth = 16 * baseScale; dropHeight = 13 * baseScale;
+                    dropOpacity = 0.85 + Math.random() * 0.15;
+                } else {
+                    dropWidth = 22 * baseScale; dropHeight = 18 * baseScale;
+                    dropOpacity = 0.9 + Math.random() * 0.1;
+                }
+            } else {
+                color = 'rgba(140, 200, 255, 0.8)';
+                if (isVerySmall) {
+                    dropWidth = 5 * baseScale; dropHeight = 10 * baseScale;
+                    dropOpacity = 0.6 + Math.random() * 0.3;
+                } else if (isSmall) {
+                    dropWidth = 8 * baseScale; dropHeight = 14 * baseScale;
+                    dropOpacity = 0.7 + Math.random() * 0.3;
+                } else {
+                    dropWidth = 14 * baseScale; dropHeight = 24 * baseScale;
+                    dropOpacity = 0.75 + Math.random() * 0.25;
+                }
+            }
+
+            const sizeRatio = dropHeight / 24;
+            const baseSpeed = particleMode === 'leaves'
+                    ? 2.5 + sizeRatio * 2
+                    : particleMode === 'rain'
+                        ? 1.5 + sizeRatio * 1.2
+                        : 0; // snow handled separately below
+            const speedVariation = particleMode === 'snow' ? 1 : 0.85 + Math.random() * 0.3;
+
+            const horizontalDrift = particleMode === 'snow'
+                ? (Math.random() * 80 - 40)
+                : particleMode === 'leaves'
+                    ? (Math.random() * 120 - 60)
+                    : (Math.random() * 8 - 4);
+
+            const rotation = particleMode === 'leaves'
+                ? (Math.random() * 540 - 270)
+                : particleMode === 'snow'
+                    ? (Math.random() * 180 - 90)
+                    : 0;
+
+            return {
+                positionPct,
+                horizontalDrift,
+                duration: baseSpeed * speedVariation,
+                repeatDelay: particleMode === 'snow' ? 0 : Math.random() * 0.6,
+                delay: particleMode === 'snow'
+                    ? Math.random() * 2
+                    : Math.random() * 3,
+                width: dropWidth,
+                height: dropHeight,
+                opacity: dropOpacity,
+                blur: '0px',
+                rotation,
+                color,
+                pathIndex: idx % LEAF_PATHS.length,
+            };
+        });
+    }, [count, particleMode, leafColors, snowColors, containerHeight]);
+
+    const travelDistance = containerHeight - 20;
+
+    return (
+        <div
+            ref={containerRef}
+            style={{
+                position: isSnow ? 'fixed' : 'absolute',
+                inset: 0,
+                overflow: 'hidden',
+                pointerEvents: 'none',
+                zIndex: isSnow ? 20 : 10,
+            }}
+        >
+            {particleMode === 'rain' ? (
+                <RainOverlay particles={particles} travelDistance={travelDistance} />
+            ) : (
+                particles.map((particle, index) => (
+                    <FallingParticle
+                        key={`overlay-${index}`}
+                        options={particle}
+                        particleMode={particleMode}
+                        travelDistance={travelDistance}
+                    />
+                ))
+            )}
+        </div>
+    );
+});
+ParticleOverlay.displayName = 'ParticleOverlay';

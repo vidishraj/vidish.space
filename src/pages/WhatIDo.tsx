@@ -2,7 +2,6 @@ import {motion, useAnimation, useInView} from 'framer-motion';
 import {useRef, useEffect} from 'react';
 import {TextGenerateEffect} from '../components/TextGenerate.tsx';
 import {AnimatedText} from '../components/AnimatedText.tsx';
-import ParallaxText from '../components/LetterScroll.tsx';
 import {PointerHighlight} from '../components/PointerHighlight.tsx';
 import {useThemeContext} from '../App';
 import styles from './WhatIDo.module.scss';
@@ -16,39 +15,46 @@ interface ServiceCard {
 
 const services: ServiceCard[] = [
     {
-        emoji: '\u{1F4BB}',
-        title: 'Frontend Development',
-        description:
-            'Building responsive, performant user interfaces with modern frameworks. From pixel-perfect designs to complex interactive dashboards.',
-        tags: ['React', 'TypeScript', 'Tailwind', 'Next.js'],
-    },
-    {
         emoji: '\u{2699}\u{FE0F}',
         title: 'Backend & APIs',
         description:
-            'Designing and building robust server-side systems, RESTful APIs, and microservices that scale reliably under load.',
-        tags: ['Spring Boot', 'Node.js', 'REST', 'GraphQL'],
+            'Microservices handling 50,000+ daily transactions, REST APIs powering 1,000+ users, and third-party integrations with platforms like Salesforce, Mindbody, and Keycloak.',
+        tags: ['Spring Boot', 'Node.js', 'Python', 'PostgreSQL'],
     },
     {
-        emoji: '\u{2601}\u{FE0F}',
-        title: 'Cloud & DevOps',
+        emoji: '\u{1F4BB}',
+        title: 'Frontend & Mobile',
         description:
-            'Containerizing applications, setting up CI/CD pipelines, and managing cloud infrastructure for seamless deployments.',
-        tags: ['AWS', 'Docker', 'Jenkins', 'ECS'],
+            'Responsive web apps, interactive dashboards with million-row tables, and cross-platform mobile apps. Shipped iOS and Android builds from scratch.',
+        tags: ['React', 'TypeScript', 'React Native', 'Next.js'],
     },
     {
         emoji: '\u{1F916}',
-        title: 'AI & Integrations',
+        title: 'AI-Powered Systems',
         description:
-            'Building intelligent systems with RAG pipelines, LLM integrations, and AI-powered features that plug into existing workflows.',
-        tags: ['RAG', 'LLMs', 'Langchain', 'Vector DBs'],
+            'Conversational AI across SMS, email, and voice. RAG pipelines with vector search, LLM-driven insight engines, and intelligent lead scoring systems.',
+        tags: ['OpenAI', 'RAG', 'Vector DBs', 'VAPI'],
+    },
+    {
+        emoji: '\u{2601}\u{FE0F}',
+        title: 'Cloud & Infrastructure',
+        description:
+            'Containerized deployments on AWS, CI/CD pipelines that cut deployment time by 20%, and cloud migrations of legacy enterprise systems.',
+        tags: ['AWS', 'Docker', 'Jenkins', 'ECS'],
+    },
+    {
+        emoji: '\u{1F527}',
+        title: 'Hardware & Embedded',
+        description:
+            'UART protocol implementations for microcontrollers, QR-based validation systems on Raspberry Pi, and bridging firmware with cloud backends.',
+        tags: ['STM32', 'Raspberry Pi', 'Serial', 'IoT'],
     },
     {
         emoji: '\u{1F680}',
-        title: 'Full-Stack Applications',
+        title: 'End-to-End Delivery',
         description:
-            'End-to-end delivery from architecture to deployment. Taking ideas from napkin sketches to production-ready products.',
-        tags: ['System Design', 'Architecture', 'Deployment', 'Monitoring'],
+            'Solo-built entire products from architecture to app store. Taken codebases from 154MB to 20MB, and shipped production systems in as little as two weeks.',
+        tags: ['System Design', 'Architecture', 'App Store', 'Deployment'],
     },
 ];
 
@@ -96,12 +102,15 @@ const WhatIDo = () => {
         <section
             id="section2"
             className={styles.section}
-            style={backgrounds.whatIDo ? {
-                backgroundImage: `url('${backgrounds.whatIDo}')`,
-            } : undefined}
+            style={{
+                position: 'relative',
+                ...(backgrounds.whatIDo
+                    ? {backgroundImage: `url('${backgrounds.whatIDo}')`}
+                    : {background: season === 'winter'
+                        ? 'linear-gradient(170deg, #bed0e0 0%, #b9ccdd 20%, #b4c8da 40%, #afc4d7 60%, #aac0d4 80%, #a5bcd1 100%)'
+                        : 'linear-gradient(170deg, #f5eddd 0%, #f6ebd5 20%, #f7e8ce 40%, #f7e5c8 60%, #f6e1c0 80%, #f5debb 100%)'}),
+            }}
         >
-            <ParallaxText baseVelocity={200}>WHAT I DO</ParallaxText>
-
             <div className={styles.content}>
                 <AnimatedText delay={0.1}>
                     <div className={styles.subtitle} style={{color: palette.textSecondary}}>
@@ -193,7 +202,6 @@ const WhatIDo = () => {
                 </motion.div>
             </div>
 
-            <ParallaxText baseVelocity={200} direction="right">SERVICES</ParallaxText>
         </section>
     );
 };

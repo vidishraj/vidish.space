@@ -4,29 +4,25 @@ import {timelineData} from "../components/TimelineData.tsx";
 import {useThemeContext} from '../App';
 import {CSSProperties} from "react";
 
-// Summer uses tiled timeline backgrounds
-const summerTimelineBg: CSSProperties = {
-    backgroundImage: [
-        "url('/assets/timelineBG/bg1.png')",
-        "url('/assets/timelineBG/bg2.png')",
-        "url('/assets/timelineBG/bg3.png')",
-        "url('/assets/timelineBG/bg4.png')",
-        "url('/assets/timelineBG/bg5.png')",
-    ].join(', '),
-    backgroundPosition: '0% 0%, 0% 25%, 0% 50%, 0% 75%, 0% 100%',
-    backgroundSize: '100% 25%, 100% 25%, 100% 25%, 100% 25%, 100% 25%',
-    backgroundRepeat: 'no-repeat',
+const summerTimelineGradient: CSSProperties = {
+    background: 'linear-gradient(170deg, #fcf3ea 0%, #fdf5ee 15%, #fdf7f2 30%, #fef9f5 45%, #fefbf8 60%, #fffdfa 75%, #fffefc 90%, #fffffe 100%)',
 };
 
 const TimelineSection = () => {
     const {season, backgrounds, palette} = useThemeContext();
     const data = timelineData(season);
 
+    const winterTimelineGradient: CSSProperties = {
+        background: 'linear-gradient(170deg, #8ca8c2 0%, #87a4bf 15%, #82a0bc 30%, #7d9cb9 45%, #7898b6 60%, #7394b3 75%, #6e90b0 90%, #698cad 100%)',
+    };
+
     const sectionStyle: CSSProperties = season === 'summer'
-        ? summerTimelineBg
-        : backgrounds.timeline
-            ? {backgroundImage: `url('${backgrounds.timeline}')`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat'}
-            : {};
+        ? summerTimelineGradient
+        : season === 'winter'
+            ? winterTimelineGradient
+            : backgrounds.timeline
+                ? {backgroundImage: `url('${backgrounds.timeline}')`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat'}
+                : {};
 
     return (
         <section

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {motion, AnimatePresence} from 'framer-motion';
 import {Season, nextSeason} from '../utils/seasonConfig';
 
@@ -20,6 +20,8 @@ const SeasonPicker: React.FC<SeasonPickerProps> = ({
     className = '',
 }) => {
     const [size, setSize] = useState({width: 160, height: 38});
+    const [showHint, setShowHint] = useState(false);
+    const hasInteracted = useRef(false);
 
     useEffect(() => {
         const updateSize = () => {
@@ -33,6 +35,16 @@ const SeasonPicker: React.FC<SeasonPickerProps> = ({
         return () => window.removeEventListener('resize', updateSize);
     }, []);
 
+    useEffect(() => {
+        const seen = sessionStorage.getItem('season-picker-seen');
+        if (!seen) {
+            const timer = setTimeout(() => {
+                if (!hasInteracted.current) setShowHint(true);
+            }, 2000);
+            return () => clearTimeout(timer);
+        }
+    }, []);
+
     const seasons: Season[] = ['summer', 'monsoon', 'winter'];
     const activeIndex = seasons.indexOf(currentSeason);
     const segmentWidth = size.width / 3;
@@ -40,17 +52,30 @@ const SeasonPicker: React.FC<SeasonPickerProps> = ({
     const knobWidth = segmentWidth - knobPad * 2;
     const knobHeight = size.height - knobPad * 2;
 
+    const dismissHint = () => {
+        hasInteracted.current = true;
+        setShowHint(false);
+        sessionStorage.setItem('season-picker-seen', '1');
+    };
+
     const handleClick = () => {
+        dismissHint();
         onSeasonChange(nextSeason(currentSeason));
     };
 
     const handleSegmentClick = (season: Season) => {
+        dismissHint();
         if (season !== currentSeason) {
             onSeasonChange(season);
         }
     };
 
     const info = seasonIcons[currentSeason];
+    const glowColor = currentSeason === 'summer'
+        ? '#60a5fa'   // blue glow on warm background
+        : currentSeason === 'monsoon'
+            ? '#f59e0b' // amber glow on dark background
+            : '#f87171'; // red glow on cool blue background
     const trackBg = currentSeason === 'monsoon'
         ? 'rgba(30, 42, 54, 0.9)'
         : currentSeason === 'winter'
@@ -65,8 +90,23 @@ const SeasonPicker: React.FC<SeasonPickerProps> = ({
 
     return (
         <div className={`flex flex-col items-center gap-1.5 ${className}`}>
-            <button
+            <div className="relative">
+            <motion.button
                 className="relative outline-none focus:ring-0 focus:outline-none cursor-pointer"
+                animate={showHint ? {
+                    boxShadow: [
+                        `0 0 20px 8px ${glowColor}90, 0 0 40px 16px ${glowColor}50, 0 0 60px 24px ${glowColor}30`,
+                        `0 0 30px 14px ${glowColor}cc, 0 0 60px 24px ${glowColor}70, 0 0 90px 36px ${glowColor}40`,
+                        `0 0 20px 8px ${glowColor}90, 0 0 40px 16px ${glowColor}50, 0 0 60px 24px ${glowColor}30`,
+                    ],
+                } : {
+                    boxShadow: '0 0 0px 0px transparent',
+                }}
+                transition={showHint ? {
+                    duration: 1.8,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                } : {duration: 0.3}}
                 style={{
                     width: size.width,
                     height: size.height,
@@ -134,27 +174,54 @@ const SeasonPicker: React.FC<SeasonPickerProps> = ({
                         );
                     })}
                 </div>
-            </button>
+            </motion.button>
+            </div>
 
             {/* Season label */}
             <AnimatePresence mode="wait">
                 <motion.span
                     key={currentSeason}
                     initial={{opacity: 0, y: 4}}
-                    animate={{opacity: 0.7, y: 0}}
+                    animate={{opacity: 1, y: 0}}
                     exit={{opacity: 0, y: -4}}
                     transition={{duration: 0.2}}
                     style={{
-                        fontSize: '0.65rem',
+                        fontSize: '0.75rem',
                         fontFamily: "'Zain', sans-serif",
                         letterSpacing: '0.15em',
                         textTransform: 'uppercase',
-                        color: info.color,
-                        fontWeight: 600,
+                        color: glowColor,
+                        fontWeight: 700,
+                        textShadow: `0 0 8px ${glowColor}80, 0 1px 3px rgba(0,0,0,0.5)`,
                     }}
                 >
                     {info.label}
                 </motion.span>
+            </AnimatePresence>
+
+            {/* Hint text for first-time visitors */}
+            <AnimatePresence>
+                {showHint && (
+                    <motion.span
+                        initial={{opacity: 0, y: -4}}
+                        animate={{opacity: 1, y: 0}}
+                        exit={{opacity: 0, y: -4}}
+                        transition={{duration: 0.3}}
+                        style={{
+                            fontSize: '0.8rem',
+                            fontFamily: "'Zain', sans-serif",
+                            color: '#fff',
+                            fontWeight: 700,
+                            letterSpacing: '0.03em',
+                            background: glowColor,
+                            padding: '4px 14px',
+                            borderRadius: '999px',
+                            boxShadow: `0 2px 8px ${glowColor}80`,
+                        }}
+                    >
+                        Try switching seasons!
+                    </motion.span>
+                )}
             </AnimatePresence>
         </div>
     );

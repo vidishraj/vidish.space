@@ -4,7 +4,18 @@ import flattenColorPalette from "tailwindcss/lib/util/flattenColorPalette";
 export default {
     content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
     theme: {
-        extend: {},
+        extend: {
+            animation: {
+                scroll: 'scroll var(--animation-duration, 40s) var(--animation-direction, forwards) linear infinite',
+            },
+            keyframes: {
+                scroll: {
+                    to: {
+                        transform: 'translate(calc(-50% - 0.5rem))',
+                    },
+                },
+            },
+        },
     },
     plugins: [addVariablesForColors],
 };
