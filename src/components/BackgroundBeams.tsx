@@ -1,5 +1,5 @@
 import {cn} from "../utils/utils";
-import {motion} from "framer-motion";
+import {motion, useAnimation} from "framer-motion";
 import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {ParticleMode} from "../utils/seasonConfig";
 
@@ -154,67 +154,81 @@ const FallingParticle = React.memo(({
     options,
     particleMode,
     travelDistance,
-    snowStartY = 0,
+    snowStartYRef,
 }: {
     options: ParticleOptions;
     particleMode: ParticleMode;
     travelDistance: number;
-    snowStartY?: number;
+    snowStartYRef: React.MutableRefObject<number>;
 }) => {
+    const controls = useAnimation();
+    const mountedRef = useRef(true);
     const size = Math.max(options.width, options.height);
-
-    // Snow starts at snowStartY (dynamic); others start off-screen
-    const startY = particleMode === 'snow' ? snowStartY : -80;
-    const snowTravel = travelDistance - (particleMode === 'snow' ? startY : 0);
-    // Snow: derive duration from travel distance for consistent gentle speed (~80px/s)
-    const effectiveDuration = particleMode === 'snow'
-        ? snowTravel / 80
-        : options.duration;
+    const isSnow = particleMode === 'snow';
 
     const restFraction = particleMode === 'leaves' ? 0.35 : 0.3;
-    const totalDuration = effectiveDuration / (1 - restFraction);
     const fallEnd = 1 - restFraction;
-    const restRotation = particleMode === 'leaves'
-        ? options.rotation + (Math.random() > 0.5 ? 60 : -60)
-        : options.rotation;
+    const restRotation = useMemo(() =>
+        particleMode === 'leaves'
+            ? options.rotation + (Math.random() > 0.5 ? 60 : -60)
+            : options.rotation,
+    [particleMode, options.rotation]);
+
+    const runCycle = useCallback(async () => {
+        if (!mountedRef.current) return;
+
+        // Read latest snowStartY from ref — no re-render needed
+        const startY = isSnow ? snowStartYRef.current : -80;
+        const travel = travelDistance - (isSnow ? startY : 0);
+        const effectiveDuration = isSnow ? travel / 80 : options.duration;
+        const totalDuration = effectiveDuration / (1 - restFraction);
+
+        try {
+            await controls.start({
+                translateY: [startY, travelDistance, travelDistance],
+                translateX: [0, options.horizontalDrift, options.horizontalDrift],
+                rotate: [0, options.rotation, restRotation],
+                opacity: [options.opacity, options.opacity, 0],
+                transition: {
+                    duration: totalDuration,
+                    times: [0, fallEnd, 1],
+                    ease: "linear",
+                },
+            });
+        } catch {
+            return; // Animation cancelled on unmount
+        }
+
+        if (!mountedRef.current) return;
+
+        if (options.repeatDelay > 0) {
+            await new Promise(r => setTimeout(r, options.repeatDelay * 1000));
+        }
+
+        if (mountedRef.current) runCycle();
+    }, [controls, travelDistance, isSnow, snowStartYRef, options, restFraction, fallEnd, restRotation]);
+
+    useEffect(() => {
+        mountedRef.current = true;
+        const timeout = setTimeout(() => {
+            if (mountedRef.current) runCycle();
+        }, options.delay * 1000);
+
+        return () => {
+            mountedRef.current = false;
+            clearTimeout(timeout);
+            controls.stop();
+        };
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
         <motion.div
+            animate={controls}
             initial={{
-                translateY: startY,
+                translateY: isSnow ? snowStartYRef.current : -80,
                 translateX: 0,
                 rotate: 0,
                 opacity: options.opacity,
-            }}
-            animate={{
-                translateY: [
-                    startY,
-                    travelDistance,
-                    travelDistance,
-                ],
-                translateX: [
-                    0,
-                    options.horizontalDrift,
-                    options.horizontalDrift,
-                ],
-                rotate: [
-                    0,
-                    options.rotation,
-                    restRotation,
-                ],
-                opacity: [
-                    options.opacity,
-                    options.opacity,
-                    0,
-                ],
-            }}
-            transition={{
-                duration: totalDuration,
-                times: [0, fallEnd, 1],
-                repeat: Infinity,
-                ease: "linear",
-                delay: options.delay,
-                repeatDelay: options.repeatDelay,
             }}
             style={{
                 position: "absolute",
@@ -222,7 +236,6 @@ const FallingParticle = React.memo(({
                 top: 0,
                 width: `${size}px`,
                 height: `${size}px`,
-                // willChange removed — GPU layer per particle is too expensive
             }}
         >
             {particleMode === 'leaves' ? (
@@ -479,14 +492,14 @@ export const ParticleOverlay = React.memo(({
         isSnow ? window.innerHeight : window.innerHeight
     );
     // Dynamic snow start: 45vh while hero visible, 0 once hero scrolls out
-    const [snowStartY, setSnowStartY] = useState(isSnow ? window.innerHeight * 0.45 : 0);
+    // Ref avoids re-renders — each particle reads latest value at cycle start
+    const snowStartYRef = useRef(isSnow ? window.innerHeight * 0.45 : 0);
 
     useEffect(() => {
         if (!isSnow) return;
         const onScroll = () => {
-            // Hero images occupy top 50vh — once that's scrolled out, start snow from top
             const scrolled = window.scrollY >= window.innerHeight * 0.5;
-            setSnowStartY(scrolled ? 0 : window.innerHeight * 0.45);
+            snowStartYRef.current = scrolled ? 0 : window.innerHeight * 0.45;
         };
         onScroll();
         window.addEventListener('scroll', onScroll, {passive: true});
@@ -647,7 +660,7 @@ export const ParticleOverlay = React.memo(({
                         options={particle}
                         particleMode={particleMode}
                         travelDistance={travelDistance}
-                        snowStartY={snowStartY}
+                        snowStartYRef={snowStartYRef}
                     />
                 ))
             )}
