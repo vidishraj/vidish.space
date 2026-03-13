@@ -39,6 +39,8 @@ function InfiniteMovingCards<T>({
     const momentumRafId = useRef(0);
 
     const DRAG_THRESHOLD = 5;
+    const isHorizontalDrag = useRef(false);
+    const startY = useRef(0);
 
     const getSpeed = useCallback(() => {
         // px per frame at ~60fps
@@ -93,17 +95,19 @@ function InfiniteMovingCards<T>({
             // Momentum done, auto-scroll resumes via main loop
             return;
         }
-        velocity.current *= 0.95;
+        velocity.current *= 0.97;
         position.current += velocity.current;
         position.current = wrapPosition(position.current);
         applyPosition();
         momentumRafId.current = requestAnimationFrame(applyMomentum);
     }, [wrapPosition, applyPosition]);
 
-    const handleDragStart = useCallback((clientX: number) => {
+    const handleDragStart = useCallback((clientX: number, clientY?: number) => {
         isDragging.current = true;
         dragActivated.current = false;
+        isHorizontalDrag.current = false;
         startX.current = clientX;
+        startY.current = clientY ?? 0;
         dragStartPos.current = position.current;
         velocity.current = 0;
         lastX.current = clientX;
@@ -111,18 +115,33 @@ function InfiniteMovingCards<T>({
         cancelAnimationFrame(momentumRafId.current);
     }, []);
 
-    const handleDragMove = useCallback((clientX: number) => {
+    const handleDragMove = useCallback((clientX: number, clientY?: number, e?: TouchEvent) => {
         if (!isDragging.current) return;
 
         if (!dragActivated.current) {
-            if (Math.abs(clientX - startX.current) < DRAG_THRESHOLD) return;
+            const dx = Math.abs(clientX - startX.current);
+            const dy = Math.abs((clientY ?? 0) - startY.current);
+
+            if (dx < DRAG_THRESHOLD && dy < DRAG_THRESHOLD) return;
+
+            // Determine drag direction — if more vertical, let browser handle scroll
+            if (dy > dx) {
+                isDragging.current = false;
+                return;
+            }
+
+            isHorizontalDrag.current = true;
             dragActivated.current = true;
-            // Re-anchor drag start to current position to avoid jump
             dragStartPos.current = position.current;
             startX.current = clientX;
             if (containerRef.current) {
                 containerRef.current.style.cursor = 'grabbing';
             }
+        }
+
+        // Prevent vertical page scroll while dragging horizontally
+        if (isHorizontalDrag.current && e) {
+            e.preventDefault();
         }
 
         const now = performance.now();
@@ -207,12 +226,12 @@ function InfiniteMovingCards<T>({
         const container = containerRef.current;
         if (!container) return;
 
-        const onTouchStart = (e: TouchEvent) => handleDragStart(e.touches[0].clientX);
-        const onTouchMove = (e: TouchEvent) => handleDragMove(e.touches[0].clientX);
+        const onTouchStart = (e: TouchEvent) => handleDragStart(e.touches[0].clientX, e.touches[0].clientY);
+        const onTouchMove = (e: TouchEvent) => handleDragMove(e.touches[0].clientX, e.touches[0].clientY, e);
         const onTouchEnd = () => handleDragEnd();
 
         container.addEventListener('touchstart', onTouchStart, {passive: true});
-        container.addEventListener('touchmove', onTouchMove, {passive: true});
+        container.addEventListener('touchmove', onTouchMove, {passive: false});
         container.addEventListener('touchend', onTouchEnd);
 
         return () => {
@@ -239,6 +258,7 @@ function InfiniteMovingCards<T>({
                 WebkitMaskImage: 'linear-gradient(to right, transparent, white 10%, white 90%, transparent)',
                 cursor: 'grab',
                 userSelect: 'none',
+                touchAction: 'pan-y',
             }}
         >
             <ul
