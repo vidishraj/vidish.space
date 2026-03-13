@@ -154,16 +154,18 @@ const FallingParticle = React.memo(({
     options,
     particleMode,
     travelDistance,
+    snowStartY = 0,
 }: {
     options: ParticleOptions;
     particleMode: ParticleMode;
     travelDistance: number;
+    snowStartY?: number;
 }) => {
     const size = Math.max(options.width, options.height);
 
-    // Snow starts at 45vh; others start off-screen
-    const snowStartY = particleMode === 'snow' ? window.innerHeight * 0.45 : -80;
-    const snowTravel = travelDistance - (particleMode === 'snow' ? snowStartY : 0);
+    // Snow starts at snowStartY (dynamic); others start off-screen
+    const startY = particleMode === 'snow' ? snowStartY : -80;
+    const snowTravel = travelDistance - (particleMode === 'snow' ? startY : 0);
     // Snow: derive duration from travel distance for consistent gentle speed (~80px/s)
     const effectiveDuration = particleMode === 'snow'
         ? snowTravel / 80
@@ -179,14 +181,14 @@ const FallingParticle = React.memo(({
     return (
         <motion.div
             initial={{
-                translateY: snowStartY,
+                translateY: startY,
                 translateX: 0,
                 rotate: 0,
                 opacity: options.opacity,
             }}
             animate={{
                 translateY: [
-                    snowStartY,
+                    startY,
                     travelDistance,
                     travelDistance,
                 ],
@@ -476,6 +478,20 @@ export const ParticleOverlay = React.memo(({
     const [containerHeight, setContainerHeight] = useState(
         isSnow ? window.innerHeight : window.innerHeight
     );
+    // Dynamic snow start: 45vh while hero visible, 0 once hero scrolls out
+    const [snowStartY, setSnowStartY] = useState(isSnow ? window.innerHeight * 0.45 : 0);
+
+    useEffect(() => {
+        if (!isSnow) return;
+        const onScroll = () => {
+            // Hero images occupy top 50vh — once that's scrolled out, start snow from top
+            const scrolled = window.scrollY >= window.innerHeight * 0.5;
+            setSnowStartY(scrolled ? 0 : window.innerHeight * 0.45);
+        };
+        onScroll();
+        window.addEventListener('scroll', onScroll, {passive: true});
+        return () => window.removeEventListener('scroll', onScroll);
+    }, [isSnow]);
 
     useEffect(() => {
         if (isSnow) {
@@ -631,6 +647,7 @@ export const ParticleOverlay = React.memo(({
                         options={particle}
                         particleMode={particleMode}
                         travelDistance={travelDistance}
+                        snowStartY={snowStartY}
                     />
                 ))
             )}
