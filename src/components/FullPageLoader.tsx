@@ -1,15 +1,15 @@
 import Lottie from 'lottie-react';
 import {motion} from 'framer-motion';
-import { useThemeContext } from '../App';
+import {useThemeContext} from '../App';
 
 const FullPageLoader = ({animationData, message = 'Loading...'}: { animationData: unknown, message: string }) => {
-    const { isDarkMode } = useThemeContext();
+    const {palette} = useThemeContext();
 
     return (
         <motion.div
             className={`fixed inset-0 w-full h-full flex flex-col items-center justify-center`}
             style={{
-                backgroundColor: isDarkMode ? '#111827' : '#ffffff',
+                backgroundColor: palette.loaderBg,
                 zIndex: 9999,
             }}
             initial={{opacity: 0}}
@@ -28,7 +28,7 @@ const FullPageLoader = ({animationData, message = 'Loading...'}: { animationData
                     }}
                 />
             </div>
-            <p className={`text-lg mt-4 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+            <p className="text-lg mt-4" style={{color: palette.loaderText}}>
                 {message}
             </p>
         </motion.div>

@@ -1,4 +1,3 @@
-"use client";
 import {motion, useScroll, useTransform,} from "framer-motion";
 import React, {useEffect, useRef, useState} from "react";
 import {cn} from "../utils/utils";
@@ -20,20 +19,21 @@ export const Timeline = ({data, titleClassName, containerClassname}: {
     const ref = useRef<HTMLDivElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     const [height, setHeight] = useState(0);
-    const cardRef = useRef<HTMLCollectionOf<Element>>(document.getElementsByClassName('py-10 md:py-40 w-full relative'));
     const [lastHeight, setLastHeight] = useState(20);
     useEffect(() => {
-        if (containerRef.current && cardRef.current.length == 4) {
+        const cards = containerRef.current?.querySelectorAll('.py-10.md\\:py-40.w-full.relative');
+        if (containerRef.current && cards && cards.length === 5) {
             setLastHeight(containerRef.current.scrollHeight - containerRef.current.clientHeight + lastHeight);
         }
         if (ref.current) {
             const rect = ref.current.getBoundingClientRect();
             setHeight(rect.height);
         }
-    }, [ref, containerRef, cardRef, lastHeight]);
+    }, [ref, containerRef, lastHeight]);
     useEffect(() => {
         function handleResize() {
-            if (containerRef.current && cardRef.current.length == 4) {
+            const cards = containerRef.current?.querySelectorAll('.py-10.md\\:py-40.w-full.relative');
+            if (containerRef.current && cards && cards.length === 5) {
                 setLastHeight(containerRef.current.scrollHeight - containerRef.current.clientHeight - lastHeight);
             }
         }
@@ -75,16 +75,18 @@ export const Timeline = ({data, titleClassName, containerClassname}: {
                             <h3 className={cn("hidden md:block text-xl md:pl-20 md:text-5xl font-bold text-light-100 dark:text-neutral-500 ", titleClassName)}>
                                 {item.title}
                             </h3>
-                            <LazyLottie
-                                animationImport={item.animationData}
-                                style={{
-                                    height: '100px',
-                                    width: '100%',
-                                    position: 'absolute',
-                                    top: "150px",
-                                    zIndex: -500
-                                }}
-                            />
+                            {index < data.length - 1 && (
+                                <LazyLottie
+                                    animationImport={item.animationData}
+                                    style={{
+                                        height: '100px',
+                                        width: '100%',
+                                        position: 'absolute',
+                                        top: "150px",
+                                        zIndex: -500
+                                    }}
+                                />
+                            )}
                         </div>
 
                         <div className="relative pl-20 pr-4 md:pl-4 w-full flex-col"
@@ -92,14 +94,16 @@ export const Timeline = ({data, titleClassName, containerClassname}: {
                             <h3 className={cn("md:hidden block text-2xl mb-4 text-left font-bold text-neutral-500 dark:text-neutral-500", titleClassName)}>
                                 {item.title}
                             </h3>
-                            <LazyLottie className={"md:hidden block"} animationImport={item.animationData}
-                                        style={{
-                                            height: '150px',
-                                            width: '100%',
-                                            position: 'absolute',
-                                            top: "50px",
-                                            right: 0
-                                        }}/>
+                            {index < data.length - 1 && (
+                                <LazyLottie className={"md:hidden block"} animationImport={item.animationData}
+                                            style={{
+                                                height: '150px',
+                                                width: '100%',
+                                                position: 'absolute',
+                                                top: "50px",
+                                                right: 0
+                                            }}/>
+                            )}
                             {item.content}{" "}
 
                         </div>

@@ -1,22 +1,13 @@
-// Section3.tsx
-import {useEffect, useRef} from 'react';
+import {useRef} from 'react';
 import styles from './Projects.module.scss';
 import {ProjectsGrid} from "../components/Carousel.tsx";
 import ParallaxText from "../components/LetterScroll.tsx";
-import { useThemeContext } from '../App';
+import {useThemeContext} from '../App';
 
 export const Projects = () => {
     const sectionRef = useRef<HTMLElement>(null);
-    const { isDarkMode } = useThemeContext();
-    
-    // Adjust the height of the section to accommodate all slides
-    useEffect(() => {
-        const section = document.getElementById('section3');
-        if (section) {
-            // Save the original reference
-            sectionRef.current = section;
-        }
-    }, []);
+    const {season, backgrounds} = useThemeContext();
+    const isMonsoon = season === 'monsoon';
 
     const content = [
         {
@@ -25,43 +16,40 @@ export const Projects = () => {
                 "Managing finances across multiple banks and investments is a hassle. Akkountant simplifies it by automatically tracking your transactions and investments, fetching real-time data, and storing everything securely. Whether it's keeping an eye on your spending or monitoring your portfolio, Akkountant ensures you're always in control.",
             img: "/assets/akkountantModal/akkountant.webp",
             content: (
-                <div
-                    className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--cyan-500),var(--emerald-500))] flex items-center justify-center text-white">
-                    Collaborative Editing
+                <div>
+                    Running out of content
                 </div>
             ),
         },
         {
-            title: "TripSplit – Because Math and Vacations Don't Mix!",
+            title: "TripSplit – Effortless Group Expense Management",
             description:
-                "Ever struggled to split expenses on a trip? TripSplit makes it easy by handling multiple currencies, tracking shared and personal expenses, and keeping balances clear—so you can focus on making memories, not spreadsheets.",
+                "Splitting bills among friends shouldn't be a headache. TripSplit makes group expense management simple—track shared costs, split bills fairly, and settle up without the usual confusion. No more awkward \"who owes whom\" conversations.",
             img: "/assets/tripsplitModal/tripsplit.png",
             content: (
-                <div className="h-full w-full flex items-center justify-center text-white">
-                    Hello
+                <div>
+                    Running out of content
                 </div>
             ),
         },
         {
-            title: "Vidish.Space - A little about me 👨‍💻",
+            title: "Vidish.Space – My Digital Playground",
             description:
-                "A simple and clean portfolio built with React 18, featuring sections for my experience, projects, and contact info. It includes smooth animations, dark/light mode support, and a responsive design for a seamless browsing experience.",
+                "A handcrafted portfolio website where design meets functionality. Built with React, it showcases projects, integrates animations, and reflects my love for clean, creative web development.",
             img: "/assets/vidishSpaceModal/vidishSpaceDark.webp",
             content: (
-                <div
-                    className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--orange-500),var(--yellow-500))] flex items-center justify-center text-white">
-                    Version control
+                <div>
+                    Running out of content
                 </div>
             ),
         },
         {
-            title: "LeetcodeToGit - Hard-Earned Solutions Deserve a Home 🏡",
+            title: "LeetcodeToGit – Automate Your Coding Journal",
             description:
-                "Never lose a LeetCode solution again! 🚀 LeetCodeToGit is a CLI tool that fetches your best LeetCode submissions and syncs them to a Git repository—automatically! It uses GraphQL APIs, your session cookies, and Git commands to ensure your solutions are always backed up. Solve, sync, and flex your repository with ease!",
+                "A Chrome extension that bridges LeetCode and GitHub. Automatically pushes your LeetCode solutions to a GitHub repository, keeping your coding journey organized and version-controlled—zero manual effort required.",
             img: "/assets/leetcodeToGitModal/gitLeet.webp",
             content: (
-                <div
-                    className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--cyan-500),var(--emerald-500))] flex items-center justify-center text-white">
+                <div>
                     Running out of content
                 </div>
             ),
@@ -70,20 +58,27 @@ export const Projects = () => {
 
     return (
         <section
-            id="section3"
-            className={`${styles.section3} ${isDarkMode ? styles.section3Dark : ''}`}
+            id="section4"
+            className={styles.section3}
             style={{
                 maxHeight: "max-content",
                 width: '100vw',
                 display: 'flex',
                 flexDirection: 'column',
+                ...(backgrounds.projects
+                    ? {backgroundImage: `url('${backgrounds.projects}')`}
+                    : season === 'summer'
+                        ? {background: 'linear-gradient(170deg, #fffffe 0%, #fefefe 15%, #fcfcfd 30%, #f8f9fb 45%, #f4f6f9 60%, #f0f3f7 75%, #ecf0f5 90%, #e6ecf2 100%)'}
+                        : season === 'winter'
+                            ? {background: 'linear-gradient(170deg, #698cad 0%, #6488aa 15%, #5f84a7 30%, #5a80a4 45%, #557ca1 60%, #50789e 75%, #4b749b 90%, #467098 100%)'}
+                            : {}),
             }}
             ref={sectionRef}>
             <div style={{width: '100%', height: '100%'}}>
                 <ParallaxText baseVelocity={200}>MY WORK</ParallaxText>
                 <ProjectsGrid slides={content}/>
-                <ParallaxText baseVelocity={200}  direction={"right"}>Projects</ParallaxText>
             </div>
+            <ParallaxText baseVelocity={200} direction={isMonsoon ? 'left' : 'right'}>Projects</ParallaxText>
         </section>
     );
 };

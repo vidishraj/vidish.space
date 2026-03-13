@@ -1,14 +1,16 @@
-import React, {useRef, useState} from "react";
+import React, {CSSProperties, useRef, useState} from "react";
 import {motion, MotionValue, useScroll, useTransform} from "framer-motion";
 import {cn} from '../utils/utils'
 
 export const ContainerScroll = ({
                                     children,
                                     containerClassName,
+                                    containerStyle,
                                     className
                                 }: {
     children: React.ReactNode;
     containerClassName: string,
+    containerStyle?: CSSProperties,
     className: string
 }) => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -49,7 +51,7 @@ export const ContainerScroll = ({
                 }}
             >
                 {/*<Header translate={translate} titleComponent={titleComponent}/>*/}
-                <WobbleCard rotate={rotate} scale={scale} containerClassName={containerClassName} className={className}
+                <WobbleCard rotate={rotate} scale={scale} containerClassName={containerClassName} containerStyle={containerStyle} className={className}
                 >
                     {children}
                 </WobbleCard>
@@ -62,11 +64,13 @@ export const ContainerScroll = ({
 export const WobbleCard = ({
                                children,
                                containerClassName,
+                               containerStyle,
                                className,
                                scale, rotate
                            }: {
     children: React.ReactNode;
     containerClassName?: string;
+    containerStyle?: CSSProperties;
     className?: string;
     rotate: MotionValue<number>;
     scale: MotionValue<number>;
@@ -101,6 +105,7 @@ export const WobbleCard = ({
                     rotateX: rotate,
                     scale,
                     boxShadow: "0 0 #0000004d, 0 9px 20px #0000004a, 0 37px 37px #00000042, 0 84px 50px #00000026, 0 149px 60px #0000000a, 0 233px 65px #00000003",
+                    ...containerStyle,
                 }}
                 className={cn(
                     "mx-auto w-full bg-indigo-800  relative rounded-2xl overflow-hidden",

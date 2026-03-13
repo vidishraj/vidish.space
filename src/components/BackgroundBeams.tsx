@@ -1,417 +1,310 @@
-"use client";
 import {cn} from "../utils/utils";
-import {AnimatePresence, motion} from "framer-motion";
+import {motion} from "framer-motion";
 import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import {ParticleMode} from "../utils/seasonConfig";
+
+interface ParticleOptions {
+    positionPct: number;
+    horizontalDrift: number;
+    duration: number;
+    repeatDelay: number;
+    delay: number;
+    width: number;
+    height: number;
+    opacity: number;
+    blur: string;
+    rotation: number;
+    color: string;
+    pathIndex: number;
+}
 
 export const BackgroundBeamsWithCollision = ({
-                                                 children,
-                                                 className,
-                                                 lightMode,
-                                                 beamSpeed = 1,
-                                                 beamCount = 50,
-                                             }: {
+    children,
+    className,
+    style,
+}: {
     children: React.ReactNode;
     className?: string;
-    lightMode: boolean;
-    beamSpeed?: number; // Beam speed (1-8)
-    beamCount?: number; // Beam quantity
+    style?: React.CSSProperties;
+    particleMode?: ParticleMode;
+    beamSpeed?: number;
+    beamCount?: number;
 }) => {
-    const containerRef = useRef<HTMLDivElement>(null);
-    const parentRef = useRef<HTMLDivElement>(null);
-    const [windowWidth, setWindowWidth] = useState(() => {
-        return typeof window !== 'undefined' ? window.innerWidth : 1400;
-    });
-    const [modeKey, setModeKey] = useState(lightMode ? 'light' : 'dark'); // Add mode key to force re-render
-
-    // Handle window resize with debouncing for performance
-    useEffect(() => {
-        let debounceTimeout: number;
-
-        const handleResize = () => {
-            clearTimeout(debounceTimeout);
-            debounceTimeout = window.setTimeout(() => {
-                setWindowWidth(window.innerWidth);
-            }, 200);
-        };
-
-        // Set initial width
-        setWindowWidth(window.innerWidth);
-
-        window.addEventListener('resize', handleResize);
-        return () => {
-            window.removeEventListener('resize', handleResize);
-            clearTimeout(debounceTimeout);
-        };
-    }, []);
-
-    // Reset particles when light mode changes to prevent incorrect splashes
-    useEffect(() => {
-        setModeKey(lightMode ? 'light' : 'dark');
-    }, [lightMode]);
-
-    // Improved speed calculation that provides smoother transitions
-    // Lower values = faster animation (inverse relationship)
-    const speedFactor = useMemo(() => {
-        // Ensure beamSpeed is within range 1-8
-        const normalizedSpeed = Math.max(1, Math.min(8, beamSpeed));
-
-        // Create a non-linear mapping for more natural speed progression
-        // At speed 1: factor = 1.4 (slower)
-        // At speed 8: factor = 0.4 (faster)
-        return 1.5 - (normalizedSpeed * 0.14);
-    }, [beamSpeed]);
-
-    // Optimize beam count based on device capabilities
-    const adaptedBeamCount = useMemo(() => {
-        if (typeof window !== 'undefined') {
-            if (window.innerWidth < 480) {
-                return Math.min(20, beamCount); // More conservative for mobile
-            } else if (window.innerWidth < 768) {
-                return Math.min(30, beamCount);
-            }
-        }
-        return beamCount;
-    }, [beamCount]);
-
-    // Generate particles with optimized size calculations
-    const particles = useMemo(() => {
-        return Array.from({length: adaptedBeamCount}, () => {
-            const randomPosition = Math.random();
-
-            // Randomize particle properties
-            const isSmall = Math.random() > 0.5; // 50% chance for smaller particles
-            const isVerySmall = Math.random() > 0.8; // 20% chance for very small particles
-
-            // Set particle dimensions based on screen size to maintain proportion
-            const baseScale = typeof window !== 'undefined' && window.innerWidth < 480 ? 0.7 : 1;
-
-            let dropWidth, dropHeight, dropOpacity;
-
-            if (isVerySmall) {
-                dropWidth = 5 * baseScale;
-                dropHeight = lightMode ? 8 * baseScale : 10 * baseScale; // Shorter fire particles
-                dropOpacity = 0.6 + Math.random() * 0.3;
-            } else if (isSmall) {
-                dropWidth = 8 * baseScale;
-                dropHeight = lightMode ? 12 * baseScale : 14 * baseScale;
-                dropOpacity = 0.7 + Math.random() * 0.3;
-            } else {
-                dropWidth = 14 * baseScale;
-                dropHeight = lightMode ? 20 * baseScale : 24 * baseScale;
-                dropOpacity = 0.75 + Math.random() * 0.25;
-            }
-
-            // Calculate fall speed based on size and speed factor
-            // Improved physics model with better size-to-speed relationship
-            const sizeRatio = dropHeight / 24; // Normalize to the size of large drops
-
-            // Apply speed factor with a more natural curve
-            // In light mode (fire), particles rise slightly faster
-            const baseSpeed = lightMode
-                ? (3.5 + (sizeRatio * 2)) * speedFactor
-                : (4 + (sizeRatio * 2.5)) * speedFactor;
-
-            // Add slight variation to prevent uniform movement
-            const speedVariation = 0.85 + (Math.random() * 0.3);
-            const finalSpeed = baseSpeed * speedVariation;
-
-            return {
-                initialX: randomPosition * windowWidth,
-                translateX: (randomPosition * windowWidth) + (Math.random() * 8 - 4), // Slightly more drift for large screens
-                duration: finalSpeed, // Physics-based speed with variation
-                repeatDelay: Math.random() * 0.6, // Reduced delay for smoother flow
-                delay: Math.random() * 1, // Staggered start for natural effect
-                width: dropWidth,
-                height: dropHeight,
-                opacity: dropOpacity,
-                blur: isSmall ? '0.5px' : (isVerySmall ? '0px' : '0.7px'), // Reduced blur
-            };
-        });
-    }, [windowWidth, adaptedBeamCount, speedFactor, lightMode]);
-
     return (
         <div
-            ref={parentRef}
             className={cn(
-                "h-[50vh] from-white to-neutral-100 dark:from-neutral-950 dark:to-neutral-800 relative flex items-center w-full justify-center overflow-hidden",
+                "h-[50vh] relative flex items-center w-full justify-center",
                 className
             )}
+            style={style}
         >
-            {particles.map((particle, index) => (
-                <ParticleCollision
-                    key={`particle-${index}-${windowWidth}-${modeKey}-${beamSpeed}`} // Include beamSpeed in key to force re-render
-                    particleOptions={particle}
-                    containerRef={containerRef}
-                    parentRef={parentRef}
-                    lightMode={lightMode}
-                />
-            ))}
             {children}
-            <div
-                ref={containerRef}
-                className="absolute bottom-0 w-full inset-x-0 h-2 pointer-events-none"
-                // Increased height to 2px for better collision detection
-                style={{
-                    opacity: 0,
-                    background: 'transparent'
-                }}
-            />
         </div>
     );
 };
 
-// Optimized ParticleCollision component
-const ParticleCollision = React.memo(
-    ({parentRef, containerRef, particleOptions = {}, lightMode}: {
-        containerRef: React.RefObject<HTMLDivElement | null>;
-        parentRef: React.RefObject<HTMLDivElement | null>;
-        particleOptions?: {
-            initialX?: number;
-            translateX?: number;
-            initialY?: number;
-            translateY?: number;
-            rotate?: number;
-            duration?: number;
-            delay?: number;
-            repeatDelay?: number;
-            width?: number;
-            height?: number;
-            opacity?: number;
-            blur?: string;
-        };
-        lightMode: boolean;
-    }) => {
-        const particleRef = useRef<HTMLDivElement>(null);
-        const [collisionState, setCollisionState] = useState({
-            detected: false,
-            coordinates: null as { x: number; y: number } | null,
-        });
+// ─── Leaf SVG paths (viewBox 0 0 100 100) ────────────────────
+const LEAF_PATHS = [
+    // Maple leaf
+    `M50 95 L50 55
+     M50 55 C45 50 30 52 20 42 C25 42 30 40 35 42 C30 35 20 30 15 18
+     C22 22 28 25 35 28 C32 20 28 10 30 2 C35 10 40 20 42 28
+     C45 22 48 12 50 5 C52 12 55 22 58 28 C60 20 65 10 70 2
+     C72 10 68 20 65 28 C72 25 78 22 85 18 C80 30 70 35 65 42
+     C70 40 75 42 80 42 C70 52 55 50 50 55Z`,
+    // Simple oval leaf
+    `M50 5
+     C35 5 15 20 12 45
+     C10 60 20 80 50 95
+     C80 80 90 60 88 45
+     C85 20 65 5 50 5Z
+     M50 20 L50 85`,
+    // Asymmetric elm leaf
+    `M50 5
+     C40 8 25 18 18 35
+     C12 50 18 70 35 82
+     C42 88 48 93 50 95
+     C52 93 58 88 65 82
+     C78 72 85 55 82 38
+     C78 22 62 8 50 5Z
+     M50 15 L50 88
+     M50 35 C40 30 30 35 25 40
+     M50 50 C60 45 70 48 75 55
+     M50 65 C42 60 34 63 28 68`,
+    // Heart-shaped linden leaf
+    `M50 95 L50 50
+     M50 50
+     C48 45 40 35 30 30
+     C18 24 8 35 10 50
+     C12 65 25 78 50 50
+     M50 50
+     C75 78 88 65 90 50
+     C92 35 82 24 70 30
+     C60 35 52 45 50 50Z
+     M50 55 L50 90`,
+    // Oak leaf
+    `M50 95 L50 50
+     M50 50
+     C48 45 42 40 35 42
+     C28 44 22 38 20 30
+     C25 32 30 30 33 35
+     C30 28 25 20 22 12
+     C28 15 34 18 38 25
+     C38 18 38 10 42 5
+     C46 8 48 15 48 22
+     C50 15 52 8 55 5
+     C60 8 60 18 58 25
+     C64 18 70 15 75 12
+     C72 20 68 28 65 35
+     C68 30 72 32 78 30
+     C76 38 70 44 63 42
+     C56 40 52 45 50 50Z`,
+];
 
-        // Track animation phase to better manage collision timing
-        const animationPhaseRef = useRef({
-            active: true,
-            collided: false,
-            startTime: Date.now(),
-            duration: (particleOptions.duration || 8) * 1000, // Convert to ms
-            delay: (particleOptions.delay || 0) * 1000, // Convert to ms
-        });
+// ─── Leaf SVG renderer ───────────────────────────────────────
+const LeafSVG = React.memo(({size, color, pathIndex}: {size: number; color: string; pathIndex: number}) => {
+    const path = LEAF_PATHS[pathIndex % LEAF_PATHS.length];
+    return (
+        <svg width={size} height={size} viewBox="0 0 100 100" style={{overflow: 'visible'}}>
+            <path d={path} fill={color} stroke={color} strokeWidth="1" fillRule="evenodd" />
+            <path d={path} fill="url(#leafShine)" fillRule="evenodd" opacity="0.15" />
+            <defs>
+                <linearGradient id="leafShine" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stopColor="white" />
+                    <stop offset="100%" stopColor="transparent" />
+                </linearGradient>
+            </defs>
+        </svg>
+    );
+});
+LeafSVG.displayName = 'LeafSVG';
 
-        const animationFrameRef = useRef<number | null>(null);
-
-        // Reset animation tracking when component mounts or key properties change
-        useEffect(() => {
-            animationPhaseRef.current = {
-                active: true,
-                collided: false,
-                startTime: Date.now(),
-                duration: (particleOptions.duration || 8) * 1000,
-                delay: (particleOptions.delay || 0) * 1000,
-            };
-
-            return () => {
-                animationPhaseRef.current.active = false;
-                if (animationFrameRef.current) {
-                    cancelAnimationFrame(animationFrameRef.current);
-                }
-            };
-        }, [particleOptions.duration, particleOptions.delay, lightMode]);
-
-        // Improved collision detection with better timing and accuracy
-        const checkCollision = useCallback(() => {
-            const {active, collided, startTime, duration, delay} = animationPhaseRef.current;
-
-            if (!active || collided) return;
-            if (!particleRef.current || !containerRef.current || !parentRef.current) return;
-
-            const now = Date.now();
-            // Don't check for collisions until delay has passed and animation is active
-            if (now - startTime < delay) return;
-
-            // Calculate animation progress as a percentage (0-1)
-            const animationProgress = Math.min(1, (now - startTime - delay) / duration);
-
-            // Only start checking for collisions in the later part of the animation
-            // This prevents false positives when the particle is still high up
-            if (animationProgress < 0.65) return;
-
-            const particleRect = particleRef.current.getBoundingClientRect();
-            const containerRect = containerRef.current.getBoundingClientRect();
-            const parentRect = parentRef.current.getBoundingClientRect();
-
-            // Calculate the bottom position of the container relative to the parent
-            const bottomY = containerRect.top - parentRect.top + containerRect.height;
-
-            // Check if particle has reached the collision surface
-            // Add a small tolerance to ensure detection isn't missed
-            if (particleRect.bottom >= containerRect.top - 2) {
-                animationPhaseRef.current.collided = true;
-
-                // Calculate position for splash effect
-                const splashX = particleRect.left - parentRect.left + (particleRect.width / 2);
-
-                setCollisionState({
-                    detected: true,
-                    coordinates: {x: splashX, y: bottomY}
-                });
-
-                // Reset collision state after animation completes
-                const timeout = setTimeout(() => {
-                    if (animationPhaseRef.current.active) {
-                        setCollisionState({
-                            detected: false,
-                            coordinates: null
-                        });
-                    }
-                }, 600); // Better timing matched with splash animation duration
-
-                return () => clearTimeout(timeout);
-            }
-        }, [containerRef, parentRef]);
-
-        // Set up RAF loop for collision detection with adaptive timing
-        useEffect(() => {
-            let lastRafTime = 0;
-
-            const rafCallback = (time: number) => {
-                if (!animationPhaseRef.current.active) return;
-
-                // Adjust check frequency based on animation speed
-                // Faster animations need more frequent checks
-                const checkInterval = Math.min(33, 15 + (animationPhaseRef.current.duration / 1000 * 2));
-
-                if (time - lastRafTime > checkInterval) {
-                    lastRafTime = time;
-                    checkCollision();
-                }
-
-                animationFrameRef.current = requestAnimationFrame(rafCallback);
-            };
-
-            animationFrameRef.current = requestAnimationFrame(rafCallback);
-
-            return () => {
-                animationPhaseRef.current.active = false;
-                if (animationFrameRef.current) {
-                    cancelAnimationFrame(animationFrameRef.current);
-                }
-            };
-        }, [checkCollision]);
-
-        // Create water drop or fire particle depending on light mode
-        const particleStyle = lightMode
-            ? `linear-gradient(to bottom, rgba(255, 180, 60, 0.5), rgba(255, 80, 0, 0.8))`
-            : `linear-gradient(to bottom, rgba(140, 200, 255, 0.3), rgba(140, 200, 255, 0.8))`;
-
-        // Adjust particle shape for fire vs water
-        const particleShape = lightMode
-            ? "50% 50% 20% 80% / 60% 30% 70% 40%" // More flame-like in light mode
-            : "50% 50% 50% 50% / 60% 60% 40% 40%"; // Teardrop for water in dark mode
-
-        // Improved calculation for travel distance based on container height
-        const travelDistance = typeof window !== 'undefined'
-            ? Math.max(window.innerHeight * 1.2, 1000) // Increase for larger screens
-            : 1800;
-
-        return (
-            <>
-                <motion.div
-                    ref={particleRef}
-                    initial={{
-                        translateY: particleOptions.initialY || "-100px",
-                        translateX: particleOptions.initialX || "0px",
-                    }}
-                    animate={{
-                        translateY: particleOptions.translateY || `${travelDistance}px`,
-                        translateX: particleOptions.translateX || "0px",
-                    }}
-                    transition={{
-                        duration: particleOptions.duration || 8,
-                        repeat: Infinity,
-                        repeatType: "loop",
-                        ease: "linear",
-                        delay: particleOptions.delay || 0,
-                        repeatDelay: particleOptions.repeatDelay || 0,
-                    }}
-                    style={{
-                        position: "absolute",
-                        left: 0,
-                        top: "20px",
-                        width: `${particleOptions.width || 14}px`,
-                        height: `${particleOptions.height || 24}px`,
-                        background: particleStyle,
-                        borderRadius: particleShape,
-                        opacity: particleOptions.opacity || 0.8,
-                        filter: `blur(${particleOptions.blur || '0.5px'})`,
-                        willChange: "transform", // Optimization for animation performance
-                    }}
-                    onAnimationComplete={() => {
-                        // Reset collision state at the end of each animation cycle
-                        if (animationPhaseRef.current.active) {
-                            animationPhaseRef.current.collided = false;
-                        }
-                    }}
-                />
-                <AnimatePresence mode="wait">
-                    {collisionState.detected && collisionState.coordinates && (
-                        <ParticleSplash
-                            style={{
-                                left: `${collisionState.coordinates.x}px`,
-                                bottom: "0px", // Position at bottom
-                                transform: "translate(-50%, 0)",
-                            }}
-                            lightMode={lightMode}
-                            smallScreen={typeof window !== 'undefined' && window.innerWidth < 768}
-                            particleSize={particleOptions.width || 14}
-                        />
-                    )}
-                </AnimatePresence>
-            </>
-        );
+// ─── Snowflake SVG ───────────────────────────────────────────
+const SnowflakeSVG = React.memo(({size, color}: {size: number; color: string}) => {
+    const half = size / 2;
+    const arm = half * 0.85;
+    const branch = arm * 0.35;
+    const branchPos = arm * 0.55;
+    const sw = Math.max(size * 0.08, 0.8);
+    const arms: string[] = [];
+    for (let i = 0; i < 6; i++) {
+        const angle = (i * 60) * Math.PI / 180;
+        const cos = Math.cos(angle);
+        const sin = Math.sin(angle);
+        arms.push(`M${half},${half} L${half + cos * arm},${half + sin * arm}`);
+        const bx = half + cos * branchPos;
+        const by = half + sin * branchPos;
+        arms.push(`M${bx},${by} L${bx + Math.cos(angle + Math.PI / 4) * branch},${by + Math.sin(angle + Math.PI / 4) * branch}`);
+        arms.push(`M${bx},${by} L${bx + Math.cos(angle - Math.PI / 4) * branch},${by + Math.sin(angle - Math.PI / 4) * branch}`);
     }
-);
+    return (
+        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{overflow: 'visible', filter: 'drop-shadow(0 0 2px rgba(100,160,210,0.5))'}}>
+            <path d={arms.join(' ')} stroke={color} strokeWidth={sw} strokeLinecap="round" fill="none" opacity={0.9} />
+            <circle cx={half} cy={half} r={sw} fill={color} opacity={0.8} />
+        </svg>
+    );
+});
+SnowflakeSVG.displayName = 'SnowflakeSVG';
 
-ParticleCollision.displayName = "ParticleCollision";
-
-// Optimized ParticleSplash component
-const ParticleSplash = React.memo(({
-                                       lightMode,
-                                       smallScreen = false,
-                                       particleSize = 14,
-                                       ...props
-                                   }: React.HTMLProps<HTMLDivElement> & {
-    lightMode: boolean,
-    smallScreen?: boolean,
-    particleSize?: number
+// ─── Falling leaf / snowflake ────────────────────────────────
+// Uses Framer Motion keyframes: fall → rest at bottom → fade out → loop.
+// No collision detection needed. The "stacking" effect comes from many particles
+// at different phases, some resting at full opacity while others are fading.
+const FallingParticle = React.memo(({
+    options,
+    particleMode,
+    travelDistance,
+}: {
+    options: ParticleOptions;
+    particleMode: ParticleMode;
+    travelDistance: number;
 }) => {
-    // Scale splash based on particleSize but limit maximum scale for performance
-    const splashScale = useMemo(() => {
-        return Math.min(particleSize / 10, 2.0);
-    }, [particleSize]);
+    const size = Math.max(options.width, options.height);
 
-    // Optimize particle count based on device capabilities
-    const particleCount = useMemo(() => {
-        return smallScreen ? 6 : 10;
-    }, [smallScreen]);
+    // Snow starts at 40vh (10% above end of hero images at 50vh); others start off-screen
+    const snowStartY = particleMode === 'snow' ? window.innerHeight * 0.4 : -80;
+    const snowTravel = travelDistance - (particleMode === 'snow' ? snowStartY : 0);
+    // Snow: derive duration from travel distance for consistent gentle speed (~80px/s)
+    const effectiveDuration = particleMode === 'snow'
+        ? snowTravel / 80
+        : options.duration;
 
-    // Set colors based on theme
-    const splashColor = lightMode
-        ? "rgba(255, 120, 40, 0.8)" // Orange-red for fire in light mode
-        : "rgba(140, 200, 255, 0.8)"; // Blue for water in dark mode
+    const restFraction = particleMode === 'leaves' ? 0.35 : 0.3;
+    const totalDuration = effectiveDuration / (1 - restFraction);
+    const fallEnd = 1 - restFraction;
+    const restRotation = particleMode === 'leaves'
+        ? options.rotation + (Math.random() > 0.5 ? 60 : -60)
+        : options.rotation;
 
-    // Generate splash particles more efficiently
+    return (
+        <motion.div
+            initial={{
+                translateY: snowStartY,
+                translateX: 0,
+                rotate: 0,
+                opacity: options.opacity,
+            }}
+            animate={{
+                translateY: [
+                    snowStartY,
+                    travelDistance,
+                    travelDistance,
+                ],
+                translateX: [
+                    0,
+                    options.horizontalDrift,
+                    options.horizontalDrift,
+                ],
+                rotate: [
+                    0,
+                    options.rotation,
+                    restRotation,
+                ],
+                opacity: [
+                    options.opacity,
+                    options.opacity,
+                    0,
+                ],
+            }}
+            transition={{
+                duration: totalDuration,
+                times: [0, fallEnd, 1],
+                repeat: Infinity,
+                ease: "linear",
+                delay: options.delay,
+                repeatDelay: options.repeatDelay,
+            }}
+            style={{
+                position: "absolute",
+                left: `${options.positionPct}%`,
+                top: 0,
+                width: `${size}px`,
+                height: `${size}px`,
+                // willChange removed — GPU layer per particle is too expensive
+            }}
+        >
+            {particleMode === 'leaves' ? (
+                <LeafSVG size={size} color={options.color} pathIndex={options.pathIndex} />
+            ) : (
+                <SnowflakeSVG size={size} color={options.color} />
+            )}
+        </motion.div>
+    );
+});
+FallingParticle.displayName = 'FallingParticle';
+
+// ─── Rain drop (with collision ref) ─────────────────────────
+const RainDrop = React.memo(({
+    index,
+    registerRef,
+    options,
+    travelDistance,
+}: {
+    index: number;
+    registerRef: (idx: number, el: HTMLDivElement | null) => void;
+    options: ParticleOptions;
+    travelDistance: number;
+}) => {
+    const refCallback = useCallback((el: HTMLDivElement | null) => {
+        registerRef(index, el);
+    }, [index, registerRef]);
+
+    return (
+        <motion.div
+            ref={refCallback}
+            initial={{
+                translateY: -80,
+                translateX: 0,
+            }}
+            animate={{
+                translateY: travelDistance,
+                translateX: options.horizontalDrift,
+            }}
+            transition={{
+                duration: options.duration,
+                repeat: Infinity,
+                repeatType: "loop",
+                ease: "linear",
+                delay: options.delay,
+                repeatDelay: options.repeatDelay,
+            }}
+            style={{
+                position: "absolute",
+                left: `${options.positionPct}%`,
+                top: 0,
+                width: `${options.width}px`,
+                height: `${options.height}px`,
+                background: 'linear-gradient(to bottom, rgba(140, 200, 255, 0.3), rgba(140, 200, 255, 0.8))',
+                borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%',
+                opacity: options.opacity,
+            }}
+        />
+    );
+});
+RainDrop.displayName = 'RainDrop';
+
+// ─── Rain splash ─────────────────────────────────────────────
+const RainSplash = React.memo(({
+    smallScreen = false,
+    particleSize = 14,
+    ...props
+}: React.HTMLProps<HTMLDivElement> & {
+    smallScreen?: boolean;
+    particleSize?: number;
+}) => {
+    const splashScale = Math.min(particleSize / 10, 2.0);
+    const particleCount = smallScreen ? 6 : 10;
+    const splashColor = 'rgba(140, 200, 255, 0.8)';
+
     const splashParticles = useMemo(() => {
-        return Array.from({length: particleCount}, (_, index) => {
-            // Create a radial pattern with physics-based properties
-            const angle = (index / particleCount) * Math.PI * 2;
-
-            // Use trigonometry for a natural splash arc
+        return Array.from({length: particleCount}, (_, i) => {
+            const angle = (i / particleCount) * Math.PI * 2;
             const distance = (Math.random() * 0.5 + 0.7) * 20 * splashScale;
-
             return {
-                id: index,
+                id: i,
                 directionX: Math.cos(angle) * distance,
-                directionY: Math.sin(angle) * distance - (distance * 0.3), // Upward bias
-                duration: 0.4 + (Math.random() * 0.3), // Faster for better performance
+                directionY: Math.sin(angle) * distance - (distance * 0.3),
+                duration: 0.4 + Math.random() * 0.3,
                 size: smallScreen ? 2 + Math.random() * 2 : 3 + Math.random() * 3,
             };
         });
@@ -419,7 +312,6 @@ const ParticleSplash = React.memo(({
 
     return (
         <div {...props} className={cn("absolute z-10", props.className)}>
-            {/* Circular ripple effect */}
             <motion.div
                 initial={{scale: 0, opacity: 0.7}}
                 animate={{scale: 2 * splashScale, opacity: 0}}
@@ -434,25 +326,19 @@ const ParticleSplash = React.memo(({
                     left: "50%",
                     bottom: "2px",
                     transform: "translateX(-50%)",
-                    willChange: "transform, opacity", // Performance optimization
                 }}
             />
-
-            {/* Splash particles */}
             {splashParticles.map((particle) => (
                 <motion.span
                     key={particle.id}
                     initial={{x: 0, y: 0, opacity: 0.8, scale: 0}}
                     animate={{
                         x: particle.directionX,
-                        y: -particle.directionY, // Invert for bottom-up splash
+                        y: -particle.directionY,
                         opacity: 0,
                         scale: 1,
                     }}
-                    transition={{
-                        duration: particle.duration,
-                        ease: "circOut" // More natural physics
-                    }}
+                    transition={{duration: particle.duration, ease: "circOut"}}
                     style={{
                         position: "absolute",
                         width: `${particle.size}px`,
@@ -462,14 +348,288 @@ const ParticleSplash = React.memo(({
                         left: "50%",
                         bottom: "1px",
                         transform: "translateX(-50%)",
-                        willChange: "transform, opacity", // Performance optimization
                     }}
                 />
             ))}
         </div>
     );
 });
+RainSplash.displayName = "RainSplash";
 
-ParticleSplash.displayName = "ParticleSplash";
+export default RainSplash;
 
-export default ParticleSplash;
+// ─── Rain overlay with single shared collision loop ─────────
+const RainOverlay = React.memo(({
+    particles,
+    travelDistance,
+}: {
+    particles: ParticleOptions[];
+    travelDistance: number;
+}) => {
+    const dropRefs = useRef<(HTMLDivElement | null)[]>([]);
+    const [splashes, setSplashes] = useState<Map<number, {x: number; y: number; key: number}>>(new Map());
+    const lastSplashTime = useRef<number[]>([]);
+    const splashCounter = useRef(0);
+    const smallScreen = window.innerWidth < 480;
+
+    useEffect(() => {
+        lastSplashTime.current = new Array(particles.length).fill(0);
+    }, [particles.length]);
+
+    useEffect(() => {
+        let rafId: number;
+        let lastCheck = 0;
+
+        const check = (time: number) => {
+            // Throttle to ~30fps to save CPU
+            if (time - lastCheck < 33) {
+                rafId = requestAnimationFrame(check);
+                return;
+            }
+            lastCheck = time;
+            const now = Date.now();
+
+            for (let i = 0; i < dropRefs.current.length; i++) {
+                const el = dropRefs.current[i];
+                if (!el || now - (lastSplashTime.current[i] || 0) < 800) continue;
+
+                const transform = el.style.transform || getComputedStyle(el).transform;
+                if (!transform || transform === 'none') continue;
+
+                const match = transform.match(/translateY\(([\d.-]+)px\)/);
+                if (!match) continue;
+
+                const y = parseFloat(match[1]);
+                if (y >= travelDistance - 8 && y <= travelDistance + 2) {
+                    lastSplashTime.current[i] = now;
+                    const rect = el.getBoundingClientRect();
+                    const parentRect = el.offsetParent?.getBoundingClientRect();
+                    if (parentRect) {
+                        const id = splashCounter.current++;
+                        setSplashes(prev => {
+                            const next = new Map(prev);
+                            next.set(id, {
+                                x: rect.left - parentRect.left + rect.width / 2,
+                                y: rect.top - parentRect.top + rect.height,
+                                key: id,
+                            });
+                            return next;
+                        });
+                        setTimeout(() => {
+                            setSplashes(prev => {
+                                const next = new Map(prev);
+                                next.delete(id);
+                                return next;
+                            });
+                        }, 600);
+                    }
+                }
+            }
+            rafId = requestAnimationFrame(check);
+        };
+
+        rafId = requestAnimationFrame(check);
+        return () => cancelAnimationFrame(rafId);
+    }, [travelDistance, particles.length]);
+
+    const registerRef = useCallback((idx: number, el: HTMLDivElement | null) => {
+        dropRefs.current[idx] = el;
+    }, []);
+
+    return (
+        <>
+            {particles.map((particle, index) => (
+                <RainDrop
+                    key={`rain-${index}`}
+                    index={index}
+                    registerRef={registerRef}
+                    options={particle}
+                    travelDistance={travelDistance}
+                />
+            ))}
+            {Array.from(splashes.values()).map(s => (
+                <RainSplash
+                    key={s.key}
+                    smallScreen={smallScreen}
+                    particleSize={14}
+                    style={{
+                        left: s.x,
+                        top: s.y,
+                    }}
+                />
+            ))}
+        </>
+    );
+});
+RainOverlay.displayName = 'RainOverlay';
+
+// ─── Lightweight particle overlay for any section ────────────
+export const ParticleOverlay = React.memo(({
+    particleMode,
+    count = 20,
+}: {
+    particleMode: ParticleMode;
+    count?: number;
+}) => {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const isSnow = particleMode === 'snow';
+    const [containerHeight, setContainerHeight] = useState(
+        isSnow ? window.innerHeight : window.innerHeight
+    );
+
+    useEffect(() => {
+        if (isSnow) {
+            // Snow uses fixed positioning — only needs viewport height
+            const onResize = () => setContainerHeight(window.innerHeight);
+            onResize();
+            window.addEventListener('resize', onResize, {passive: true});
+            return () => window.removeEventListener('resize', onResize);
+        }
+        // Non-snow: measure parent container
+        const measure = () => {
+            if (containerRef.current?.parentElement) {
+                const h = containerRef.current.parentElement.offsetHeight;
+                if (h > 0) setContainerHeight(h);
+            }
+        };
+        measure();
+        const delayed = setTimeout(measure, 500);
+        const observer = new ResizeObserver(measure);
+        if (containerRef.current?.parentElement) {
+            observer.observe(containerRef.current.parentElement);
+        }
+        window.addEventListener('resize', measure, {passive: true});
+        return () => {
+            clearTimeout(delayed);
+            observer.disconnect();
+            window.removeEventListener('resize', measure);
+        };
+    }, [isSnow]);
+
+    const leafColors = useMemo(() => [
+        '#c0392b', '#e74c3c', '#d35400', '#e67e22',
+        '#f39c12', '#b7950b', '#935116', '#a04000',
+        '#cb4335', '#dc7633', '#f0b27a', '#873600',
+    ], []);
+
+    const snowColors = useMemo(() => [
+        '#8bb8d6', '#7aafc9', '#9ac4db', '#6da3c0',
+        '#85b5d2', '#a0cce3', '#78adc8', '#8fbdd8',
+    ], []);
+
+    const particles = useMemo(() => {
+        const baseScale = window.innerWidth < 480 ? 0.7 : 1;
+
+        return Array.from({length: count}, (_, idx): ParticleOptions => {
+            const positionPct = Math.random() * 100;
+            const isSmall = Math.random() > 0.5;
+            const isVerySmall = Math.random() > 0.8;
+
+            let dropWidth: number, dropHeight: number, dropOpacity: number, color: string;
+
+            if (particleMode === 'snow') {
+                color = snowColors[Math.floor(Math.random() * snowColors.length)];
+                if (isVerySmall) {
+                    dropWidth = 10 * baseScale; dropHeight = 10 * baseScale;
+                    dropOpacity = 0.5 + Math.random() * 0.2;
+                } else if (isSmall) {
+                    dropWidth = 18 * baseScale; dropHeight = 18 * baseScale;
+                    dropOpacity = 0.6 + Math.random() * 0.2;
+                } else {
+                    dropWidth = 28 * baseScale; dropHeight = 28 * baseScale;
+                    dropOpacity = 0.7 + Math.random() * 0.2;
+                }
+            } else if (particleMode === 'leaves') {
+                color = leafColors[Math.floor(Math.random() * leafColors.length)];
+                if (isVerySmall) {
+                    dropWidth = 10 * baseScale; dropHeight = 8 * baseScale;
+                    dropOpacity = 0.8 + Math.random() * 0.15;
+                } else if (isSmall) {
+                    dropWidth = 16 * baseScale; dropHeight = 13 * baseScale;
+                    dropOpacity = 0.85 + Math.random() * 0.15;
+                } else {
+                    dropWidth = 22 * baseScale; dropHeight = 18 * baseScale;
+                    dropOpacity = 0.9 + Math.random() * 0.1;
+                }
+            } else {
+                color = 'rgba(140, 200, 255, 0.8)';
+                if (isVerySmall) {
+                    dropWidth = 5 * baseScale; dropHeight = 10 * baseScale;
+                    dropOpacity = 0.6 + Math.random() * 0.3;
+                } else if (isSmall) {
+                    dropWidth = 8 * baseScale; dropHeight = 14 * baseScale;
+                    dropOpacity = 0.7 + Math.random() * 0.3;
+                } else {
+                    dropWidth = 14 * baseScale; dropHeight = 24 * baseScale;
+                    dropOpacity = 0.75 + Math.random() * 0.25;
+                }
+            }
+
+            const sizeRatio = dropHeight / 24;
+            const baseSpeed = particleMode === 'leaves'
+                    ? 2.5 + sizeRatio * 2
+                    : particleMode === 'rain'
+                        ? 1.5 + sizeRatio * 1.2
+                        : 0; // snow handled separately below
+            const speedVariation = particleMode === 'snow' ? 1 : 0.85 + Math.random() * 0.3;
+
+            const horizontalDrift = particleMode === 'snow'
+                ? (Math.random() * 80 - 40)
+                : particleMode === 'leaves'
+                    ? (Math.random() * 120 - 60)
+                    : (Math.random() * 8 - 4);
+
+            const rotation = particleMode === 'leaves'
+                ? (Math.random() * 540 - 270)
+                : particleMode === 'snow'
+                    ? (Math.random() * 180 - 90)
+                    : 0;
+
+            return {
+                positionPct,
+                horizontalDrift,
+                duration: baseSpeed * speedVariation,
+                repeatDelay: particleMode === 'snow' ? 0 : Math.random() * 0.6,
+                delay: particleMode === 'snow'
+                    ? Math.random() * 2
+                    : Math.random() * 3,
+                width: dropWidth,
+                height: dropHeight,
+                opacity: dropOpacity,
+                blur: '0px',
+                rotation,
+                color,
+                pathIndex: idx % LEAF_PATHS.length,
+            };
+        });
+    }, [count, particleMode, leafColors, snowColors, containerHeight]);
+
+    const travelDistance = containerHeight - 20;
+
+    return (
+        <div
+            ref={containerRef}
+            style={{
+                position: isSnow ? 'fixed' : 'absolute',
+                inset: 0,
+                overflow: 'hidden',
+                pointerEvents: 'none',
+                zIndex: isSnow ? 20 : 10,
+            }}
+        >
+            {particleMode === 'rain' ? (
+                <RainOverlay particles={particles} travelDistance={travelDistance} />
+            ) : (
+                particles.map((particle, index) => (
+                    <FallingParticle
+                        key={`overlay-${index}`}
+                        options={particle}
+                        particleMode={particleMode}
+                        travelDistance={travelDistance}
+                    />
+                ))
+            )}
+        </div>
+    );
+});
+ParticleOverlay.displayName = 'ParticleOverlay';

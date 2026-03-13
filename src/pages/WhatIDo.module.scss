@@ -1,0 +1,128 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  min-height: 100vh;
+  overflow: hidden;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-attachment: fixed;
+  position: relative;
+
+  @media (max-width: 768px) {
+    background-attachment: scroll;
+  }
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3.5rem 1.5rem 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.subtitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  text-align: center;
+}
+
+.dividerLine {
+  width: 90%;
+  max-width: 700px;
+  height: 1px;
+  margin: 0.5rem auto 2rem;
+  border-radius: 2px;
+}
+
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  width: 100%;
+  justify-content: center;
+}
+
+.card {
+  width: calc(33.333% - 1rem);
+  position: relative;
+  border-radius: 16px;
+  padding: 2rem 1.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  overflow: hidden;
+  min-height: 220px;
+  cursor: default;
+  transition: box-shadow 0.2s;
+
+  @media (max-width: 900px) {
+    width: calc(50% - 0.75rem);
+  }
+  @media (max-width: 560px) {
+    width: 100%;
+  }
+}
+
+.index {
+  position: absolute;
+  top: 0.5rem;
+  right: 1rem;
+  font-size: 3rem;
+  font-weight: 900;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.emoji {
+  font-size: 1.7rem;
+}
+
+.cardTitle {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.cardDescription {
+  font-size: 0.97rem;
+  line-height: 1.55;
+  opacity: 0.85;
+  flex: 1;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: auto;
+}
+
+.tag {
+  font-size: 0.82rem;
+  padding: 0.2em 0.7em;
+  border-radius: 6px;
+  border-left: 2px solid;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}

@@ -1,11 +1,10 @@
 .section4 {
-  background-image: url('/assets/backgrounds/contactBg.png');
   background-size: cover;
-  //background-size: cover;
   background-repeat: no-repeat;
-}
+  background-position: center top;
+  background-attachment: fixed;
 
-.section4Dark {
-
-  background-image: url('/assets/backgrounds/darkContactBg.png');
+  @media (max-width: 768px) {
+    background-attachment: scroll;
+  }
 }

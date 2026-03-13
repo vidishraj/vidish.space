@@ -4,9 +4,9 @@ import styles from './TextScramble.module.scss';
 export const TextScramble = ({text}: { text: string }) => {
     const [displayedText, setDisplayedText] = useState(text);
     const [isVisible, setIsVisible] = useState(false);
-    const elementRef = useRef(null);
+    const elementRef = useRef<HTMLDivElement>(null);
     const animationRunning = useRef(false);
-    const intervalRef = useRef(null);
+    const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
     const animationCompletedRef = useRef(false);
 
     const chars = '!<>-_\\/[]{}—=+*^?#________';
@@ -51,7 +51,6 @@ export const TextScramble = ({text}: { text: string }) => {
             originalText.map((char) => (char === ' ' ? ' ' : chars[Math.floor(Math.random() * chars.length)])).join('')
         );
 
-        // @ts-expect-error- It'll be defined, no worries
         intervalRef.current = setInterval(() => {
             frameCount++;
             const progress = frameCount / totalFrames;
@@ -63,7 +62,7 @@ export const TextScramble = ({text}: { text: string }) => {
             );
 
             if (frameCount >= totalFrames) {
-                clearInterval(intervalRef.current!);
+                if (intervalRef.current) clearInterval(intervalRef.current);
                 intervalRef.current = null;
                 animationRunning.current = false;
                 animationCompletedRef.current = true;

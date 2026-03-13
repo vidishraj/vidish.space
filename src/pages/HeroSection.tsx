@@ -1,151 +1,60 @@
-import {useRef, useState} from "react";
-import {LottieRefCurrentProps} from "lottie-react";
-import Icon1 from '/assets/heroPage/l1.webp';
-import Icon2 from '/assets/heroPage/l2.webp';
-import Icon3 from '/assets/heroPage/l3.webp';
-import Icon4 from '/assets/heroPage/l4.webp';
-import IconD1 from '/assets/heroPage/lm1.webp';
-import IconD2 from '/assets/heroPage/lm2.webp';
-import IconD3 from '/assets/heroPage/lm3.webp';
-import IconD4 from '/assets/heroPage/lm4.webp';
 import styles from './HeroSection.module.scss';
 import {TextScramble} from "../components/TextScramble.tsx";
 import {BackgroundBeamsWithCollision} from "../components/BackgroundBeams.tsx";
-import ImageToggleButton from "../components/ImageToggleButton.tsx";
-import BeamControlButtons from "../components/BeamControlButtons.tsx";
-import { useThemeContext } from '../App';
+import SeasonPicker from "../components/SeasonPicker.tsx";
+import {useThemeContext} from '../App';
 
 const HeroSection = () => {
-    const lottieRef = useRef<LottieRefCurrentProps>(null);
-    // Default speed is 5 (middle of 1-8 range)
-    const [beamSpeed, setBeamSpeed] = useState(5);
-    // Default beam count
-    const [beamCount, setBeamCount] = useState(50);
-    const { isDarkMode, setTheme } = useThemeContext();
-    
-    const handleToggle = () => {
-        if (lottieRef.current) {
-            if (isDarkMode) {
-                lottieRef.current.playSegments([80, 20], true);
-            } else {
-                lottieRef.current.playSegments([50, 100], true);
-            }
-        }
-        setTheme(isDarkMode ? 'light' : 'dark');
-    };
+    const {season, setSeason, palette, particleMode, heroImages, backgrounds} = useThemeContext();
 
-    // Handle speed changes
-    const handleSpeedChange = (change: number) => {
-        setBeamSpeed(prevSpeed => {
-            // Ensure speed stays within 1-8 range
-            const newSpeed = prevSpeed + change;
-            return Math.max(1, Math.min(8, newSpeed));
-        });
+    const isMonsoon = season === 'monsoon';
+    const isSummer = season === 'summer';
 
-        // Adjust beam count based on speed
-        // More beams when faster, fewer when slower
-        setBeamCount(() => {
-            const baseCount = 50;
-            const newSpeed = beamSpeed + change;
-            // Adjust count by 5 beams per speed level from the middle (50 at speed 5)
-            const adjustment = (newSpeed - 5) * 5;
-            return baseCount + adjustment;
-        });
-    };
+    const heroBottomBg = backgrounds.heroBottom || undefined;
 
     return (
         <section id="section1">
-            <div className={isDarkMode ? `${styles.iconContainer} ${styles.darkMode}` : styles.iconContainer}>
-                <img alt={'img1'} src={IconD1}
-                     style={{
-                         display: isDarkMode ? 'block' : 'none',
-                         position: 'absolute',
-                         left: 0
-                     }}
-                     className={styles.icon}/>
-                <img alt={'img1'} src={IconD2} style={{
-                    display: isDarkMode ? 'block' : 'none',
-                    position: 'absolute',
-                    left: "25%"
-                }}
-                     className={styles.icon}/>
-                <img alt={'img1'} src={IconD3} style={{
-                    display: isDarkMode ? 'block' : 'none',
-                    position: 'absolute',
-                    left: "50%"
-                }}
-                     className={styles.icon}/>
-                <img alt={'img1'} src={IconD4} style={{
-                    display: isDarkMode ? 'block' : 'none',
-                    position: 'absolute',
-                    left: "75%"
-                }}
-                     className={styles.icon}/>
-                <img alt={'img1'} src={Icon1}
-                     style={{
-                         display: !isDarkMode ? 'block' : 'none',
-                         position: 'absolute',
-                         left: 0
-                     }}
-                     loading={'eager'}
-                     className={styles.icon}/>
-                <img alt={'img1'} src={Icon2}
-                     style={{
-                         display: !isDarkMode ? 'block' : 'none',
-                         position: 'absolute',
-                         left: "25%"
-                     }}
-                     className={styles.icon}/>
-                <img alt={'img1'} src={Icon3}
-                     style={{
-                         display: !isDarkMode ? 'block' : 'none', position: 'absolute',
-                         left: "50%"
-                     }}
-                     className={styles.icon}/>
-                <img alt={'img1'} src={Icon4}
-                     style={{
-                         display: !isDarkMode ? 'block' : 'none', position: 'absolute',
-                         left: "75%"
-                     }}
-                     className={styles.icon}/>
+            <div
+                className={`${styles.iconContainer} ${isMonsoon ? styles.monsoonMode : styles.defaultMode}`}
+                style={{
+                    background: backgrounds.heroTop,
+                    '--hero-fade-color': isSummer ? '#5f443a' : isMonsoon ? '#0a0f1a' : '#cddcea',
+                } as React.CSSProperties}
+            >
+                {heroImages.map((src, i) => (
+                    <img
+                        key={`hero-${season}-${i}`}
+                        alt={`Hero illustration ${i + 1}`}
+                        src={src}
+                        style={{
+                            position: 'absolute',
+                            left: `${i * 25}%`,
+                        }}
+                        loading={i === 0 ? 'eager' : undefined}
+                        className={styles.icon}
+                    />
+                ))}
             </div>
             <BackgroundBeamsWithCollision
-                lightMode={!isDarkMode}
-                beamSpeed={beamSpeed}
-                beamCount={beamCount}
-                className={!isDarkMode ? styles.textContainer : `${styles.textContainer} ${styles.darkTextContainer}`}
+                particleMode={particleMode}
+                className={styles.textContainer}
+                style={heroBottomBg ? {background: heroBottomBg} : undefined}
             >
-                <div className={!isDarkMode ? styles.textContainer : styles.darkContainer}>
+                <div style={{
+                    color: palette.textPrimary,
+                    textAlign: 'center',
+                    background: isMonsoon ? '#161f27' : undefined,
+                }}>
                     <h1 id="startPoint" className={styles.title}>
                         <TextScramble text="Vidish Raj"/>
                     </h1>
                     <div className={styles.description}>
                         <TextScramble text="Full Stack Developer"/>
                     </div>
-                    <div style={{
-                        width: '100%',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        flexDirection: 'column',
-                        alignItems: 'center'
-                    }}>
-                        <ImageToggleButton
-                            checkedImage={"/assets/heroPage/lightMode.png"}
-                            uncheckedImage={"/assets/heroPage/darkMode.png"}
-                            onChange={handleToggle}
-                            width={'100px'}
-                            height={'34px'}
-                            initialChecked={!isDarkMode}
-                        />
-
-                        {/* Add beam control buttons */}
-                        <BeamControlButtons
-                            onSpeedChange={handleSpeedChange}
-                            currentSpeed={beamSpeed}
-                            minSpeed={1}
-                            maxSpeed={8}
-                        />
-                    </div>
+                    <SeasonPicker
+                        currentSeason={season}
+                        onSeasonChange={setSeason}
+                    />
                 </div>
             </BackgroundBeamsWithCollision>
         </section>

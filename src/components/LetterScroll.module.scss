@@ -4,6 +4,7 @@
   min-height: 4rem;
   overflow: hidden;
   position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   padding: 1rem 0;
@@ -27,11 +28,5 @@
   letter-spacing: 0.05em;
   flex-shrink: 0; // Prevent items from shrinking
 
-  @media (prefers-color-scheme: dark) {
-    text-shadow: 0 0 4px rgba(255, 255, 255, 0.2);
-  }
-
-  @media (prefers-color-scheme: light) {
-    text-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
-  }
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
 }
