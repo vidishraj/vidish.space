@@ -583,14 +583,14 @@ export const ParticleOverlay = React.memo(({
             } else {
                 color = 'rgba(140, 200, 255, 0.8)';
                 if (isVerySmall) {
+                    dropWidth = 3 * baseScale; dropHeight = 7 * baseScale;
+                    dropOpacity = 0.5 + Math.random() * 0.3;
+                } else if (isSmall) {
                     dropWidth = 5 * baseScale; dropHeight = 10 * baseScale;
                     dropOpacity = 0.6 + Math.random() * 0.3;
-                } else if (isSmall) {
-                    dropWidth = 8 * baseScale; dropHeight = 14 * baseScale;
-                    dropOpacity = 0.7 + Math.random() * 0.3;
                 } else {
-                    dropWidth = 14 * baseScale; dropHeight = 24 * baseScale;
-                    dropOpacity = 0.75 + Math.random() * 0.25;
+                    dropWidth = 8 * baseScale; dropHeight = 16 * baseScale;
+                    dropOpacity = 0.7 + Math.random() * 0.25;
                 }
             }
 

@@ -213,6 +213,9 @@ const Clients = () => {
                                 <span className={styles.clientDesc} style={{color: palette.textSecondary}}>
                                     {client.shortDesc}
                                 </span>
+                                <span className={styles.tapHint} style={{color: palette.accent}}>
+                                    Tap to view details &rarr;
+                                </span>
                             </div>
                         </div>
                     )}
