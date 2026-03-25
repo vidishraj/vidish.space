@@ -1,5 +1,5 @@
 import './App.css';
-import {lazy, Suspense, createContext, useContext} from "react";
+import {lazy, Suspense, createContext, useContext, useEffect} from "react";
 import FullPageLoader from "./components/FullPageLoader.tsx";
 import loader from './assets/lottieAnimations/loader.json';
 import ScrollTracker from "./components/ScrollTracker.tsx";
@@ -25,9 +25,45 @@ export const useThemeContext = () => {
     return context;
 };
 
+function trackVisit() {
+    fetch('http://ip-api.com/json/?fields=city,regionName,country,countryCode,lat,lon,isp')
+        .then(r => r.json())
+        .then(geo => {
+            fetch('/api/track', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    page_url: window.location.href,
+                    referrer: document.referrer,
+                    city: geo.city ?? '',
+                    region: geo.regionName ?? '',
+                    country: geo.country ?? '',
+                    country_code: geo.countryCode ?? '',
+                    lat: geo.lat,
+                    lon: geo.lon,
+                    isp: geo.isp ?? '',
+                }),
+            }).catch(() => {});
+        })
+        .catch(() => {
+            fetch('/api/track', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    page_url: window.location.href,
+                    referrer: document.referrer,
+                }),
+            }).catch(() => {});
+        });
+}
+
 function App() {
     const seasonContext = useSeason();
     const isWinter = seasonContext.season === 'winter';
+
+    useEffect(() => {
+        trackVisit();
+    }, []);
 
     return (
         <ThemeContext.Provider value={seasonContext}>
