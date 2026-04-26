@@ -27,7 +27,7 @@ const clients: Client[] = [
         initials: 'SG',
         logo: '/assets/clients/socgen_logo.svg',
         role: 'Software Engineer',
-        duration: 'Jul 2022 – Present (~4 years)',
+        duration: 'Jul 2022 – Feb 2026 (3.5 years)',
         summary: [
             'Migrated a mission-critical regulatory pipeline from a Java 8 monolith to Java 17 microservices on AWS, serving 1,000+ users.',
             'Built and maintained 5+ Spring Boot microservices handling large-scale banking data processing.',
