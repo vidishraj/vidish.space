@@ -1,15 +1,24 @@
 import {useEffect, useRef, useState, useCallback} from 'react';
 import styles from './TextScramble.module.scss';
 
+const CHARS = '!<>-_\\/[]{}—=+*^?#________';
+const SCRAMBLE_DURATION = 1000; // ms
+
 export const TextScramble = ({text}: { text: string }) => {
     const [displayedText, setDisplayedText] = useState(text);
     const [isVisible, setIsVisible] = useState(false);
     const elementRef = useRef<HTMLDivElement>(null);
     const animationRunning = useRef(false);
-    const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    const rafRef = useRef<number | null>(null);
     const animationCompletedRef = useRef(false);
 
-    const chars = '!<>-_\\/[]{}—=+*^?#________';
+    const cancelAnimation = () => {
+        if (rafRef.current !== null) {
+            cancelAnimationFrame(rafRef.current);
+            rafRef.current = null;
+        }
+        animationRunning.current = false;
+    };
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -17,12 +26,7 @@ export const TextScramble = ({text}: { text: string }) => {
                 setIsVisible(entry.isIntersecting);
                 // If component becomes invisible, ensure animation can restart when visible again
                 if (!entry.isIntersecting) {
-                    // Clear any running animation
-                    if (intervalRef.current) {
-                        clearInterval(intervalRef.current);
-                        intervalRef.current = null;
-                    }
-                    animationRunning.current = false;
+                    cancelAnimation();
 
                     // Only reset if animation didn't complete
                     if (!animationCompletedRef.current) {
@@ -43,32 +47,34 @@ export const TextScramble = ({text}: { text: string }) => {
         if (animationRunning.current || animationCompletedRef.current) return;
         animationRunning.current = true;
 
-        let frameCount = 0;
-        const totalFrames = 30;
         const originalText = text.split('');
+        let startTime: number | null = null;
 
         setDisplayedText(
-            originalText.map((char) => (char === ' ' ? ' ' : chars[Math.floor(Math.random() * chars.length)])).join('')
+            originalText.map((char) => (char === ' ' ? ' ' : CHARS[Math.floor(Math.random() * CHARS.length)])).join('')
         );
 
-        intervalRef.current = setInterval(() => {
-            frameCount++;
-            const progress = frameCount / totalFrames;
+        const tick = (now: number) => {
+            if (startTime === null) startTime = now;
+            const progress = Math.min((now - startTime) / SCRAMBLE_DURATION, 1);
 
             setDisplayedText(
                 originalText
-                    .map((char, index) => (char === ' ' ? ' ' : index / originalText.length < progress ? char : chars[Math.floor(Math.random() * chars.length)]))
+                    .map((char, index) => (char === ' ' ? ' ' : index / originalText.length < progress ? char : CHARS[Math.floor(Math.random() * CHARS.length)]))
                     .join('')
             );
 
-            if (frameCount >= totalFrames) {
-                if (intervalRef.current) clearInterval(intervalRef.current);
-                intervalRef.current = null;
+            if (progress >= 1) {
+                rafRef.current = null;
                 animationRunning.current = false;
                 animationCompletedRef.current = true;
                 setDisplayedText(text);
+                return;
             }
-        }, 33);
+            rafRef.current = requestAnimationFrame(tick);
+        };
+
+        rafRef.current = requestAnimationFrame(tick);
     }, [text]);
 
     // Reset animation state when text changes
@@ -80,7 +86,7 @@ export const TextScramble = ({text}: { text: string }) => {
     useEffect(() => {
         if (isVisible) runScrambleAnimation();
         return () => {
-            if (intervalRef.current) clearInterval(intervalRef.current);
+            cancelAnimation();
         };
     }, [isVisible, text, runScrambleAnimation]);
 

@@ -29,12 +29,17 @@ export function ProjectsGrid({slides}: ProjectsGridProps) {
     const [modalData, setModalData] = useState(akkountantData);
 
     useEffect(() => {
+        let timeoutId: ReturnType<typeof setTimeout> | undefined;
         const handleResize = () => {
-            setWindowWidth(window.innerWidth);
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => setWindowWidth(window.innerWidth), 150);
         };
         setWindowWidth(window.innerWidth);
         window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
+        return () => {
+            clearTimeout(timeoutId);
+            window.removeEventListener('resize', handleResize);
+        };
     }, []);
 
     useEffect(() => {

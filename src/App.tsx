@@ -1,8 +1,10 @@
 import './App.css';
 import {lazy, Suspense, createContext, useContext, useEffect} from "react";
+import {useReducedMotion} from 'framer-motion';
 import FullPageLoader from "./components/FullPageLoader.tsx";
 import loader from './assets/lottieAnimations/loader.json';
 import ScrollTracker from "./components/ScrollTracker.tsx";
+import ErrorBoundary from "./components/ErrorBoundary.tsx";
 import {useSeason} from './utils/useSeason';
 import {ParticleOverlay} from './components/BackgroundBeams.tsx';
 
@@ -39,6 +41,8 @@ function trackVisit() {
 function App() {
     const seasonContext = useSeason();
     const isWinter = seasonContext.season === 'winter';
+    const prefersReducedMotion = useReducedMotion();
+    const showParticles = !prefersReducedMotion;
 
     useEffect(() => {
         trackVisit();
@@ -46,46 +50,50 @@ function App() {
 
     return (
         <ThemeContext.Provider value={seasonContext}>
-            <ScrollTracker/>
+            <ErrorBoundary>
+                <ScrollTracker/>
 
-            <div style={{position: 'relative'}}>
-                {/* For non-winter: particles only cover hero+services+clients */}
-                <div style={{position: 'relative'}}>
-                    <Suspense fallback={<FullPageLoader animationData={loader} message="Loading Hero Section..."/>}>
-                        <HeroSection/>
+                <main style={{position: 'relative'}}>
+                    {/* For non-winter: particles only cover hero+services+clients */}
+                    <div style={{position: 'relative'}}>
+                        <Suspense fallback={<FullPageLoader animationData={loader} message="Loading Hero Section..."/>}>
+                            <HeroSection/>
+                        </Suspense>
+
+                        <Suspense fallback={<FullPageLoader animationData={loader} message="Loading Services..."/>}>
+                            <WhatIDo/>
+                        </Suspense>
+
+                        <Suspense fallback={<FullPageLoader animationData={loader} message="Loading Clients..."/>}>
+                            <Clients/>
+                        </Suspense>
+
+                        {!isWinter && showParticles &&
+                            <ParticleOverlay particleMode={seasonContext.particleMode} count={30}/>}
+                    </div>
+
+                    {/* TODO: Uncomment when testimonials are ready */}
+                    {/* <Suspense fallback={<FullPageLoader animationData={loader} message="Loading Testimonials..."/>}>
+                        <Testimonials/>
+                    </Suspense> */}
+
+                    <Suspense fallback={<FullPageLoader animationData={loader} message="Loading Timeline..."/>}>
+                        <TimelineSection/>
                     </Suspense>
 
-                    <Suspense fallback={<FullPageLoader animationData={loader} message="Loading Services..."/>}>
-                        <WhatIDo/>
+                    <Suspense fallback={<FullPageLoader animationData={loader} message="Loading Projects..."/>}>
+                        <Projects/>
                     </Suspense>
 
-                    <Suspense fallback={<FullPageLoader animationData={loader} message="Loading Clients..."/>}>
-                        <Clients/>
+                    <Suspense fallback={<FullPageLoader animationData={loader} message="Loading Contact..."/>}>
+                        <Contact/>
                     </Suspense>
 
-                    {!isWinter && <ParticleOverlay particleMode={seasonContext.particleMode} count={30} />}
-                </div>
-
-                {/* TODO: Uncomment when testimonials are ready */}
-                {/* <Suspense fallback={<FullPageLoader animationData={loader} message="Loading Testimonials..."/>}>
-                    <Testimonials/>
-                </Suspense> */}
-
-                <Suspense fallback={<FullPageLoader animationData={loader} message="Loading Timeline..."/>}>
-                    <TimelineSection/>
-                </Suspense>
-
-                <Suspense fallback={<FullPageLoader animationData={loader} message="Loading Projects..."/>}>
-                    <Projects/>
-                </Suspense>
-
-                <Suspense fallback={<FullPageLoader animationData={loader} message="Loading Contact..."/>}>
-                    <Contact/>
-                </Suspense>
-
-                {/* Winter snow: fixed, visible across viewport, between backgrounds and content */}
-                {isWinter && <ParticleOverlay particleMode={seasonContext.particleMode} count={30} />}
-            </div>
+                    {/* Winter snow: fixed, visible across viewport, between backgrounds and content */}
+                    {isWinter && showParticles &&
+                        <ParticleOverlay particleMode={seasonContext.particleMode} count={30}/>}
+                </main>
+            </ErrorBoundary>
         </ThemeContext.Provider>
     );
 }

@@ -6,6 +6,7 @@ import '../assets/modalStyles/tripsplitModal.css'
 import '../assets/modalStyles/vidishSpaceModal.css'
 import '../assets/modalStyles/leetcodeToGitModal.css'
 import {Season} from '../utils/seasonConfig';
+import {useFocusTrap} from '../utils/useFocusTrap';
 
 // Data structure for the modal
 interface Section {
@@ -39,8 +40,11 @@ interface ModalProps {
 const Modal: React.FC<ModalProps> = ({isOpen, onClose, data, season = 'summer'}) => {
     const [activeSection, setActiveSection] = useState(0);
     const tabsContainerRef = useRef<HTMLDivElement>(null);
+    const dialogRef = useRef<HTMLDivElement>(null);
     const [showLeftArrow, setShowLeftArrow] = useState(false);
     const [showRightArrow, setShowRightArrow] = useState(false);
+
+    useFocusTrap(isOpen, dialogRef);
 
     const isMonsoon = season === 'monsoon';
 
@@ -135,17 +139,23 @@ const Modal: React.FC<ModalProps> = ({isOpen, onClose, data, season = 'summer'})
             ></div>
 
             <div
+                ref={dialogRef}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="modal-title"
+                tabIndex={-1}
                 className="relative mx-auto rounded-lg shadow-2xl overflow-hidden transition-all transform scale-100 w-[100vw] h-[75vh] max-h-[75vh] md:max-w-4xl"
                 style={{background: gradientBackground}}
             >
                 {/* Header */}
                 <div
                     className={`px-4 sm:px-8 py-3 sm:py-5 border-b ${isMonsoon ? 'border-gray-700/50' : 'border-gray-200/50'} backdrop-blur-sm flex items-center justify-between`}>
-                    <h2 className={`text-xl sm:text-2xl font-bold ${isMonsoon ? 'text-white' : 'text-gray-800'} tracking-tight font-serif truncate pr-10`}>
+                    <h2 id="modal-title" className={`text-xl sm:text-2xl font-bold ${isMonsoon ? 'text-white' : 'text-gray-800'} tracking-tight font-serif truncate pr-10`}>
                         {data.title}
                     </h2>
                     <button
                         onClick={onClose}
+                        aria-label="Close dialog"
                         className={`p-0.5 rounded-full ${
                             isMonsoon ? 'hover:bg-gray-700/50 text-gray-300 hover:text-white' : 'hover:bg-gray-200/50 text-gray-600 hover:text-gray-800'
                         } transition-colors duration-200`}
@@ -233,6 +243,9 @@ const Modal: React.FC<ModalProps> = ({isOpen, onClose, data, season = 'summer'})
                                         <img
                                             src={data.sections[activeSection].imgSrc}
                                             alt={data.sections[activeSection].title}
+                                            onError={(e) => {
+                                                e.currentTarget.style.display = 'none';
+                                            }}
                                             className="w-full h-auto rounded-lg object-contain max-h-[25vh] md:max-h-[40vh] min-h-[-webkit-fill-available] shadow-lg"
                                         />
                                     </div>

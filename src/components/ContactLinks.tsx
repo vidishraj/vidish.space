@@ -104,12 +104,11 @@ const SocialLinks = () => {
                         </span>
                     </motion.a>
                 ))}
-                <motion.a
+                <motion.button
                     key={"resume"}
+                    type="button"
                     onClick={downloadResume}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`flex flex-col items-center justify-center p-4 rounded-lg transition-colors ${linkBg}`}
+                    className={`flex flex-col items-center justify-center p-4 rounded-lg transition-colors border border-transparent hover:border-transparent ${linkBg}`}
                     style={{border: linkBorder}}
                     variants={itemVariants}
                     whileHover="hover"
@@ -127,7 +126,8 @@ const SocialLinks = () => {
                     >
                         <img
                             src={Resume}
-                            alt={'Resume icon'}
+                            alt=""
+                            aria-hidden="true"
                             className="w-6 h-6 object-contain"
                             style={{filter: iconFilter}}
                         />
@@ -135,7 +135,7 @@ const SocialLinks = () => {
                     <span className="text-sm font-medium" style={{color: palette.textPrimary}}>
                         Resume
                     </span>
-                </motion.a>
+                </motion.button>
             </motion.div>
         </div>
     );

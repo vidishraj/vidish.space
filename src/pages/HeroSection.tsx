@@ -24,13 +24,17 @@ const HeroSection = () => {
                 {heroImages.map((src, i) => (
                     <img
                         key={`hero-${season}-${i}`}
-                        alt={`Hero illustration ${i + 1}`}
+                        alt=""
+                        aria-hidden="true"
                         src={src}
                         style={{
                             position: 'absolute',
                             left: `${i * 25}%`,
                         }}
                         loading={i === 0 ? 'eager' : undefined}
+                        onError={(e) => {
+                            e.currentTarget.style.visibility = 'hidden';
+                        }}
                         className={styles.icon}
                     />
                 ))}
