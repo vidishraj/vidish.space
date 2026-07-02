@@ -53,7 +53,7 @@ const services: ServiceCard[] = [
         emoji: '\u{1F680}',
         title: 'End-to-End Delivery',
         description:
-            'Solo-built entire products from architecture to app store. Taken codebases from 154MB to 20MB, and shipped production systems in as little as two weeks.',
+            'Solo-built entire products from architecture to app store. Took codebases from 154MB down to 20MB, and shipped production systems in as little as two weeks.',
         tags: ['System Design', 'Architecture', 'App Store', 'Deployment'],
     },
 ];

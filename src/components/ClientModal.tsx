@@ -1,5 +1,6 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {Season} from '../utils/seasonConfig';
+import {useFocusTrap} from '../utils/useFocusTrap';
 
 interface ClientModalProps {
     isOpen: boolean;
@@ -29,6 +30,9 @@ const ClientModal: React.FC<ClientModalProps> = ({
     season = 'summer',
 }) => {
     const isMonsoon = season === 'monsoon';
+    const dialogRef = useRef<HTMLDivElement>(null);
+
+    useFocusTrap(isOpen, dialogRef);
 
     useEffect(() => {
         if (isOpen) {
@@ -72,6 +76,11 @@ const ClientModal: React.FC<ClientModalProps> = ({
             />
 
             <div
+                ref={dialogRef}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="client-modal-title"
+                tabIndex={-1}
                 className="relative mx-auto rounded-lg shadow-2xl overflow-hidden w-[96vw] max-w-2xl max-h-[80vh] flex flex-col"
                 style={{background: bg}}
             >
@@ -81,6 +90,9 @@ const ClientModal: React.FC<ClientModalProps> = ({
                         <img
                             src={clientLogo}
                             alt={clientName}
+                            onError={(e) => {
+                                e.currentTarget.style.display = 'none';
+                            }}
                             style={{
                                 width: 44,
                                 height: 44,
@@ -109,7 +121,7 @@ const ClientModal: React.FC<ClientModalProps> = ({
                         </div>
                     )}
                     <div className="flex-1 min-w-0">
-                        <h2 className={`text-lg sm:text-xl font-bold tracking-tight ${headingColor} truncate`}>
+                        <h2 id="client-modal-title" className={`text-lg sm:text-xl font-bold tracking-tight ${headingColor} truncate`}>
                             {clientName}
                         </h2>
                         <p className={`text-xs sm:text-sm ${mutedColor}`}>
@@ -123,7 +135,7 @@ const ClientModal: React.FC<ClientModalProps> = ({
                                 ? 'hover:bg-gray-700/50 text-gray-300 hover:text-white'
                                 : 'hover:bg-gray-200/50 text-gray-600 hover:text-gray-800'
                         } transition-colors`}
-                        aria-label="Close"
+                        aria-label="Close dialog"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
                             fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

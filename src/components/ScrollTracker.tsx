@@ -18,26 +18,38 @@ const ScrollTracker = () => {
     ], []);
 
     useEffect(() => {
-        const handleScroll = () => {
-            const sectionElements = sections.map(section =>
-                document.getElementById(section.id)
-            );
+        let rafId: number | null = null;
 
-            const current = sectionElements.find(element => {
-                if (!element) return false;
-                const rect = element.getBoundingClientRect();
-                return rect.top <= 150 && rect.bottom >= 150;
-            });
+        const computeActiveSection = () => {
+            rafId = null;
+            const current = sections
+                .map(section => document.getElementById(section.id))
+                .find(element => {
+                    if (!element) return false;
+                    const rect = element.getBoundingClientRect();
+                    return rect.top <= 150 && rect.bottom >= 150;
+                });
 
             if (current) {
                 setActiveSection(current.id);
             }
         };
 
-        window.addEventListener('scroll', handleScroll, {passive: true});
-        handleScroll();
+        // Throttle to one measurement per animation frame to avoid layout
+        // thrashing from getBoundingClientRect on every scroll event.
+        const handleScroll = () => {
+            if (rafId === null) {
+                rafId = requestAnimationFrame(computeActiveSection);
+            }
+        };
 
-        return () => window.removeEventListener('scroll', handleScroll);
+        window.addEventListener('scroll', handleScroll, {passive: true});
+        computeActiveSection();
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            if (rafId !== null) cancelAnimationFrame(rafId);
+        };
     }, [sections]);
 
     const scrollToSection = (sectionId: string) => {
@@ -62,7 +74,7 @@ const ScrollTracker = () => {
     const modeClass = isMonsoon ? styles.darkMode : styles.lightMode;
 
     return (
-        <div className={`${styles.trackerContainer} ${modeClass}`}>
+        <nav className={`${styles.trackerContainer} ${modeClass}`} aria-label="Section navigation">
             <div className={styles.tracker}>
                 <div className={styles.navButtons}>
                     {sections.map((section) => (
@@ -73,6 +85,7 @@ const ScrollTracker = () => {
                                 activeSection === section.id ? styles.activeButton : ''
                             }`}
                             aria-label={`Navigate to ${section.label}`}
+                            aria-current={activeSection === section.id ? 'true' : undefined}
                         >
                             {section.label}
                         </button>
@@ -86,7 +99,8 @@ const ScrollTracker = () => {
                 >
                     <img
                         src={'/assets/contacts/file-user.png'}
-                        alt="Resume"
+                        alt=""
+                        aria-hidden="true"
                         className="w-6 h-6 object-contain"
                         style={{
                             filter: isMonsoon ? 'brightness(1.2)' : 'none'
@@ -95,7 +109,7 @@ const ScrollTracker = () => {
                     <span>Resume</span>
                 </button>
             </div>
-        </div>
+        </nav>
     );
 };
 

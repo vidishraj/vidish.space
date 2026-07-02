@@ -1,7 +1,6 @@
 import {motion, useScroll, useTransform,} from "framer-motion";
 import React, {useEffect, useRef, useState} from "react";
 import {cn} from "../utils/utils";
-import './random.scss'
 import {LazyLottie} from "./TimelineData.tsx";
 
 interface TimelineEntry {

@@ -11,6 +11,30 @@
     font-display: swap;
 }
 
+@font-face {
+    font-family: 'Zain';
+    src: url('/assets/Zain-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Zain';
+    src: url('/assets/Zain-ExtraBold.ttf') format('truetype');
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Zain';
+    src: url('/assets/Zain-Black.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+
 :root {
     font-family: Zain, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
     line-height: 1.5;
@@ -73,6 +97,24 @@ button:hover {
 button:focus,
 button:focus-visible {
     outline: 4px auto -webkit-focus-ring-color;
+}
+
+/* Respect users who prefer reduced motion: neutralise CSS animations,
+   transitions and smooth scrolling. JS-driven animation is additionally
+   gated at the component level (e.g. the particle overlay). */
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto !important;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+    }
 }
 
 @media (prefers-color-scheme: light) {

@@ -359,9 +359,9 @@ export const timelineData = (season: Season) => {
                                     <span className="text-xl mr-2">☕</span>
                                     <div>
                                         <h3 className="font-semibold text-lg"
-                                            style={{color: textColor}}>Current Status</h3>
-                                        <p style={{color: textColor}}>Currently in the pre-prod phase of the project, which means more coffee, more
-                                            debugging, and more Jenkins logs.</p>
+                                            style={{color: textColor}}>How It Wrapped Up</h3>
+                                        <p style={{color: textColor}}>Wrapped up in Feb 2026 after carrying the project into its pre-prod phase —
+                                            plenty of coffee, debugging, and Jenkins logs along the way.</p>
                                     </div>
                                 </div>
                             </div>
