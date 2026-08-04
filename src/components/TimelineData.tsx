@@ -21,10 +21,12 @@ interface LazyLottieProps {
 export const LazyLottie = ({animationImport, className = "", style = {}}: LazyLottieProps) => {
     const [animationData, setAnimationData] = useState<object | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [hasError, setHasError] = useState<boolean>(false);
 
     useEffect(() => {
         let isMounted = true;
         setIsLoading(true);
+        setHasError(false);
 
         animationImport()
             .then(module => {
@@ -35,7 +37,10 @@ export const LazyLottie = ({animationImport, className = "", style = {}}: LazyLo
             })
             .catch(error => {
                 console.error("Failed to load animation:", error);
-                setIsLoading(false);
+                if (isMounted) {
+                    setHasError(true);
+                    setIsLoading(false);
+                }
             });
 
         return () => {
@@ -43,13 +48,17 @@ export const LazyLottie = ({animationImport, className = "", style = {}}: LazyLo
         };
     }, [animationImport]);
 
+    // On failure, render nothing rather than a permanently stuck
+    // "Loading..." placeholder — the surrounding timeline card still shows.
+    if (hasError) return null;
+
     if (isLoading || !animationData) {
         return (
             <div
                 className={className}
                 style={{
                     ...style,
-                    backgroundColor: "#f0f0f0",
+                    backgroundColor: "transparent",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -69,7 +78,7 @@ export const timelineData = (season: Season) => {
     const textColor = palette.textPrimary;
     const cardColors = palette.timelineCards;
 
-    const getCardClass = (_index: number) => {
+    const getCardClass = () => {
         if (isMonsoon) return styles.timelineCardDark;
         return `${styles.timelineCard}`;
     };
@@ -85,7 +94,7 @@ export const timelineData = (season: Season) => {
             animationData: earlyDaysAnimation,
             content: [
                 <ContainerScroll
-                    containerClassName={getCardClass(0)}
+                    containerClassName={getCardClass()}
                     containerStyle={getCardStyle(0)}
                     className={styles.timelineContent}>
                     <div className="flex flex-col space-y-6">
@@ -151,7 +160,7 @@ export const timelineData = (season: Season) => {
             animationData: collegeDaysAnimation,
             content: [
                 <ContainerScroll
-                    containerClassName={getCardClass(1)}
+                    containerClassName={getCardClass()}
                     containerStyle={getCardStyle(1)}
                     className={styles.timelineContent}>
                     <div className="flex flex-col space-y-6">
@@ -218,7 +227,7 @@ export const timelineData = (season: Season) => {
             animationData: internshipAnimation,
             content: [
                 <ContainerScroll
-                    containerClassName={getCardClass(2)}
+                    containerClassName={getCardClass()}
                     containerStyle={getCardStyle(2)}
                     className={styles.timelineContent}>
                     <div className="flex flex-col space-y-6">
@@ -280,7 +289,7 @@ export const timelineData = (season: Season) => {
             animationData: jobAnimation,
             content: [
                 <ContainerScroll
-                    containerClassName={getCardClass(3)}
+                    containerClassName={getCardClass()}
                     containerStyle={getCardStyle(3)}
                     className={styles.timelineContent}>
                     <div className="flex flex-col space-y-6">
@@ -376,7 +385,7 @@ export const timelineData = (season: Season) => {
             animationData: freelanceAnimation,
             content: [
                 <ContainerScroll
-                    containerClassName={getCardClass(4)}
+                    containerClassName={getCardClass()}
                     containerStyle={getCardStyle(4)}
                     className={styles.timelineContent}>
                     <div className="flex flex-col space-y-6">

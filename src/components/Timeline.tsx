@@ -20,29 +20,24 @@ export const Timeline = ({data, titleClassName, containerClassname}: {
     const [height, setHeight] = useState(0);
     const [lastHeight, setLastHeight] = useState(20);
     useEffect(() => {
-        const cards = containerRef.current?.querySelectorAll('.py-10.md\\:py-40.w-full.relative');
-        if (containerRef.current && cards && cards.length === 5) {
-            setLastHeight(containerRef.current.scrollHeight - containerRef.current.clientHeight + lastHeight);
-        }
-        if (ref.current) {
-            const rect = ref.current.getBoundingClientRect();
-            setHeight(rect.height);
-        }
-    }, [ref, containerRef, lastHeight]);
-    useEffect(() => {
-        function handleResize() {
-            const cards = containerRef.current?.querySelectorAll('.py-10.md\\:py-40.w-full.relative');
-            if (containerRef.current && cards && cards.length === 5) {
-                setLastHeight(containerRef.current.scrollHeight - containerRef.current.clientHeight - lastHeight);
+        // Idempotent measurement: bottom padding = container overflow + 20px
+        // base. The previous version accumulated (+lastHeight on mount,
+        // -lastHeight on resize), which made the padding oscillate between
+        // 20 and -20 across resizes.
+        const measure = () => {
+            const container = containerRef.current;
+            if (container) {
+                setLastHeight(Math.max(20, container.scrollHeight - container.clientHeight + 20));
             }
-        }
-
-        window.addEventListener('resize', handleResize);
-
-        return () => {
-            window.removeEventListener('resize', handleResize);
+            if (ref.current) {
+                setHeight(ref.current.getBoundingClientRect().height);
+            }
         };
-    }, [lastHeight]);
+
+        measure();
+        window.addEventListener('resize', measure);
+        return () => window.removeEventListener('resize', measure);
+    }, []);
 
     const {scrollYProgress} = useScroll({
         target: containerRef,

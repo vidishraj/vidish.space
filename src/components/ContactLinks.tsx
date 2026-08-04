@@ -26,6 +26,8 @@ const SocialLinks = () => {
     const itemVariants = {
         hidden: {opacity: 0, y: 20},
         visible: {opacity: 1, y: 0},
+        hover: {scale: 1.05, y: -4},
+        tap: {scale: 0.95},
     };
 
     const downloadResume = () => {

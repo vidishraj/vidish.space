@@ -17,9 +17,16 @@ export function useFocusTrap(isOpen: boolean, containerRef: RefObject<HTMLElemen
 
         const previouslyFocused = document.activeElement as HTMLElement | null;
 
-        const getFocusable = () =>
-            Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR))
-                .filter((el) => el.offsetParent !== null || el === document.activeElement);
+        const getFocusable = () => {
+            const all = Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR));
+            const visible = all.filter(
+                (el) => el.offsetParent !== null || el === document.activeElement
+            );
+            // offsetParent is null for position:fixed elements even when
+            // visible; if the filter would discard everything, fall back to
+            // the unfiltered list rather than breaking the trap.
+            return visible.length > 0 ? visible : all;
+        };
 
         // Move focus into the dialog.
         const focusables = getFocusable();
@@ -51,7 +58,10 @@ export function useFocusTrap(isOpen: boolean, containerRef: RefObject<HTMLElemen
         container.addEventListener('keydown', handleKeyDown);
         return () => {
             container.removeEventListener('keydown', handleKeyDown);
-            previouslyFocused?.focus?.();
+            // Only restore focus if the element still exists in the document.
+            if (previouslyFocused && document.contains(previouslyFocused)) {
+                previouslyFocused.focus();
+            }
         };
     }, [isOpen, containerRef]);
 }

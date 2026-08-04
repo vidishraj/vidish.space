@@ -44,7 +44,9 @@ export const TextGenerateEffect = ({
                 }
             );
         }
-    }, [isInView, animate, duration, filter]);
+        // `words` is included so freshly rendered spans are animated to visible
+        // when the text changes while already in view (e.g. on a season switch).
+    }, [isInView, animate, duration, filter, words]);
 
     const renderWords = () => {
         return (

@@ -41,10 +41,21 @@ const Modal: React.FC<ModalProps> = ({isOpen, onClose, data, season = 'summer'})
     const [activeSection, setActiveSection] = useState(0);
     const tabsContainerRef = useRef<HTMLDivElement>(null);
     const dialogRef = useRef<HTMLDivElement>(null);
+    const arrowCheckTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const [showLeftArrow, setShowLeftArrow] = useState(false);
     const [showRightArrow, setShowRightArrow] = useState(false);
 
     useFocusTrap(isOpen, dialogRef);
+
+    // Clamp so an out-of-range index can never crash the render, even in the
+    // window between a data change and the reset effect running.
+    const safeSection = Math.min(activeSection, data.sections.length - 1);
+
+    useEffect(() => {
+        return () => {
+            if (arrowCheckTimeoutRef.current) clearTimeout(arrowCheckTimeoutRef.current);
+        };
+    }, []);
 
     const isMonsoon = season === 'monsoon';
 
@@ -55,15 +66,24 @@ const Modal: React.FC<ModalProps> = ({isOpen, onClose, data, season = 'summer'})
 
     const gradientColors = data.gradientColors || defaultGradient;
 
+    // Reset the active tab whenever the modal opens or its data changes, so a
+    // stale index from a previously viewed project (which may have had more
+    // sections) can never point past the end of the current sections array.
     useEffect(() => {
+        setActiveSection(0);
+    }, [data]);
+
+    useEffect(() => {
+        let timeoutId: ReturnType<typeof setTimeout> | undefined;
         if (isOpen) {
             setActiveSection(0);
             document.body.style.overflow = 'hidden';
-            setTimeout(checkArrowsVisibility, 100);
+            timeoutId = setTimeout(checkArrowsVisibility, 100);
         } else {
             document.body.style.overflow = 'auto';
         }
         return () => {
+            clearTimeout(timeoutId);
             document.body.style.overflow = 'auto';
         };
     }, [isOpen]);
@@ -94,7 +114,8 @@ const Modal: React.FC<ModalProps> = ({isOpen, onClose, data, season = 'summer'})
             ? container.scrollLeft - scrollAmount
             : container.scrollLeft + scrollAmount;
         container.scrollTo({left: newScrollLeft, behavior: 'smooth'});
-        setTimeout(checkArrowsVisibility, 300);
+        if (arrowCheckTimeoutRef.current) clearTimeout(arrowCheckTimeoutRef.current);
+        arrowCheckTimeoutRef.current = setTimeout(checkArrowsVisibility, 300);
     };
 
     useEffect(() => {
@@ -124,7 +145,8 @@ const Modal: React.FC<ModalProps> = ({isOpen, onClose, data, season = 'summer'})
             left: tabLeft - (containerWidth / 2) + (tabWidth / 2),
             behavior: 'smooth'
         });
-        setTimeout(checkArrowsVisibility, 300);
+        const timeoutId = setTimeout(checkArrowsVisibility, 300);
+        return () => clearTimeout(timeoutId);
     }, [activeSection]);
 
     if (!isOpen) return null;
@@ -238,11 +260,11 @@ const Modal: React.FC<ModalProps> = ({isOpen, onClose, data, season = 'summer'})
                     {data.sections.length > 0 && (
                         <div className="p-4 sm:p-8">
                             <div className="flex flex-col md:flex-row gap-4 sm:gap-8 h-full">
-                                {data.sections[activeSection].imgSrc && (
+                                {data.sections[safeSection].imgSrc && (
                                     <div className="md:w-1/2 flex-shrink-0 flex items-start justify-center">
                                         <img
-                                            src={data.sections[activeSection].imgSrc}
-                                            alt={data.sections[activeSection].title}
+                                            src={data.sections[safeSection].imgSrc}
+                                            alt={data.sections[safeSection].title}
                                             onError={(e) => {
                                                 e.currentTarget.style.display = 'none';
                                             }}
@@ -255,7 +277,7 @@ const Modal: React.FC<ModalProps> = ({isOpen, onClose, data, season = 'summer'})
                                     <div
                                         className={`prose max-w-none text-sm sm:text-base ${isMonsoon ? 'prose-invert' : ''} ${isMonsoon ? 'text-gray-200' : 'text-gray-700'}`}
                                         dangerouslySetInnerHTML={{
-                                            __html: DOMPurify.sanitize(marked(data.sections[activeSection].description) as string),
+                                            __html: DOMPurify.sanitize(marked(data.sections[safeSection].description, {async: false}) as string),
                                         }}>
                                     </div>
                                 </div>

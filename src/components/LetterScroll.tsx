@@ -25,12 +25,16 @@ function ParallaxText({
     const [repeats, setRepeats] = useState(10);
 
     useEffect(() => {
+        let cancelled = false;
+
         const measureContent = () => {
             if (innerRef.current) {
                 const width = innerRef.current.offsetWidth;
                 setContentWidth(width);
 
-                if (containerRef.current) {
+                // Guard against width 0 (pre-layout) — dividing by it would
+                // yield Infinity repeats.
+                if (containerRef.current && width > 0) {
                     const containerWidth = containerRef.current.offsetWidth;
                     const needed = Math.ceil((containerWidth * 3) / width) + 2;
                     setRepeats(needed);
@@ -39,8 +43,18 @@ function ParallaxText({
         };
 
         measureContent();
+        // Re-measure once the web font is ready: text measured against the
+        // fallback font has a different width, which skews the wrap point.
+        if (document.fonts?.ready) {
+            document.fonts.ready.then(() => {
+                if (!cancelled) measureContent();
+            });
+        }
         window.addEventListener('resize', measureContent);
-        return () => window.removeEventListener('resize', measureContent);
+        return () => {
+            cancelled = true;
+            window.removeEventListener('resize', measureContent);
+        };
     }, [children]);
 
     useAnimationFrame((_, delta) => {
