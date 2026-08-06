@@ -24,8 +24,10 @@ jobs:
           set -euo pipefail
           cd /home/opc/React/vidish.space
           # ff-only: refuse to deploy if the checkout has diverged or is dirty,
-          # instead of silently rebuilding stale code
-          sudo git pull --ff-only
+          # instead of silently rebuilding stale code.
+          # No sudo: the checkout is owned by the ssh user; pulling as root
+          # would re-poison file ownership and break npm (EACCES).
+          git pull --ff-only
           echo "Deploying commit: $(git rev-parse --short HEAD)"
           npm i
           npm run build
