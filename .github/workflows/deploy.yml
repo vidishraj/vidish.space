@@ -21,10 +21,15 @@ jobs:
     - name: Pull latest changes and restart service
       run: |
         ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+          set -euo pipefail
           cd /home/opc/React/vidish.space
-          sudo git pull
+          # ff-only: refuse to deploy if the checkout has diverged or is dirty,
+          # instead of silently rebuilding stale code
+          sudo git pull --ff-only
+          echo "Deploying commit: $(git rev-parse --short HEAD)"
           npm i
           npm run build
+          # Only replace the live docroot after a successful build
           sudo rm -r /var/www/vidish/
           sudo mv dist/ /var/www/vidish/
         EOF
