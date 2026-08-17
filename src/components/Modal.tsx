@@ -7,15 +7,19 @@ import '../assets/modalStyles/vidishSpaceModal.css'
 import '../assets/modalStyles/leetcodeToGitModal.css'
 import {Season} from '../utils/seasonConfig';
 import {useFocusTrap} from '../utils/useFocusTrap';
+import type {ProjectKind, ProjectMetric} from '../assets/projects/types';
+import {ProjectBadge, StatRow, TechChips} from './ProjectPrimitives';
+import VideoEmbed from './VideoEmbed';
 
 // Data structure for the modal
 interface Section {
     title: string;
     description: string;
-    imgSrc: string;
+    imgSrc?: string;
+    videoUrl?: string;
 }
 
-interface ModalData {
+export interface ModalData {
     title: string;
     sections: Section[];
     links?: {
@@ -27,6 +31,18 @@ interface ModalData {
         color1: string;
         color2: string;
         color3: string;
+    };
+    // Optional richer presentation (Projects revamp)
+    kind?: ProjectKind;
+    tagline?: string;
+    metrics?: ProjectMetric[];
+    techStack?: string[];
+    client?: {
+        name: string;
+        logo?: string;
+        logoBg?: string;
+        role: string;
+        duration: string;
     };
 }
 
@@ -172,9 +188,42 @@ const Modal: React.FC<ModalProps> = ({isOpen, onClose, data, season = 'summer'})
                 {/* Header */}
                 <div
                     className={`px-4 sm:px-8 py-3 sm:py-5 border-b ${isMonsoon ? 'border-gray-700/50' : 'border-gray-200/50'} backdrop-blur-sm flex items-center justify-between`}>
-                    <h2 id="modal-title" className={`text-xl sm:text-2xl font-bold ${isMonsoon ? 'text-white' : 'text-gray-800'} tracking-tight font-serif truncate pr-10`}>
-                        {data.title}
-                    </h2>
+                    <div className="min-w-0 flex items-center gap-3 pr-10">
+                        {data.client?.logo && (
+                            <img
+                                src={data.client.logo}
+                                alt=""
+                                aria-hidden="true"
+                                onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                                style={{
+                                    width: 40,
+                                    height: 40,
+                                    borderRadius: 10,
+                                    objectFit: 'contain',
+                                    background: data.client.logoBg || 'rgba(255,255,255,0.92)',
+                                    padding: 4,
+                                    flexShrink: 0,
+                                }}
+                            />
+                        )}
+                        <div className="min-w-0">
+                            <div className="flex items-center gap-2 min-w-0">
+                                <h2 id="modal-title" className={`text-xl sm:text-2xl font-bold ${isMonsoon ? 'text-white' : 'text-gray-800'} tracking-tight font-serif truncate`}>
+                                    {data.title}
+                                </h2>
+                                {data.kind && <ProjectBadge kind={data.kind} isDark={isMonsoon} className="hidden sm:inline-flex flex-shrink-0" />}
+                            </div>
+                            {data.client ? (
+                                <p className={`text-xs sm:text-sm truncate ${isMonsoon ? 'text-gray-400' : 'text-gray-500'}`}>
+                                    {data.client.name} &middot; {data.client.role} &middot; {data.client.duration}
+                                </p>
+                            ) : data.tagline ? (
+                                <p className={`text-xs sm:text-sm truncate ${isMonsoon ? 'text-gray-400' : 'text-gray-500'}`}>
+                                    {data.tagline}
+                                </p>
+                            ) : null}
+                        </div>
+                    </div>
                     <button
                         onClick={onClose}
                         aria-label="Close dialog"
@@ -257,33 +306,65 @@ const Modal: React.FC<ModalProps> = ({isOpen, onClose, data, season = 'summer'})
                      style={{
                          background: isMonsoon ? 'rgba(15, 23, 42, 0.4)' : 'rgba(255, 255, 255, 0.4)'
                      }}>
-                    {data.sections.length > 0 && (
-                        <div className="p-4 sm:p-8">
-                            <div className="flex flex-col md:flex-row gap-4 sm:gap-8 h-full">
-                                {data.sections[safeSection].imgSrc && (
-                                    <div className="md:w-1/2 flex-shrink-0 flex items-start justify-center">
-                                        <img
-                                            src={data.sections[safeSection].imgSrc}
-                                            alt={data.sections[safeSection].title}
-                                            onError={(e) => {
-                                                e.currentTarget.style.display = 'none';
-                                            }}
-                                            className="w-full h-auto rounded-lg object-contain max-h-[25vh] md:max-h-[40vh] min-h-[-webkit-fill-available] shadow-lg"
+                    {data.sections.length > 0 && (() => {
+                        const section = data.sections[safeSection];
+                        const hasMedia = !!(section.videoUrl || section.imgSrc);
+                        return (
+                            <div className="p-4 sm:p-8">
+                                {/* Video takes full width above the text; images sit side-by-side */}
+                                {section.videoUrl && (
+                                    <div className="mb-5">
+                                        <VideoEmbed
+                                            url={section.videoUrl}
+                                            title={`${data.title} — ${section.title}`}
+                                            poster={section.imgSrc}
+                                            isDark={isMonsoon}
                                         />
                                     </div>
                                 )}
+                                <div className={`flex flex-col ${hasMedia && !section.videoUrl ? 'md:flex-row' : ''} gap-4 sm:gap-8 h-full`}>
+                                    {section.imgSrc && !section.videoUrl && (
+                                        <div className="md:w-1/2 flex-shrink-0 flex items-start justify-center">
+                                            <img
+                                                src={section.imgSrc}
+                                                alt={section.title}
+                                                onError={(e) => {
+                                                    e.currentTarget.style.display = 'none';
+                                                }}
+                                                className="w-full h-auto rounded-lg object-contain max-h-[25vh] md:max-h-[40vh] min-h-[-webkit-fill-available] shadow-lg"
+                                            />
+                                        </div>
+                                    )}
 
-                                <div className="md:w-1/2" style={{color: isMonsoon ? 'white' : 'black'}}>
-                                    <div
-                                        className={`prose max-w-none text-sm sm:text-base ${isMonsoon ? 'prose-invert' : ''} ${isMonsoon ? 'text-gray-200' : 'text-gray-700'}`}
-                                        dangerouslySetInnerHTML={{
-                                            __html: DOMPurify.sanitize(marked(data.sections[safeSection].description, {async: false}) as string),
-                                        }}>
+                                    <div className={hasMedia && !section.videoUrl ? 'md:w-1/2' : 'w-full'} style={{color: isMonsoon ? 'white' : 'black'}}>
+                                        <div
+                                            className={`prose max-w-none text-sm sm:text-base ${isMonsoon ? 'prose-invert' : ''} ${isMonsoon ? 'text-gray-200' : 'text-gray-700'}`}
+                                            dangerouslySetInnerHTML={{
+                                                __html: DOMPurify.sanitize(marked(section.description, {async: false}) as string),
+                                            }}>
+                                        </div>
                                     </div>
                                 </div>
+
+                                {/* Receipts: metrics + full stack, shown on the last tab */}
+                                {safeSection === data.sections.length - 1 && (data.metrics?.length || data.techStack?.length) ? (
+                                    <div className={`mt-6 pt-5 border-t ${isMonsoon ? 'border-gray-700/50' : 'border-gray-200/70'}`}>
+                                        {data.metrics && data.metrics.length > 0 && (
+                                            <StatRow metrics={data.metrics} isDark={isMonsoon} className="mb-5" />
+                                        )}
+                                        {data.techStack && data.techStack.length > 0 && (
+                                            <>
+                                                <p className={`text-xs font-semibold uppercase tracking-wider mb-2 ${isMonsoon ? 'text-gray-400' : 'text-gray-500'}`}>
+                                                    Tech stack
+                                                </p>
+                                                <TechChips items={data.techStack} isDark={isMonsoon} size="md" />
+                                            </>
+                                        )}
+                                    </div>
+                                ) : null}
                             </div>
-                        </div>
-                    )}
+                        );
+                    })()}
                 </div>
 
                 {/* Footer with links */}

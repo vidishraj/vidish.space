@@ -77,12 +77,13 @@ function App() {
                         <Testimonials/>
                     </Suspense> */}
 
-                    <Suspense fallback={<FullPageLoader animationData={loader} message="Loading Timeline..."/>}>
-                        <TimelineSection/>
-                    </Suspense>
-
+                    {/* Projects follow the Clients carousel so work is shown before the career story */}
                     <Suspense fallback={<FullPageLoader animationData={loader} message="Loading Projects..."/>}>
                         <Projects/>
+                    </Suspense>
+
+                    <Suspense fallback={<FullPageLoader animationData={loader} message="Loading Timeline..."/>}>
+                        <TimelineSection/>
                     </Suspense>
 
                     <Suspense fallback={<FullPageLoader animationData={loader} message="Loading Contact..."/>}>

@@ -1,180 +1,146 @@
-import React, {useEffect, useId, useRef, useState} from "react";
+import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {motion, useAnimation, useInView} from "framer-motion";
-import Modal from "./Modal.tsx";
+import Modal, {type ModalData} from "./Modal.tsx";
+import ProjectCard from "./ProjectCard.tsx";
 import {useThemeContext} from '../App';
-import {akkountantData, tripsplitData, vidishSpaceData, leetcodeToGitData} from "../assets/modalInfo";
-import AnimatedCard from "./AnimatedCard.tsx";
-import styles from "../pages/Projects.module.scss";
+import type {Project, ProjectKind} from "../assets/projects/types";
 
+type Filter = 'all' | ProjectKind;
 
 interface ProjectsGridProps {
-    slides: Array<{
-        title: string;
-        description: string;
-        img: string;
-        content: React.ReactNode;
-    } | null>;
+    projects: Project[];
+    /** Show the Personal / Client filter tabs. */
+    showFilter?: boolean;
     sectionRef?: React.RefObject<HTMLElement>;
 }
 
-export function ProjectsGrid({slides}: ProjectsGridProps) {
+/** Map a Project onto the Modal's data shape. */
+function toModalData(p: Project): ModalData {
+    return {
+        title: p.title,
+        sections: p.sections.map(s => ({
+            title: s.title,
+            description: s.description,
+            imgSrc: s.imgSrc,
+            videoUrl: s.videoUrl,
+        })),
+        links: p.links,
+        gradientColors: p.gradientColors,
+        kind: p.kind,
+        tagline: p.tagline,
+        metrics: p.metrics,
+        techStack: p.techStack,
+        client: p.client,
+    };
+}
+
+export function ProjectsGrid({projects, showFilter = true}: ProjectsGridProps) {
     const gridRef = useRef<HTMLDivElement>(null);
-    const id = useId();
-    const [isOpen, setIsOpen] = useState(false);
     const {season} = useThemeContext();
-    const isInView = useInView(gridRef, {once: false, amount: 0.2});
+    const isDark = season === 'monsoon';
+    const isInView = useInView(gridRef, {once: true, amount: 0.15});
     const controls = useAnimation();
-    const [windowWidth, setWindowWidth] = useState(0);
-    const [cardsPerRow, setCardsPerRow] = useState(3);
-    const [modalData, setModalData] = useState(akkountantData);
+    const [filter, setFilter] = useState<Filter>('all');
+    const [active, setActive] = useState<Project | null>(null);
 
     useEffect(() => {
-        let timeoutId: ReturnType<typeof setTimeout> | undefined;
-        const handleResize = () => {
-            clearTimeout(timeoutId);
-            timeoutId = setTimeout(() => setWindowWidth(window.innerWidth), 150);
-        };
-        setWindowWidth(window.innerWidth);
-        window.addEventListener('resize', handleResize);
-        return () => {
-            clearTimeout(timeoutId);
-            window.removeEventListener('resize', handleResize);
-        };
-    }, []);
-
-    useEffect(() => {
-        if (windowWidth < 640) {
-            setCardsPerRow(1);
-        } else if (windowWidth < 1024) {
-            setCardsPerRow(2);
-        } else {
-            setCardsPerRow(2);
-        }
-    }, [windowWidth]);
-
-    useEffect(() => {
-        if (isInView) {
-            controls.start("visible");
-        } else {
-            controls.start("hidden");
-        }
+        if (isInView) controls.start("visible");
     }, [isInView, controls]);
 
-    const handleCardClick = (index: number) => {
-        switch (index) {
-            case 0:
-                setModalData(akkountantData);
-                break;
-            case 1:
-                setModalData(tripsplitData);
-                break;
-            case 2:
-                setModalData(vidishSpaceData);
-                break;
-            case 3:
-                setModalData(leetcodeToGitData);
-                break;
-        }
-        setIsOpen(true);
-    };
+    const counts = useMemo(() => ({
+        all: projects.length,
+        personal: projects.filter(p => p.kind === 'personal').length,
+        client: projects.filter(p => p.kind === 'client').length,
+    }), [projects]);
+
+    const visible = useMemo(
+        () => (filter === 'all' ? projects : projects.filter(p => p.kind === filter)),
+        [projects, filter],
+    );
+
+    const open = useCallback((p: Project) => setActive(p), []);
+    const close = useCallback(() => setActive(null), []);
 
     const containerVariants = {
         hidden: {opacity: 0},
-        visible: {
-            opacity: 1,
-            transition: {
-                staggerChildren: 0.1,
-                delayChildren: 0.2
-            }
-        }
+        visible: {opacity: 1, transition: {staggerChildren: 0.08, delayChildren: 0.15}},
     };
-
     const itemVariants = {
-        hidden: {
-            y: 50,
-            opacity: 0
-        },
-        visible: {
-            y: 0,
-            opacity: 1,
-            transition: {
-                type: "spring",
-                stiffness: 100,
-                damping: 15
-            }
-        }
+        hidden: {y: 40, opacity: 0},
+        visible: {y: 0, opacity: 1, transition: {type: "spring", stiffness: 110, damping: 16}},
     };
 
-    const numRows = Math.ceil(slides.length / cardsPerRow);
-
-    const rowsOfCards = Array(numRows).fill(0).map((_, rowIndex) => {
-        const startIdx = rowIndex * cardsPerRow;
-        const rowCards = slides.slice(startIdx, startIdx + cardsPerRow);
-        while (rowCards.length < cardsPerRow) {
-            rowCards.push(null);
-        }
-        return rowCards;
-    });
+    const filters: {key: Filter; label: string}[] = [
+        {key: 'all', label: `All (${counts.all})`},
+        {key: 'personal', label: `Personal (${counts.personal})`},
+        {key: 'client', label: `Client work (${counts.client})`},
+    ];
 
     return (
-        <div
-            ref={gridRef}
-            className="relative w-full mt-5 min-h-[100vh] py-16 px-4 md:px-8"
-            aria-labelledby={`projects-heading-${id}`}
-        >
-            {rowsOfCards.map((row, rowIndex) => (
-                <motion.div
-                    key={`row-${rowIndex}`}
-                    variants={containerVariants}
-                    initial="hidden"
-                    animate={controls}
-                    className="mb-8 flex flex-wrap"
-                >
-                    {row.map((item, colIndex) => {
-                        if (item === null) {
+        <div ref={gridRef} className="relative w-full mt-5 py-12 px-4 md:px-8">
+            {showFilter && counts.personal > 0 && counts.client > 0 && (
+                <div className="mb-8 flex justify-center" role="tablist" aria-label="Filter projects">
+                    <div
+                        className="inline-flex rounded-full p-1"
+                        style={{
+                            background: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)',
+                            border: `1px solid ${isDark ? 'rgba(255,255,255,0.10)' : 'rgba(0,0,0,0.06)'}`,
+                        }}
+                    >
+                        {filters.map(f => {
+                            const selected = filter === f.key;
                             return (
-                                <div
-                                    key={`empty-${rowIndex}-${colIndex}`}
-                                    className="opacity-0 invisible"
+                                <button
+                                    key={f.key}
+                                    role="tab"
+                                    aria-selected={selected}
+                                    onClick={() => setFilter(f.key)}
+                                    className="rounded-full px-4 py-1.5 text-sm font-medium transition-colors border-0"
                                     style={{
-                                        width: `${100 / cardsPerRow}%`,
-                                        height: '400px'
+                                        background: selected
+                                            ? (isDark ? 'rgba(96,165,250,0.22)' : '#ffffff')
+                                            : 'transparent',
+                                        color: selected
+                                            ? (isDark ? '#bfdbfe' : '#1d4ed8')
+                                            : (isDark ? '#cbd5e1' : '#475569'),
+                                        boxShadow: selected && !isDark ? '0 1px 3px rgba(0,0,0,0.12)' : 'none',
                                     }}
-                                />
+                                >
+                                    {f.label}
+                                </button>
                             );
-                        }
+                        })}
+                    </div>
+                </div>
+            )}
 
-                        return (
-                            <motion.div
-                                key={`project-${rowIndex}-${colIndex}`}
-                                variants={itemVariants}
-                                className="px-4 mb-8"
-                                style={{width: `${100 / cardsPerRow}%`}}
-                            >
-                                <div className="h-[400px]">
-                                    <AnimatedCard
-                                        clickEvent={() => handleCardClick(rowIndex * cardsPerRow + colIndex)}
-                                        title={item.title}
-                                        description={item.description}
-                                        image={item.img}
-                                        season={season}
-                                        className={styles.baseAnimatedCard}
-                                    />
-                                </div>
-                            </motion.div>
-                        );
-                    })}
-                </motion.div>
-            ))}
+            <motion.div
+                key={filter}
+                variants={containerVariants}
+                initial="hidden"
+                animate={isInView ? "visible" : "hidden"}
+                className="grid gap-6 md:gap-8"
+                style={{gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 320px), 1fr))'}}
+            >
+                {visible.map(p => (
+                    <motion.div
+                        key={p.id}
+                        variants={itemVariants}
+                        className={p.featured ? 'lg:col-span-2' : ''}
+                    >
+                        <ProjectCard project={p} isDark={isDark} onOpen={open} />
+                    </motion.div>
+                ))}
+            </motion.div>
 
-            <Modal
-                isOpen={isOpen}
-                onClose={() => {
-                    setIsOpen(false);
-                }}
-                data={modalData}
-                season={season}
-            />
+            {active && (
+                <Modal
+                    isOpen={!!active}
+                    onClose={close}
+                    data={toModalData(active)}
+                    season={season}
+                />
+            )}
         </div>
     );
 }

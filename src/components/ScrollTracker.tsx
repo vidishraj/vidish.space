@@ -12,8 +12,8 @@ const ScrollTracker = () => {
         {id: 'section1', label: 'Home'},
         {id: 'section2', label: 'Services'},
         {id: 'sectionClients', label: 'Clients'},
-        {id: 'section3', label: 'Career'},
         {id: 'section4', label: 'Projects'},
+        {id: 'section3', label: 'Career'},
         {id: 'section5', label: 'Contact'},
     ], []);
 
