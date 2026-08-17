@@ -1,0 +1,45 @@
+name: Deploy to Dev Site
+
+# Staging/preview site: https://dev.vidish.online
+# Deploys on every push to the `dev` branch. Fully isolated from prod
+# (separate checkout, docroot, and nginx server block; noindex; no tracker).
+
+on:
+  push:
+    branches:
+      - dev
+
+concurrency:
+  group: deploy-dev
+  cancel-in-progress: true
+
+jobs:
+  deploy-dev:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up SSH
+      uses: webfactory/ssh-agent@v0.8.0
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Pull, build and publish dev site
+      run: |
+        ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+          set -euo pipefail
+          cd /home/opc/React/vidish.space-dev
+          git fetch origin dev
+          # Dev is a preview branch that may be force-pushed/rebased, so
+          # track the remote exactly rather than requiring a fast-forward.
+          git checkout -B dev origin/dev
+          echo "Deploying dev commit: $(git rev-parse --short HEAD)"
+          npm i
+          npm run build
+          # Only replace the docroot after a successful build
+          rm -rf /var/www/vidish-dev/*
+          cp -r dist/* /var/www/vidish-dev/
+          echo "Dev site published: https://dev.vidish.online"
+        EOF
