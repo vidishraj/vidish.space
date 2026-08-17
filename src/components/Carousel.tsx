@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {motion, useAnimation, useInView} from "framer-motion";
-import Modal, {type ModalData} from "./Modal.tsx";
+import ProjectPage from "./ProjectPage.tsx";
 import ProjectCard from "./ProjectCard.tsx";
 import {useThemeContext} from '../App';
 import type {Project, ProjectKind} from "../assets/projects/types";
@@ -14,25 +14,12 @@ interface ProjectsGridProps {
     sectionRef?: React.RefObject<HTMLElement>;
 }
 
-/** Map a Project onto the Modal's data shape. */
-function toModalData(p: Project): ModalData {
-    return {
-        title: p.title,
-        sections: p.sections.map(s => ({
-            title: s.title,
-            description: s.description,
-            imgSrc: s.imgSrc,
-            videoUrl: s.videoUrl,
-        })),
-        links: p.links,
-        gradientColors: p.gradientColors,
-        kind: p.kind,
-        tagline: p.tagline,
-        metrics: p.metrics,
-        techStack: p.techStack,
-        client: p.client,
-    };
-}
+const HASH_PREFIX = '#/project/';
+
+const projectIdFromHash = (): string | null =>
+    window.location.hash.startsWith(HASH_PREFIX)
+        ? decodeURIComponent(window.location.hash.slice(HASH_PREFIX.length))
+        : null;
 
 export function ProjectsGrid({projects, showFilter = true}: ProjectsGridProps) {
     const gridRef = useRef<HTMLDivElement>(null);
@@ -42,10 +29,62 @@ export function ProjectsGrid({projects, showFilter = true}: ProjectsGridProps) {
     const controls = useAnimation();
     const [filter, setFilter] = useState<Filter>('all');
     const [active, setActive] = useState<Project | null>(null);
+    // Whether the current open state has a history entry we pushed (vs deep link)
+    const pushedRef = useRef(false);
 
     useEffect(() => {
         if (isInView) controls.start("visible");
     }, [isInView, controls]);
+
+    // Deep link: open a project if the page loads with #/project/<id>
+    useEffect(() => {
+        const id = projectIdFromHash();
+        if (id) {
+            const match = projects.find(p => p.id === id);
+            if (match) {
+                pushedRef.current = false; // we didn't push this entry
+                setActive(match);
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    // Browser back/forward
+    useEffect(() => {
+        const onPop = () => {
+            const id = projectIdFromHash();
+            const match = id ? projects.find(p => p.id === id) ?? null : null;
+            pushedRef.current = !!match; // entries reached via history are navigable back
+            setActive(match);
+        };
+        window.addEventListener('popstate', onPop);
+        return () => window.removeEventListener('popstate', onPop);
+    }, [projects]);
+
+    const open = useCallback((p: Project) => {
+        setActive(p);
+        window.history.pushState({vsProject: p.id}, '', `${HASH_PREFIX}${encodeURIComponent(p.id)}`);
+        pushedRef.current = true;
+    }, []);
+
+    /** Switch project inside the page view (prev/next) — push so back walks history. */
+    const select = useCallback((p: Project) => {
+        setActive(p);
+        window.history.pushState({vsProject: p.id}, '', `${HASH_PREFIX}${encodeURIComponent(p.id)}`);
+        pushedRef.current = true;
+    }, []);
+
+    const close = useCallback(() => {
+        setActive(null);
+        if (pushedRef.current) {
+            // Leave via history so back-button state stays consistent
+            window.history.back();
+        } else {
+            // Deep-linked entry: just strip the hash without navigating away
+            window.history.replaceState({}, '', window.location.pathname + window.location.search);
+        }
+        pushedRef.current = false;
+    }, []);
 
     const counts = useMemo(() => ({
         all: projects.length,
@@ -57,9 +96,6 @@ export function ProjectsGrid({projects, showFilter = true}: ProjectsGridProps) {
         () => (filter === 'all' ? projects : projects.filter(p => p.kind === filter)),
         [projects, filter],
     );
-
-    const open = useCallback((p: Project) => setActive(p), []);
-    const close = useCallback(() => setActive(null), []);
 
     const containerVariants = {
         hidden: {opacity: 0},
@@ -134,10 +170,11 @@ export function ProjectsGrid({projects, showFilter = true}: ProjectsGridProps) {
             </motion.div>
 
             {active && (
-                <Modal
-                    isOpen={!!active}
+                <ProjectPage
+                    project={active}
+                    projects={projects}
                     onClose={close}
-                    data={toModalData(active)}
+                    onSelect={select}
                     season={season}
                 />
             )}
