@@ -2,6 +2,7 @@ import React from 'react';
 import {marked} from 'marked';
 import DOMPurify from 'dompurify';
 import type {ContentBlock} from '../assets/projects/types';
+import {projectTheme} from './projectTheme';
 import VideoEmbed from './VideoEmbed';
 
 export const renderMarkdown = (md: string): string =>
@@ -16,17 +17,18 @@ interface BlockProps {
 const Label: React.FC<{children: React.ReactNode; color?: string; isDark?: boolean}> = ({children, color, isDark}) => (
     <span
         className="text-[11px] font-bold uppercase tracking-widest"
-        style={{color: color || (isDark ? '#94a3b8' : '#64748b')}}
+        style={{color: color || projectTheme(!!isDark).textMuted}}
     >
         {children}
     </span>
 );
 
 const Block: React.FC<BlockProps> = ({block, isDark, projectTitle}) => {
-    const hairline = isDark ? 'rgba(255,255,255,0.10)' : 'rgba(15,23,42,0.08)';
-    const cardBg = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.7)';
-    const muted = isDark ? '#94a3b8' : '#64748b';
-    const accent = isDark ? '#60a5fa' : '#2563eb';
+    const t = projectTheme(isDark);
+    const hairline = t.hairline;
+    const cardBg = t.panelBg;
+    const muted = t.textMuted;
+    const accent = t.accent;
 
     switch (block.type) {
         case 'text':
@@ -50,7 +52,7 @@ const Block: React.FC<BlockProps> = ({block, isDark, projectTitle}) => {
                                 <span aria-hidden="true" className="mt-0.5 text-lg leading-none">{item.icon}</span>
                             )}
                             <div className="min-w-0">
-                                <div className="text-sm font-semibold" style={{color: isDark ? '#f1f5f9' : '#0f172a'}}>
+                                <div className="text-sm font-semibold" style={{color: t.textPrimary}}>
                                     {item.title}
                                 </div>
                                 {item.body && (
@@ -71,11 +73,11 @@ const Block: React.FC<BlockProps> = ({block, isDark, projectTitle}) => {
                     style={{background: cardBg, border: `1px solid ${hairline}`, borderLeft: `3px solid ${accent}`}}
                 >
                     <Label color={accent}>Decision</Label>
-                    <p className="mb-3 mt-1 text-sm font-semibold sm:text-base" style={{color: isDark ? '#f1f5f9' : '#0f172a'}}>
+                    <p className="mb-3 mt-1 text-sm font-semibold sm:text-base" style={{color: t.textPrimary}}>
                         {block.decision}
                     </p>
                     <Label isDark={isDark}>Why</Label>
-                    <p className={`mt-1 text-sm leading-relaxed ${block.tradeoff ? 'mb-3' : ''}`} style={{color: isDark ? '#cbd5e1' : '#334155'}}>
+                    <p className={`mt-1 text-sm leading-relaxed ${block.tradeoff ? 'mb-3' : ''}`} style={{color: t.textBody}}>
                         {block.why}
                     </p>
                     {block.tradeoff && (
@@ -102,16 +104,14 @@ const Block: React.FC<BlockProps> = ({block, isDark, projectTitle}) => {
                             key={r.label}
                             className="flex flex-col gap-1 px-5 py-3.5 sm:flex-row sm:gap-6"
                             style={{
-                                background: r.strong
-                                    ? (isDark ? 'rgba(52,211,153,0.08)' : 'rgba(16,185,129,0.07)')
-                                    : cardBg,
+                                background: r.strong ? t.successSoftBg : cardBg,
                                 borderTop: i > 0 ? `1px solid ${hairline}` : undefined,
                             }}
                         >
                             <div className="w-24 flex-shrink-0 pt-0.5">
                                 <Label
                                     isDark={isDark}
-                                    color={r.strong ? (isDark ? '#34d399' : '#059669') : undefined}
+                                    color={r.strong ? t.success : undefined}
                                 >
                                     {r.label}
                                 </Label>
@@ -121,7 +121,7 @@ const Block: React.FC<BlockProps> = ({block, isDark, projectTitle}) => {
                                 style={{
                                     color: r.strong
                                         ? (isDark ? '#d1fae5' : '#065f46')
-                                        : (isDark ? '#cbd5e1' : '#334155'),
+                                        : t.textBody,
                                     fontWeight: r.strong ? 500 : 400,
                                 }}
                             >
@@ -148,7 +148,7 @@ const Block: React.FC<BlockProps> = ({block, isDark, projectTitle}) => {
                             }}
                         >
                             <span aria-hidden="true" style={{fontSize: 28}}>📸</span>
-                            <span className="text-sm font-semibold" style={{color: isDark ? '#cbd5e1' : '#475569'}}>
+                            <span className="text-sm font-semibold" style={{color: t.textBody}}>
                                 Screenshot slot
                             </span>
                             {block.capture && (
@@ -160,8 +160,8 @@ const Block: React.FC<BlockProps> = ({block, isDark, projectTitle}) => {
                                 <code
                                     className="mt-1 rounded px-2 py-1 text-xs"
                                     style={{
-                                        background: isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)',
-                                        color: isDark ? '#93c5fd' : '#1d4ed8',
+                                        background: t.chipBg,
+                                        color: t.accentText,
                                     }}
                                 >
                                     {block.src}
@@ -192,7 +192,7 @@ const Block: React.FC<BlockProps> = ({block, isDark, projectTitle}) => {
                                 alt={block.alt || block.caption || ''}
                                 loading="lazy"
                                 className="w-full object-contain"
-                                style={{maxHeight: '58vh', background: isDark ? '#0b1220' : '#f8fafc'}}
+                                style={{maxHeight: '58vh', background: t.mediaBg}}
                                 onError={(e) => {
                                     (e.currentTarget.parentElement as HTMLElement).style.display = 'none';
                                 }}
@@ -212,7 +212,7 @@ const Block: React.FC<BlockProps> = ({block, isDark, projectTitle}) => {
                 <div
                     className="rounded-lg px-5 py-4"
                     style={{
-                        background: isDark ? 'rgba(96,165,250,0.09)' : 'rgba(37,99,235,0.06)',
+                        background: t.accentSoftBg,
                         borderLeft: `3px solid ${accent}`,
                     }}
                 >
@@ -221,7 +221,7 @@ const Block: React.FC<BlockProps> = ({block, isDark, projectTitle}) => {
                             <Label color={accent}>{block.label}</Label>
                         </div>
                     )}
-                    <p className="m-0 text-base font-medium leading-relaxed sm:text-lg" style={{color: isDark ? '#e2e8f0' : '#1e293b'}}>
+                    <p className="m-0 text-base font-medium leading-relaxed sm:text-lg" style={{color: t.textPrimary}}>
                         {block.text}
                     </p>
                 </div>

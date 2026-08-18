@@ -1,5 +1,6 @@
 import React from 'react';
 import type {ProjectKind, ProjectMetric, ProjectStatus} from '../assets/projects/types';
+import {projectTheme} from './projectTheme';
 
 // ─── StatusChip ──────────────────────────────────────────────
 // "● Live" style badge — the honesty signal almost no portfolio has.
@@ -18,13 +19,14 @@ export const StatusChip: React.FC<{status: ProjectStatus; isDark?: boolean; clas
 }) => {
     const meta = STATUS_META[status];
     const color = isDark ? meta.colorDark : meta.color;
+    const t = projectTheme(isDark);
     return (
         <span
             className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${className}`}
             style={{
                 color,
                 background: isDark ? 'rgba(255,255,255,0.07)' : 'rgba(255,255,255,0.85)',
-                border: `1px solid ${isDark ? 'rgba(255,255,255,0.14)' : 'rgba(0,0,0,0.08)'}`,
+                border: `1px solid ${t.hairline}`,
             }}
         >
             <span
@@ -59,8 +61,8 @@ export const ProjectBadge: React.FC<{kind: ProjectKind; isDark?: boolean; classN
             border: `1px solid ${isDark ? 'rgba(251,191,36,0.35)' : 'rgba(217,119,6,0.30)'}`,
         }
         : {
-            background: isDark ? 'rgba(96, 165, 250, 0.14)' : 'rgba(37, 99, 235, 0.10)',
-            color: isDark ? '#93c5fd' : '#1d4ed8',
+            background: projectTheme(isDark).accentSoftBg,
+            color: projectTheme(isDark).accentText,
             border: `1px solid ${isDark ? 'rgba(96,165,250,0.35)' : 'rgba(37,99,235,0.30)'}`,
         };
     return (
@@ -95,10 +97,11 @@ export const TechChips: React.FC<{
     const shown = max ? items.slice(0, max) : items;
     const overflow = max && items.length > max ? items.length - max : 0;
     const pad = size === 'sm' ? 'px-2 py-0.5 text-[11px]' : 'px-2.5 py-1 text-xs';
+    const t = projectTheme(isDark);
     const chipStyle: React.CSSProperties = {
-        background: isDark ? 'rgba(91,155,213,0.12)' : 'rgba(0,0,0,0.05)',
-        color: isDark ? '#8cbdea' : '#4a3f35',
-        border: `1px solid ${isDark ? 'rgba(91,155,213,0.22)' : 'rgba(0,0,0,0.06)'}`,
+        background: t.chipBg,
+        color: t.chipText,
+        border: `1px solid ${t.hairline}`,
     };
     return (
         <div className={`flex flex-wrap gap-1.5 ${className}`}>
@@ -125,6 +128,7 @@ export const StatRow: React.FC<{metrics: ProjectMetric[]; isDark?: boolean; clas
     className = '',
 }) => {
     if (!metrics.length) return null;
+    const t = projectTheme(isDark);
     return (
         <div
             className={`grid gap-3 ${className}`}
@@ -135,17 +139,17 @@ export const StatRow: React.FC<{metrics: ProjectMetric[]; isDark?: boolean; clas
                     key={`${m.value}-${m.label}`}
                     className="rounded-lg px-4 py-3"
                     style={{
-                        background: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.65)',
-                        border: `1px solid ${isDark ? 'rgba(255,255,255,0.10)' : 'rgba(0,0,0,0.06)'}`,
+                        background: t.panelBg,
+                        border: `1px solid ${t.hairline}`,
                     }}
                 >
                     <div
                         className="text-2xl font-bold leading-tight tracking-tight"
-                        style={{color: isDark ? '#f8fafc' : '#0f172a', fontVariantNumeric: 'tabular-nums'}}
+                        style={{color: t.textPrimary, fontVariantNumeric: 'tabular-nums'}}
                     >
                         {m.value}
                     </div>
-                    <div className="mt-0.5 text-xs" style={{color: isDark ? '#94a3b8' : '#64748b'}}>
+                    <div className="mt-0.5 text-xs" style={{color: t.textMuted}}>
                         {m.label}
                     </div>
                 </div>

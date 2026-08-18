@@ -2,6 +2,7 @@ import React, {useRef, useState} from 'react';
 import {motion, useReducedMotion} from 'framer-motion';
 import type {Project} from '../assets/projects/types';
 import {ProjectBadge, StatusChip, TechChips} from './ProjectPrimitives';
+import {projectTheme} from './projectTheme';
 
 interface ProjectCardProps {
     project: Project;
@@ -20,6 +21,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project, isDark, onOpen, class
     const videoRef = useRef<HTMLVideoElement>(null);
     const [imgFailed, setImgFailed] = useState(false);
     const isClient = project.kind === 'client';
+    const t = projectTheme(isDark);
 
     const handleEnter = () => {
         if (reduceMotion) return;
@@ -53,8 +55,8 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project, isDark, onOpen, class
             onBlur={handleLeave}
             className={`group relative flex h-full cursor-pointer flex-col overflow-hidden rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${className}`}
             style={{
-                backgroundColor: isDark ? '#1E1E1E' : '#ffffff',
-                border: `1px solid ${isDark ? 'rgba(255,255,255,0.10)' : 'rgba(0,0,0,0.08)'}`,
+                backgroundColor: t.surface,
+                border: `1px solid ${t.hairline}`,
                 boxShadow: isDark ? '0 4px 12px rgba(0,0,0,0.5)' : '0 4px 12px rgba(0,0,0,0.08)',
             }}
             whileHover={reduceMotion ? undefined : {
@@ -70,7 +72,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project, isDark, onOpen, class
                 style={{
                     height: isClient ? 120 : 176,
                     background: isDark
-                        ? 'linear-gradient(135deg, #111827, #1f2937)'
+                        ? 'linear-gradient(135deg, #0b1220, #1e293b)'
                         : 'linear-gradient(135deg, #f8fafc, #e2e8f0)',
                 }}
             >
@@ -126,16 +128,16 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project, isDark, onOpen, class
                         className="absolute bottom-3 right-3 rounded-lg px-2.5 py-1.5 text-right shadow-sm backdrop-blur-sm"
                         style={{
                             background: isDark ? 'rgba(15,23,42,0.78)' : 'rgba(255,255,255,0.88)',
-                            border: `1px solid ${isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.06)'}`,
+                            border: `1px solid ${t.hairline}`,
                         }}
                     >
                         <div
                             className="text-base font-bold leading-none tracking-tight"
-                            style={{color: isDark ? '#f8fafc' : '#0f172a', fontVariantNumeric: 'tabular-nums'}}
+                            style={{color: t.textPrimary, fontVariantNumeric: 'tabular-nums'}}
                         >
                             {project.hookMetric.value}
                         </div>
-                        <div className="mt-0.5 text-[10px] uppercase tracking-wider" style={{color: isDark ? '#94a3b8' : '#64748b'}}>
+                        <div className="mt-0.5 text-[10px] uppercase tracking-wider" style={{color: t.textMuted}}>
                             {project.hookMetric.label}
                         </div>
                     </div>
@@ -149,17 +151,17 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project, isDark, onOpen, class
                         {project.client.name} · {project.client.role}
                     </div>
                 )}
-                <h3 className={`mb-1.5 text-lg font-semibold leading-snug ${isDark ? 'text-blue-300' : 'text-blue-700'}`}>
+                <h3 className="mb-1.5 text-lg font-semibold leading-snug" style={{color: t.accentText}}>
                     {project.title}
                 </h3>
-                <p className={`mb-4 flex-grow text-sm leading-relaxed ${isDark ? 'text-gray-200' : 'text-gray-700'}`}>
+                <p className="mb-4 flex-grow text-sm leading-relaxed" style={{color: t.textBody}}>
                     {project.tagline}
                 </p>
                 <TechChips items={project.tags} isDark={isDark} max={5} />
 
                 <div
                     className="mt-4 flex items-center justify-between text-xs font-semibold"
-                    style={{color: isDark ? '#93c5fd' : '#1d4ed8'}}
+                    style={{color: t.accentText}}
                 >
                     <span className="transition-transform group-hover:translate-x-0.5">
                         View details →

@@ -3,6 +3,7 @@ import {motion, useReducedMotion} from 'framer-motion';
 import type {Project} from '../assets/projects/types';
 import {ProjectBadge, StatRow, StatusChip, TechChips} from './ProjectPrimitives';
 import {ProjectBlockList, renderMarkdown} from './ProjectBlocks';
+import {projectTheme} from './projectTheme';
 import VideoEmbed from './VideoEmbed';
 import {useFocusTrap} from '../utils/useFocusTrap';
 import {Season} from '../utils/seasonConfig';
@@ -88,12 +89,13 @@ const ProjectPage: React.FC<ProjectPageProps> = ({project, projects, onClose, on
     const prev = idx > 0 ? projects[idx - 1] : null;
     const next = idx >= 0 && idx < projects.length - 1 ? projects[idx + 1] : null;
 
+    const t = projectTheme(isDark);
     const pageBg = isDark
         ? 'linear-gradient(180deg, #0f172a 0%, #111827 60%, #0b1220 100%)'
         : 'linear-gradient(180deg, #fafcff 0%, #f2f6fb 60%, #eaf0f7 100%)';
-    const textPrimary = isDark ? '#f1f5f9' : '#0f172a';
-    const textMuted = isDark ? '#94a3b8' : '#64748b';
-    const hairline = isDark ? 'rgba(255,255,255,0.10)' : 'rgba(15,23,42,0.08)';
+    const textPrimary = t.textPrimary;
+    const textMuted = t.textMuted;
+    const hairline = t.hairline;
     const barBg = isDark ? 'rgba(15,23,42,0.82)' : 'rgba(250,252,255,0.85)';
 
     const linkBtn: React.CSSProperties = {
@@ -170,14 +172,14 @@ const ProjectPage: React.FC<ProjectPageProps> = ({project, projects, onClose, on
                         className="mt-5 max-w-3xl space-y-1.5 rounded-xl px-5 py-4"
                         style={{
                             listStyle: 'none',
-                            background: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.7)',
+                            background: t.panelBg,
                             border: `1px solid ${hairline}`,
                         }}
                     >
                         {project.tldr.map((line, i) => (
                             <li key={i} className="flex items-start gap-2.5 text-sm sm:text-base">
-                                <span aria-hidden="true" className="mt-1 flex-shrink-0" style={{color: isDark ? '#60a5fa' : '#2563eb'}}>▸</span>
-                                <span style={{color: isDark ? '#e2e8f0' : '#1e293b'}}>{line}</span>
+                                <span aria-hidden="true" className="mt-1 flex-shrink-0" style={{color: t.accent}}>▸</span>
+                                <span style={{color: t.textBody}}>{line}</span>
                             </li>
                         ))}
                     </ul>
@@ -187,7 +189,7 @@ const ProjectPage: React.FC<ProjectPageProps> = ({project, projects, onClose, on
                     {project.links?.website && (
                         <a href={project.links.website} target="_blank" rel="noopener noreferrer"
                            className="rounded-full px-4 py-1.5 text-sm font-semibold"
-                           style={{background: isDark ? '#2563eb' : '#1d4ed8', color: '#fff'}}>
+                           style={{background: t.accentText, color: '#fff'}}>
                             Visit live ↗
                         </a>
                     )}
@@ -220,7 +222,7 @@ const ProjectPage: React.FC<ProjectPageProps> = ({project, projects, onClose, on
                         <dl
                             className="mt-8 grid grid-cols-2 gap-x-6 gap-y-4 rounded-xl px-6 py-5 sm:grid-cols-3 lg:grid-cols-6"
                             style={{
-                                background: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.7)',
+                                background: t.panelBg,
                                 border: `1px solid ${hairline}`,
                             }}
                         >
@@ -270,10 +272,8 @@ const ProjectPage: React.FC<ProjectPageProps> = ({project, projects, onClose, on
                                         aria-current={activeSec === i ? 'true' : undefined}
                                         className="flex w-full items-baseline gap-2 rounded-md px-3 py-1.5 text-left text-sm transition-colors"
                                         style={{
-                                            color: activeSec === i ? (isDark ? '#93c5fd' : '#1d4ed8') : textMuted,
-                                            background: activeSec === i
-                                                ? (isDark ? 'rgba(96,165,250,0.12)' : 'rgba(37,99,235,0.08)')
-                                                : 'transparent',
+                                            color: activeSec === i ? t.accentText : textMuted,
+                                            background: activeSec === i ? t.accentSoftBg : 'transparent',
                                             fontWeight: activeSec === i ? 600 : 400,
                                             border: 0,
                                         }}
@@ -302,7 +302,7 @@ const ProjectPage: React.FC<ProjectPageProps> = ({project, projects, onClose, on
                         >
                             <div
                                 className="mb-1 text-[11px] font-bold uppercase tracking-widest"
-                                style={{color: isDark ? '#60a5fa' : '#2563eb', fontVariantNumeric: 'tabular-nums'}}
+                                style={{color: t.accent, fontVariantNumeric: 'tabular-nums'}}
                             >
                                 {sectionNo(i)}
                             </div>
@@ -335,7 +335,7 @@ const ProjectPage: React.FC<ProjectPageProps> = ({project, projects, onClose, on
                                                     alt={section.title}
                                                     loading="lazy"
                                                     className="w-full object-contain"
-                                                    style={{maxHeight: '58vh', background: isDark ? '#0b1220' : '#f8fafc'}}
+                                                    style={{maxHeight: '58vh', background: t.mediaBg}}
                                                     onError={(e) => {
                                                         (e.currentTarget.parentElement as HTMLElement).style.display = 'none';
                                                     }}
@@ -382,7 +382,7 @@ const ProjectPage: React.FC<ProjectPageProps> = ({project, projects, onClose, on
                             type="button"
                             onClick={() => onSelect(prev)}
                             className="rounded-xl p-5 text-left transition-transform hover:-translate-y-0.5"
-                            style={{...linkBtn, borderRadius: 12}}
+                            style={linkBtn}
                         >
                             <div className="text-xs font-semibold uppercase tracking-wider" style={{color: textMuted}}>
                                 ← Previous
@@ -396,7 +396,7 @@ const ProjectPage: React.FC<ProjectPageProps> = ({project, projects, onClose, on
                             type="button"
                             onClick={() => onSelect(next)}
                             className="rounded-xl p-5 text-right transition-transform hover:-translate-y-0.5"
-                            style={{...linkBtn, borderRadius: 12}}
+                            style={linkBtn}
                         >
                             <div className="text-xs font-semibold uppercase tracking-wider" style={{color: textMuted}}>
                                 Next →

@@ -4,6 +4,7 @@ import ProjectPage from "./ProjectPage.tsx";
 import ProjectCard from "./ProjectCard.tsx";
 import {useThemeContext} from '../App';
 import type {Project, ProjectKind} from "../assets/projects/types";
+import {projectTheme} from "./projectTheme";
 
 type Filter = 'all' | ProjectKind;
 
@@ -25,6 +26,7 @@ export function ProjectsGrid({projects, showFilter = true}: ProjectsGridProps) {
     const gridRef = useRef<HTMLDivElement>(null);
     const {season} = useThemeContext();
     const isDark = season === 'monsoon';
+    const t = projectTheme(isDark);
     const isInView = useInView(gridRef, {once: true, amount: 0.15});
     const controls = useAnimation();
     const [filter, setFilter] = useState<Filter>('all');
@@ -119,8 +121,8 @@ export function ProjectsGrid({projects, showFilter = true}: ProjectsGridProps) {
                     <div
                         className="inline-flex rounded-full p-1"
                         style={{
-                            background: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)',
-                            border: `1px solid ${isDark ? 'rgba(255,255,255,0.10)' : 'rgba(0,0,0,0.06)'}`,
+                            background: t.chipBg,
+                            border: `1px solid ${t.hairline}`,
                         }}
                     >
                         {filters.map(f => {
@@ -134,11 +136,9 @@ export function ProjectsGrid({projects, showFilter = true}: ProjectsGridProps) {
                                     className="rounded-full px-4 py-1.5 text-sm font-medium transition-colors border-0"
                                     style={{
                                         background: selected
-                                            ? (isDark ? 'rgba(96,165,250,0.22)' : '#ffffff')
+                                            ? (isDark ? t.accentSoftBg : t.surface)
                                             : 'transparent',
-                                        color: selected
-                                            ? (isDark ? '#bfdbfe' : '#1d4ed8')
-                                            : (isDark ? '#cbd5e1' : '#475569'),
+                                        color: selected ? t.accentText : t.textBody,
                                         boxShadow: selected && !isDark ? '0 1px 3px rgba(0,0,0,0.12)' : 'none',
                                     }}
                                 >
