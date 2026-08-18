@@ -1,7 +1,7 @@
 import React, {useRef, useState} from 'react';
 import {motion, useReducedMotion} from 'framer-motion';
 import type {Project} from '../assets/projects/types';
-import {ProjectBadge, TechChips} from './ProjectPrimitives';
+import {ProjectBadge, StatusChip, TechChips} from './ProjectPrimitives';
 
 interface ProjectCardProps {
     project: Project;
@@ -117,6 +117,9 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project, isDark, onOpen, class
                 )}
 
                 <ProjectBadge kind={project.kind} isDark={isDark} className="absolute left-3 top-3 shadow-sm" />
+                {project.facts?.status && (
+                    <StatusChip status={project.facts.status} isDark={isDark} className="absolute right-3 top-3 shadow-sm" />
+                )}
 
                 {project.hookMetric && (
                     <div

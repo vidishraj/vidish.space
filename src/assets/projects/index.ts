@@ -60,22 +60,138 @@ const tripsplit: Project = {
     links: cleanLinks(tripsplitInfo.links),
 };
 
+// Flagship entry — authored as the exemplar for the project-page format:
+// the fixed narrative spine (Problem → Solution → How it works → Hard
+// problems → Results) rendered with typed content blocks.
 const vidishSpace: Project = {
     id: 'vidish-space',
     kind: 'personal',
+    featured: true,
     title: 'Vidish.Online',
-    tagline: 'This site — a seasonal, weather-animated portfolio built for performance and personality.',
-    hookMetric: {value: '3', label: 'seasonal themes'},
-    tags: ['React 18', 'TypeScript', 'Framer Motion', 'Vite'],
+    tagline: "You're looking at it — a hand-built portfolio with three seasonal worlds, a real-time weather engine, and its own CI/CD pipeline.",
+    hookMetric: {value: '60 fps', label: 'weather, GPU-composited'},
+    tags: ['React 18', 'TypeScript', 'Framer Motion', 'Vite', 'CI/CD'],
     image: '/assets/vidishSpaceModal/vidishSpaceDark.webp',
-    // Drop the "Coming Soon" placeholder tab from the legacy JSON
-    sections: vidishSpaceInfo.sections.filter(s => !/coming soon/i.test(s.title)),
-    metrics: [
-        {value: '3', label: 'seasons: summer · monsoon · winter'},
-        {value: '4.2 MB', label: 'assets trimmed in perf pass'},
-        {value: 'GPU', label: 'composited weather particles'},
+    facts: {
+        role: 'Design + Engineering',
+        timeline: '2025 — present',
+        status: 'live',
+        team: 'Solo',
+        platform: 'Web (SPA)',
+    },
+    tldr: [
+        'Hand-built portfolio — no template, no CMS; the site itself is the demo.',
+        'Three full seasonal themes with a GPU-composited weather engine (leaves, rain, snow, lightning).',
+        'Self-hosted with a fail-loud CI/CD pipeline and isolated dev/prod environments.',
     ],
-    techStack: ['React 18', 'TypeScript', 'Vite 6', 'Framer Motion', 'Tailwind', 'SCSS Modules', 'Lottie', 'GitHub Actions', 'Nginx'],
+    sections: [
+        {
+            title: 'The problem',
+            blocks: [
+                {
+                    type: 'text',
+                    md: `Every developer portfolio looks the same: a template, a hero line, a grid of cards. For someone selling **full-stack craft**, that's a missed opportunity — the portfolio is the one project where the visitor experiences your work instead of reading about it.
+
+The brief I set myself: build a site that *demonstrates* rather than *lists* — with real engineering constraints (60 fps, fast first paint, accessibility) so the personality never costs credibility.`,
+                },
+            ],
+        },
+        {
+            title: 'The solution',
+            blocks: [
+                {
+                    type: 'features',
+                    items: [
+                        {icon: '🍂', title: 'Three seasonal worlds', body: 'Summer, monsoon, winter — each a complete theme: palette, hero art, backgrounds, and live weather. Persisted and shareable via ?season=winter.'},
+                        {icon: '⛈️', title: 'A real-time weather engine', body: 'Fluttering leaves, slanted rain with splash collisions and lightning, depth-layered snow — all GPU-composited.'},
+                        {icon: '📖', title: 'Deep-linkable project pages', body: 'Full-page case studies (like this one) with section navigation, browser-back support, and shareable URLs.'},
+                        {icon: '🚀', title: 'Its own delivery pipeline', body: 'Self-hosted, two environments, auto-deploy on push — the site ships itself.'},
+                    ],
+                },
+                {
+                    type: 'figure',
+                    src: '/assets/vidishSpaceModal/vidishSpace_hero.png',
+                    caption: 'The hero in summer — switch seasons up top and every pixel of this site changes with you.',
+                },
+            ],
+        },
+        {
+            title: 'How it works',
+            blocks: [
+                {
+                    type: 'text',
+                    md: 'Three decisions shaped the architecture more than any framework choice:',
+                },
+                {
+                    type: 'decision',
+                    decision: 'One typed season config drives every visual decision',
+                    why: 'Palettes, backgrounds, hero art, card colors, and particle behavior all flow from a single source of truth — no component hardcodes a color twice, and adding a fourth season is config, not a rewrite.',
+                    tradeoff: 'Every new component must be themed against all three seasons up front — slower to add, impossible to drift.',
+                },
+                {
+                    type: 'decision',
+                    decision: 'Animation budget: transform/opacity keyframes only, no per-frame JS',
+                    why: 'The browser composites the entire weather show on the GPU — 30+ concurrent particles hold 60 fps even on mobile.',
+                    tradeoff: 'Complex motion (a leaf’s pendulum flutter) must be expressed as keyframe waypoints instead of a physics loop — more authoring effort, dramatically cheaper runtime.',
+                },
+                {
+                    type: 'decision',
+                    decision: 'Client-rendered SPA with hash-based deep links',
+                    why: 'Simple to ship and host; project pages are still shareable and back-button friendly via the History API.',
+                    tradeoff: 'Individual projects aren’t separately indexable by search engines yet — real routes with prerendering are the planned next iteration.',
+                },
+            ],
+        },
+        {
+            title: 'Hard problems',
+            blocks: [
+                {
+                    type: 'challenge',
+                    problem: 'Falling leaves in a straight line look like a screensaver from 2003 — but real physics simulation costs CPU the site can’t spare.',
+                    approach: 'Encoded realism into keyframes: randomized pendulum sway waypoints, 3D tumble via rotateX/rotateY with perspective, and fast "slip" segments between slow flutters — plus a shared wind layer and cursor-following spring so the whole field reacts to you.',
+                    result: 'Leaves that flutter, tumble, and lean toward your mouse — at 60 fps with zero per-frame JavaScript.',
+                },
+                {
+                    type: 'challenge',
+                    problem: 'Rain needs splashes where drops actually land, but tracking 40+ drops per frame in React would thrash the render loop.',
+                    approach: 'One shared collision loop (not one per drop) reads CSS transforms at a throttled 30 fps outside React, spawning splash particles imperatively only when a drop crosses the ground line.',
+                    result: 'Physically-plausible splashes and random lightning, with the collision check as the only per-frame code on the entire site.',
+                },
+                {
+                    type: 'challenge',
+                    problem: 'The deploy pipeline once reported green while silently shipping stale code — the worst kind of failure.',
+                    approach: 'Rebuilt it fail-loud: fast-forward-only pulls, set -euo pipefail, build-before-docroot-swap, and an isolated noindex dev environment for previewing every change before production.',
+                    result: 'A push is either fully live in ~1 minute or fails visibly — never silently wrong. This page went through that pipeline.',
+                },
+            ],
+        },
+        {
+            title: 'Results',
+            blocks: [
+                {
+                    type: 'callout',
+                    label: 'The receipt',
+                    text: 'Everything described above is running in the tab you have open — switch seasons, wait for the lightning, resize the window, turn on reduced-motion. The site is the proof.',
+                },
+                {
+                    type: 'text',
+                    md: `Performance held the bar: every section code-split and lazy-loaded, fonts preloaded with proper weights, a **4.2 MB** asset trim, rAF-throttled scroll tracking, and full \`prefers-reduced-motion\` support — the show disappears politely for users who ask.`,
+                },
+                {
+                    type: 'figure',
+                    src: '/assets/vidishSpaceModal/vidishSpace_timeline.png',
+                    caption: 'The career timeline — scroll-driven progress line, lazy-loaded Lottie scenes, themed per season.',
+                },
+            ],
+        },
+    ],
+    metrics: [
+        {value: '3', label: 'full seasonal themes'},
+        {value: '60 fps', label: 'GPU-composited weather'},
+        {value: '4.2 MB', label: 'dead weight removed in perf pass'},
+        {value: '~1 min', label: 'push → live, fail-loud CI/CD'},
+    ],
+    techStack: ['React 18', 'TypeScript', 'Vite 6', 'Framer Motion', 'Tailwind', 'SCSS Modules', 'Lottie', 'GitHub Actions', 'Nginx', "Let's Encrypt", 'Oracle Cloud'],
     links: cleanLinks(vidishSpaceInfo.links),
 };
 
@@ -151,18 +267,30 @@ const clientProjects: Project[] = [
             role: 'Software Engineer',
             duration: 'Jul 2022 – Feb 2026',
         },
+        facts: {role: 'Software Engineer', timeline: 'Jul 2022 – Feb 2026', status: 'completed', platform: 'Banking · AWS'},
         sections: [
             {
                 title: 'Context',
-                description: '<p>A mission-critical regulatory data pipeline at a global bank, running on an aging Java 8 monolith with a legacy JSP front-end and manual deployments.</p>',
+                blocks: [
+                    {type: 'text', md: 'A mission-critical regulatory data pipeline at a global bank, running on an aging Java 8 monolith with a legacy JSP front-end and manual deployments.'},
+                ],
             },
             {
                 title: 'My role',
-                description: '<ul><li>Built and maintained <strong>5+ Spring Boot microservices</strong> handling large-scale banking data processing.</li><li>Developed the new <strong>React + TypeScript</strong> front-end that replaced the JSP application.</li><li>Set up CI/CD with Jenkins, containerised services with Docker, deployed via <strong>AWS ECS/ECR</strong>.</li><li>Worked directly with cross-functional French teams on architecture and sprint delivery.</li></ul>',
+                blocks: [
+                    {type: 'features', items: [
+                        {icon: '🧩', title: '5+ Spring Boot microservices', body: 'Built and maintained services handling large-scale banking data processing.'},
+                        {icon: '⚛️', title: 'React + TypeScript front-end', body: 'Developed the platform UI that replaced the legacy JSP application.'},
+                        {icon: '🔁', title: 'CI/CD and containerisation', body: 'Jenkins pipelines, Docker images, deployment via AWS ECS & ECR.'},
+                        {icon: '🤝', title: 'Cross-team architecture', body: 'Worked directly with French teams on architecture decisions and sprint delivery.'},
+                    ]},
+                ],
             },
             {
                 title: 'Outcome',
-                description: '<p>Platform migrated to Java 17 microservices on AWS, serving <strong>1,000+ users</strong>, carried through to the pre-prod phase with a modern, containerised delivery pipeline.</p>',
+                blocks: [
+                    {type: 'callout', label: 'Outcome', text: 'Platform migrated to Java 17 microservices on AWS, serving 1,000+ users — carried through to pre-prod with a fully containerised delivery pipeline.'},
+                ],
             },
         ],
         techStack: ['Java 17', 'Spring Boot', 'React', 'TypeScript', 'AWS ECS/ECR', 'Docker', 'Jenkins', 'PostgreSQL'],
@@ -180,18 +308,29 @@ const clientProjects: Project[] = [
             role: 'Full-Stack Developer',
             duration: 'Dec 2025 – Mar 2026',
         },
+        facts: {role: 'Full-Stack Developer', timeline: 'Dec 2025 – Mar 2026', status: 'completed', platform: 'SaaS · AI'},
         sections: [
             {
                 title: 'Context',
-                description: '<p>A sports-operations platform that needed intelligent handling of inbound SMS/email and tighter integration with the CRMs its customers already used.</p>',
+                blocks: [
+                    {type: 'text', md: 'A sports-operations platform that needed intelligent handling of inbound SMS/email and tighter integration with the CRMs its customers already used.'},
+                ],
             },
             {
                 title: 'My role',
-                description: '<ul><li>Built <strong>SMS/email AI pipelines</strong> and a vector database with a knowledge base for intelligent query handling.</li><li>Integrated <strong>LeagueApps and Salesforce</strong> CRMs for seamless data sync.</li><li>Developed an insights engine and <strong>lead scoring v2</strong> with multi-location support.</li></ul>',
+                blocks: [
+                    {type: 'features', items: [
+                        {icon: '🤖', title: 'SMS/email AI pipelines', body: 'Plus a vector database with a knowledge base for intelligent query handling.'},
+                        {icon: '🔗', title: 'CRM integrations', body: 'LeagueApps and Salesforce wired in for seamless data sync.'},
+                        {icon: '📊', title: 'Insights engine & lead scoring v2', body: 'With multi-location support.'},
+                    ]},
+                ],
             },
             {
                 title: 'Outcome',
-                description: '<p><strong>84 commits</strong> across backend (55 merged PRs) and frontend in a 3-month engagement — AI features and CRM integrations shipped to production.</p>',
+                blocks: [
+                    {type: 'callout', label: 'Outcome', text: '84 commits across backend (55 merged PRs) and frontend in a 3-month engagement — AI features and CRM integrations shipped to production.'},
+                ],
             },
         ],
         techStack: ['Node.js', 'React', 'LangChain', 'Vector DB', 'Salesforce API', 'LeagueApps API'],
@@ -209,18 +348,29 @@ const clientProjects: Project[] = [
             role: 'Full-Stack Developer',
             duration: '2-week sprint (~118 hrs)',
         },
+        facts: {role: 'Full-Stack Developer', timeline: '2-week sprint (~118 hrs)', status: 'completed', platform: 'Mobile (Capacitor)'},
         sections: [
             {
                 title: 'Context',
-                description: '<p>A Capacitor + React mobile app that had grown to 154 MB with security gaps, an untyped codebase, and a video experience that needed a rethink.</p>',
+                blocks: [
+                    {type: 'text', md: 'A Capacitor + React mobile app that had grown to 154 MB with security gaps, an untyped codebase, and a video experience that needed a rethink.'},
+                ],
             },
             {
                 title: 'My role',
-                description: '<ul><li>Refactored the app end-to-end — <strong>security hardening</strong>, TypeScript migration, architecture overhaul.</li><li>Rewrote the video player as a <strong>reels-style feed</strong>.</li><li>Set up the deployment pipeline for streamlined releases.</li></ul>',
+                blocks: [
+                    {type: 'features', items: [
+                        {icon: '🛡️', title: 'End-to-end refactor', body: 'Security hardening, TypeScript migration, architecture overhaul.'},
+                        {icon: '🎬', title: 'Reels-style video player', body: 'Complete rewrite of the video experience.'},
+                        {icon: '🚀', title: 'Release pipeline', body: 'Set up the deployment pipeline for streamlined releases.'},
+                    ]},
+                ],
             },
             {
                 title: 'Outcome',
-                description: '<p>App size cut from <strong>154 MB to 20 MB</strong>, with a hardened, typed codebase and a repeatable release pipeline — delivered in a single two-week sprint.</p>',
+                blocks: [
+                    {type: 'callout', label: 'Outcome', text: 'App size cut from 154 MB to 20 MB — an 87% reduction — with a hardened, typed codebase, delivered in a single two-week sprint.'},
+                ],
             },
         ],
         techStack: ['React', 'TypeScript', 'Capacitor', 'Mobile', 'Video Player', 'CI/CD'],
@@ -238,18 +388,29 @@ const clientProjects: Project[] = [
             role: 'Sole Developer',
             duration: '6 months',
         },
+        facts: {role: 'Sole Developer', timeline: '6 months', status: 'completed', team: 'Solo', platform: 'Mobile + Web'},
         sections: [
             {
                 title: 'Context',
-                description: '<p>An early-stage wellness startup that needed a full product — mobile app, backend, and web presence — with a single engineer owning all of it.</p>',
+                blocks: [
+                    {type: 'text', md: 'An early-stage wellness startup that needed a full product — mobile app, backend, and web presence — with a single engineer owning all of it.'},
+                ],
             },
             {
                 title: 'My role',
-                description: '<ul><li>Built the platform <strong>end-to-end</strong>: Node/Express backend, React Native mobile app, and landing website.</li><li>Designed and implemented <strong>AI-powered wellness features</strong> with conversational interfaces.</li><li>Owned infrastructure — Docker, CI/CD, cloud deployment — plus architecture, testing, and releases.</li></ul>',
+                blocks: [
+                    {type: 'features', items: [
+                        {icon: '🏗️', title: 'The entire platform', body: 'Node/Express backend, React Native mobile app, and landing website — from a blank repo.'},
+                        {icon: '🤖', title: 'AI wellness features', body: 'Designed and implemented conversational interfaces.'},
+                        {icon: '⚙️', title: 'All the infrastructure', body: 'Docker, CI/CD pipelines, cloud deployment — plus architecture, testing, and releases.'},
+                    ]},
+                ],
             },
             {
                 title: 'Outcome',
-                description: '<p><strong>216 commits</strong> over 6 months as the sole developer; a complete, deployed product from a blank repo.</p>',
+                blocks: [
+                    {type: 'callout', label: 'Outcome', text: '216 commits over 6 months as the sole developer — a complete, deployed product from a blank repo.'},
+                ],
             },
         ],
         techStack: ['Node.js', 'Express', 'React Native', 'React', 'Docker', 'CI/CD', 'AI/ML'],
@@ -267,18 +428,29 @@ const clientProjects: Project[] = [
             role: 'Backend Developer',
             duration: '1 month',
         },
+        facts: {role: 'Backend Developer', timeline: '1 month', status: 'completed', platform: 'Health data'},
         sections: [
             {
                 title: 'Context',
-                description: '<p>A genomics company needing to exchange sensitive data across organisational boundaries under strict access control.</p>',
+                blocks: [
+                    {type: 'text', md: 'A genomics company needing to exchange sensitive data across organisational boundaries under strict access control.'},
+                ],
             },
             {
                 title: 'My role',
-                description: '<ul><li>Implemented a <strong>custom data plane</strong> for the Eclipse Dataspace Connector (EDC).</li><li>Integrated <strong>Keycloak IAM</strong> for authentication and authorisation across the connector.</li><li>Delivered architectural improvements beyond the original scope.</li></ul>',
+                blocks: [
+                    {type: 'features', items: [
+                        {icon: '🔌', title: 'Custom EDC data plane', body: 'Implemented for the Eclipse Dataspace Connector.'},
+                        {icon: '🔐', title: 'Keycloak IAM', body: 'Authentication and authorisation integrated across the connector.'},
+                        {icon: '📐', title: 'Beyond-scope improvements', body: 'Architectural refinements delivered past the original brief.'},
+                    ]},
+                ],
             },
             {
                 title: 'Outcome',
-                description: '<p>A working, IAM-secured connector for genomic data exchange, delivered in a one-month engagement.</p>',
+                blocks: [
+                    {type: 'callout', label: 'Outcome', text: 'A working, IAM-secured connector for sensitive genomic data exchange — delivered in a one-month engagement.'},
+                ],
             },
         ],
         techStack: ['Java', 'Eclipse EDC', 'Keycloak', 'IAM', 'REST APIs'],
@@ -297,18 +469,29 @@ const clientProjects: Project[] = [
             role: 'Embedded Systems Developer',
             duration: '3.5 months',
         },
+        facts: {role: 'Embedded Systems Developer', timeline: '3.5 months', status: 'completed', platform: 'Embedded (Pi + STM32)'},
         sections: [
             {
                 title: 'Context',
-                description: '<p>A physical container return/deposit kiosk requiring reliable communication between a Raspberry Pi controller and STM32 hardware.</p>',
+                blocks: [
+                    {type: 'text', md: 'A physical container return/deposit kiosk requiring reliable communication between a Raspberry Pi controller and STM32 hardware.'},
+                ],
             },
             {
                 title: 'My role',
-                description: '<ul><li>Built the Pi-side system communicating with the <strong>STM32 via UART</strong>.</li><li>Implemented <strong>QR scanning</strong>, server sync, and audit logging.</li><li>Developed a <strong>hardware simulator</strong> so the stack could be tested without physical devices.</li></ul>',
+                blocks: [
+                    {type: 'features', items: [
+                        {icon: '📡', title: 'Pi ↔ STM32 over UART', body: 'Built the Pi-side system and its hardware protocol.'},
+                        {icon: '📷', title: 'QR scanning, sync, audit', body: 'Scanning, server synchronisation, and audit logging for the kiosk.'},
+                        {icon: '🧪', title: 'Hardware simulator', body: 'The whole stack testable without physical devices.'},
+                    ]},
+                ],
             },
             {
                 title: 'Outcome',
-                description: '<p>A testable, auditable embedded system — <strong>71 commits</strong> over 3.5 months, including a simulator that decoupled software progress from hardware availability.</p>',
+                blocks: [
+                    {type: 'callout', label: 'Outcome', text: 'A testable, auditable embedded system — 71 commits over 3.5 months, with a simulator that decoupled software progress from hardware availability.'},
+                ],
             },
         ],
         techStack: ['Python', 'Raspberry Pi', 'UART', 'STM32', 'QR Scanning', 'Embedded'],
@@ -326,18 +509,29 @@ const clientProjects: Project[] = [
             role: 'Intern',
             duration: 'Jan 2022 – May 2022',
         },
+        facts: {role: 'Intern', timeline: 'Jan 2022 – May 2022', status: 'completed', platform: 'Windows Server'},
         sections: [
             {
                 title: 'Context',
-                description: '<p>Contract auditing at a Big-4 firm relied on slow, manual PDF review.</p>',
+                blocks: [
+                    {type: 'text', md: 'Contract auditing at a Big-4 firm relied on slow, manual PDF review.'},
+                ],
             },
             {
                 title: 'My role',
-                description: '<ul><li>Built a proof-of-concept contract management tool — <strong>Tkinter GUI + Flask backend</strong>.</li><li>Implemented <strong>PDF parsing</strong> to automate auditing workflows.</li><li>Deployed on Windows Server via uWSGI + IIS.</li></ul>',
+                blocks: [
+                    {type: 'features', items: [
+                        {icon: '🖥️', title: 'POC contract tool', body: 'Tkinter GUI with a Flask backend.'},
+                        {icon: '📄', title: 'PDF-parsing automation', body: 'Automated the contract auditing workflow.'},
+                        {icon: '📦', title: 'Windows Server deployment', body: 'Shipped via uWSGI + IIS.'},
+                    ]},
+                ],
             },
             {
                 title: 'Outcome',
-                description: '<p>A deployed POC that automated contract auditing and saved hours of manual review.</p>',
+                blocks: [
+                    {type: 'callout', label: 'Outcome', text: 'A deployed proof-of-concept that automated contract auditing and saved hours of manual review.'},
+                ],
             },
         ],
         techStack: ['Python', 'Flask', 'Tkinter', 'PDF Parsing', 'Windows Server', 'uWSGI', 'IIS'],
@@ -348,11 +542,12 @@ const clientProjects: Project[] = [
 // Exports
 // ─────────────────────────────────────────────────────────────
 
+// Vidish.Online leads — it's the flagship (and the visitor is standing in it).
 export const personalProjects: Project[] = [
+    vidishSpace,
     ...newProjectPlaceholders,
     akkountant,
     tripsplit,
-    vidishSpace,
     leetcodeToGit,
 ];
 

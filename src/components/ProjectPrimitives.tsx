@@ -1,5 +1,47 @@
 import React from 'react';
-import type {ProjectKind, ProjectMetric} from '../assets/projects/types';
+import type {ProjectKind, ProjectMetric, ProjectStatus} from '../assets/projects/types';
+
+// ─── StatusChip ──────────────────────────────────────────────
+// "● Live" style badge — the honesty signal almost no portfolio has.
+
+const STATUS_META: Record<ProjectStatus, {label: string; color: string; colorDark: string}> = {
+    'live': {label: 'Live', color: '#059669', colorDark: '#34d399'},
+    'in-development': {label: 'In development', color: '#b45309', colorDark: '#fbbf24'},
+    'completed': {label: 'Completed', color: '#1d4ed8', colorDark: '#93c5fd'},
+    'archived': {label: 'Archived', color: '#64748b', colorDark: '#94a3b8'},
+};
+
+export const StatusChip: React.FC<{status: ProjectStatus; isDark?: boolean; className?: string}> = ({
+    status,
+    isDark = false,
+    className = '',
+}) => {
+    const meta = STATUS_META[status];
+    const color = isDark ? meta.colorDark : meta.color;
+    return (
+        <span
+            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${className}`}
+            style={{
+                color,
+                background: isDark ? 'rgba(255,255,255,0.07)' : 'rgba(255,255,255,0.85)',
+                border: `1px solid ${isDark ? 'rgba(255,255,255,0.14)' : 'rgba(0,0,0,0.08)'}`,
+            }}
+        >
+            <span
+                aria-hidden="true"
+                style={{
+                    width: 7,
+                    height: 7,
+                    borderRadius: '50%',
+                    background: color,
+                    display: 'inline-block',
+                    boxShadow: status === 'live' ? `0 0 6px ${color}` : undefined,
+                }}
+            />
+            {meta.label}
+        </span>
+    );
+};
 
 // ─── ProjectBadge ────────────────────────────────────────────
 // "Personal" vs "Client" chip so the mixed grid stays legible.

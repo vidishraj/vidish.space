@@ -16,13 +16,47 @@ export interface ProjectMetric {
     label: string;
 }
 
-/** One tab in the deep-dive modal. `description` is markdown/HTML (sanitised on render). */
+/**
+ * Typed content blocks — the professional case-study layer. Each block type
+ * has a distinct, consistent rendering so every project page reads as one
+ * designed system instead of freeform prose.
+ */
+export type ContentBlock =
+    /** Short prose (markdown). Keep under ~120 words. */
+    | {type: 'text'; md: string}
+    /** Scannable feature/contribution rows: icon + bold lead + one-liner. */
+    | {type: 'features'; items: {icon?: string; title: string; body?: string}[]}
+    /** Architecture Decision Record: what was chosen, why, and the cost. */
+    | {type: 'decision'; decision: string; why: string; tradeoff?: string}
+    /** Hard-problem card: Problem → Approach → Result. */
+    | {type: 'challenge'; problem: string; approach: string; result: string}
+    /** Captioned media. Captions are what separate a case study from an image dump. */
+    | {type: 'figure'; src?: string; videoUrl?: string; caption?: string; alt?: string}
+    /** Highlighted statement / outcome strip. */
+    | {type: 'callout'; text: string; label?: string};
+
+/**
+ * One section of a project page. New content should use `blocks`;
+ * `description` (markdown/HTML) is the legacy fallback and still renders.
+ */
 export interface ProjectSection {
     title: string;
-    description: string;
+    description?: string;
     imgSrc?: string;
     /** Optional click-to-play video (Loom/YouTube share URL) shown above the description. */
     videoUrl?: string;
+    blocks?: ContentBlock[];
+}
+
+export type ProjectStatus = 'live' | 'in-development' | 'completed' | 'archived';
+
+/** "At a glance" spec-sheet facts shown in the project-page hero. */
+export interface ProjectFacts {
+    role?: string;
+    timeline?: string;
+    status?: ProjectStatus;
+    team?: string;
+    platform?: string;
 }
 
 export interface ProjectLinks {
@@ -61,6 +95,10 @@ export interface Project {
         role: string;
         duration: string;
     };
+    /** Spec-sheet facts for the "At a glance" panel. */
+    facts?: ProjectFacts;
+    /** 3-bullet TL;DR for skimmers, shown under the tagline. */
+    tldr?: string[];
     /** Show a "featured" treatment (larger card / first position). */
     featured?: boolean;
     /** Optional per-project modal gradient. */

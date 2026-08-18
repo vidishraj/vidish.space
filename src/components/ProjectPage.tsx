@@ -1,13 +1,12 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {motion, useReducedMotion} from 'framer-motion';
-import {marked} from 'marked';
-import DOMPurify from 'dompurify';
 import '../assets/modalStyles/akkountantModal.css';
 import '../assets/modalStyles/tripsplitModal.css';
 import '../assets/modalStyles/vidishSpaceModal.css';
 import '../assets/modalStyles/leetcodeToGitModal.css';
 import type {Project} from '../assets/projects/types';
-import {ProjectBadge, StatRow, TechChips} from './ProjectPrimitives';
+import {ProjectBadge, StatRow, StatusChip, TechChips} from './ProjectPrimitives';
+import {ProjectBlockList, renderMarkdown} from './ProjectBlocks';
 import VideoEmbed from './VideoEmbed';
 import {useFocusTrap} from '../utils/useFocusTrap';
 import {Season} from '../utils/seasonConfig';
@@ -27,8 +26,7 @@ const shortLabel = (title: string) => {
     return head.length > 2 ? head : title;
 };
 
-const renderHtml = (md: string) =>
-    DOMPurify.sanitize(marked(md, {async: false}) as string);
+const sectionNo = (i: number) => String(i + 1).padStart(2, '0');
 
 /**
  * Full-page project view — replaces the modal for project deep-dives.
@@ -157,6 +155,7 @@ const ProjectPage: React.FC<ProjectPageProps> = ({project, projects, onClose, on
             <header className="mx-auto w-full max-w-5xl px-4 pt-10 sm:px-8 sm:pt-14">
                 <div className="flex flex-wrap items-center gap-2">
                     <ProjectBadge kind={project.kind} isDark={isDark} />
+                    {project.facts?.status && <StatusChip status={project.facts.status} isDark={isDark} />}
                     {project.client && (
                         <span className="text-xs font-semibold uppercase tracking-wider" style={{color: isDark ? '#fcd34d' : '#b45309'}}>
                             {project.client.name} · {project.client.role} · {project.client.duration}
@@ -169,6 +168,24 @@ const ProjectPage: React.FC<ProjectPageProps> = ({project, projects, onClose, on
                 <p className="mt-3 max-w-3xl text-base sm:text-lg" style={{color: textMuted}}>
                     {project.tagline}
                 </p>
+
+                {project.tldr && project.tldr.length > 0 && (
+                    <ul
+                        className="mt-5 max-w-3xl space-y-1.5 rounded-xl px-5 py-4"
+                        style={{
+                            listStyle: 'none',
+                            background: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.7)',
+                            border: `1px solid ${hairline}`,
+                        }}
+                    >
+                        {project.tldr.map((line, i) => (
+                            <li key={i} className="flex items-start gap-2.5 text-sm sm:text-base">
+                                <span aria-hidden="true" className="mt-1 flex-shrink-0" style={{color: isDark ? '#60a5fa' : '#2563eb'}}>▸</span>
+                                <span style={{color: isDark ? '#e2e8f0' : '#1e293b'}}>{line}</span>
+                            </li>
+                        ))}
+                    </ul>
+                )}
 
                 <div className="mt-5 flex flex-wrap items-center gap-3">
                     {project.links?.website && (
@@ -192,6 +209,38 @@ const ProjectPage: React.FC<ProjectPageProps> = ({project, projects, onClose, on
                     )}
                     <TechChips items={project.tags} isDark={isDark} size="md" />
                 </div>
+
+                {/* At a glance — spec-sheet facts */}
+                {(project.facts || project.client) && (() => {
+                    const facts: {label: string; value: React.ReactNode}[] = [];
+                    const f = project.facts;
+                    facts.push({label: 'Type', value: project.kind === 'client' ? 'Client engagement' : 'Personal project'});
+                    if (f?.role || project.client?.role) facts.push({label: 'Role', value: f?.role ?? project.client?.role});
+                    if (f?.timeline || project.client?.duration) facts.push({label: 'Timeline', value: f?.timeline ?? project.client?.duration});
+                    if (f?.team) facts.push({label: 'Team', value: f.team});
+                    if (f?.platform) facts.push({label: 'Platform', value: f.platform});
+                    if (f?.status) facts.push({label: 'Status', value: <StatusChip status={f.status} isDark={isDark} />});
+                    return (
+                        <dl
+                            className="mt-8 grid grid-cols-2 gap-x-6 gap-y-4 rounded-xl px-6 py-5 sm:grid-cols-3 lg:grid-cols-6"
+                            style={{
+                                background: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.7)',
+                                border: `1px solid ${hairline}`,
+                            }}
+                        >
+                            {facts.map((fact) => (
+                                <div key={fact.label}>
+                                    <dt className="text-[11px] font-bold uppercase tracking-widest" style={{color: textMuted}}>
+                                        {fact.label}
+                                    </dt>
+                                    <dd className="mt-1 text-sm font-medium" style={{color: textPrimary, margin: 0}}>
+                                        {fact.value}
+                                    </dd>
+                                </div>
+                            ))}
+                        </dl>
+                    );
+                })()}
 
                 {project.image && (
                     <div className="mt-8 overflow-hidden rounded-2xl" style={{border: `1px solid ${hairline}`}}>
@@ -223,7 +272,7 @@ const ProjectPage: React.FC<ProjectPageProps> = ({project, projects, onClose, on
                                         type="button"
                                         onClick={() => jumpTo(i)}
                                         aria-current={activeSec === i ? 'true' : undefined}
-                                        className="w-full rounded-md px-3 py-1.5 text-left text-sm transition-colors"
+                                        className="flex w-full items-baseline gap-2 rounded-md px-3 py-1.5 text-left text-sm transition-colors"
                                         style={{
                                             color: activeSec === i ? (isDark ? '#93c5fd' : '#1d4ed8') : textMuted,
                                             background: activeSec === i
@@ -233,7 +282,10 @@ const ProjectPage: React.FC<ProjectPageProps> = ({project, projects, onClose, on
                                             border: 0,
                                         }}
                                     >
-                                        {shortLabel(s.title)}
+                                        <span className="text-[10px] font-bold tracking-wider opacity-60" style={{fontVariantNumeric: 'tabular-nums'}}>
+                                            {sectionNo(i)}
+                                        </span>
+                                        <span className="min-w-0 truncate">{shortLabel(s.title)}</span>
                                     </button>
                                 </li>
                             ))}
@@ -252,37 +304,57 @@ const ProjectPage: React.FC<ProjectPageProps> = ({project, projects, onClose, on
                             className="mb-14"
                             style={{scrollMarginTop: 84}}
                         >
+                            <div
+                                className="mb-1 text-[11px] font-bold uppercase tracking-widest"
+                                style={{color: isDark ? '#60a5fa' : '#2563eb', fontVariantNumeric: 'tabular-nums'}}
+                            >
+                                {sectionNo(i)}
+                            </div>
                             <h2 className="mb-4 text-xl font-bold tracking-tight sm:text-2xl">
                                 {section.title}
                             </h2>
-                            {section.videoUrl && (
-                                <div className="mb-5">
-                                    <VideoEmbed
-                                        url={section.videoUrl}
-                                        title={`${project.title} — ${section.title}`}
-                                        poster={section.imgSrc}
-                                        isDark={isDark}
-                                    />
-                                </div>
+
+                            {section.blocks && section.blocks.length > 0 ? (
+                                // New format: typed content blocks
+                                <ProjectBlockList blocks={section.blocks} isDark={isDark} projectTitle={project.title} />
+                            ) : (
+                                // Legacy format: markdown/HTML description (+ optional media),
+                                // media alternating sides on desktop for visual rhythm
+                                <>
+                                    {section.videoUrl && (
+                                        <div className="mb-5">
+                                            <VideoEmbed
+                                                url={section.videoUrl}
+                                                title={`${project.title} — ${section.title}`}
+                                                poster={section.imgSrc}
+                                                isDark={isDark}
+                                            />
+                                        </div>
+                                    )}
+                                    <div className={`flex flex-col gap-5 ${section.imgSrc && !section.videoUrl ? (i % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse') : ''}`}>
+                                        {section.imgSrc && !section.videoUrl && (
+                                            <div className="flex-shrink-0 self-start overflow-hidden rounded-xl lg:w-1/2" style={{border: `1px solid ${hairline}`}}>
+                                                <img
+                                                    src={section.imgSrc}
+                                                    alt={section.title}
+                                                    loading="lazy"
+                                                    className="w-full object-contain"
+                                                    style={{maxHeight: '58vh', background: isDark ? '#0b1220' : '#f8fafc'}}
+                                                    onError={(e) => {
+                                                        (e.currentTarget.parentElement as HTMLElement).style.display = 'none';
+                                                    }}
+                                                />
+                                            </div>
+                                        )}
+                                        {section.description && (
+                                            <div
+                                                className={`prose min-w-0 max-w-none text-sm sm:text-base ${isDark ? 'prose-invert text-gray-200' : 'text-gray-700'}`}
+                                                dangerouslySetInnerHTML={{__html: renderMarkdown(section.description)}}
+                                            />
+                                        )}
+                                    </div>
+                                </>
                             )}
-                            {section.imgSrc && !section.videoUrl && (
-                                <div className="mb-5 overflow-hidden rounded-xl" style={{border: `1px solid ${hairline}`}}>
-                                    <img
-                                        src={section.imgSrc}
-                                        alt={section.title}
-                                        loading="lazy"
-                                        className="w-full object-contain"
-                                        style={{maxHeight: '58vh', background: isDark ? '#0b1220' : '#f8fafc'}}
-                                        onError={(e) => {
-                                            (e.currentTarget.parentElement as HTMLElement).style.display = 'none';
-                                        }}
-                                    />
-                                </div>
-                            )}
-                            <div
-                                className={`prose max-w-none text-sm sm:text-base ${isDark ? 'prose-invert text-gray-200' : 'text-gray-700'}`}
-                                dangerouslySetInnerHTML={{__html: renderHtml(section.description)}}
-                            />
                         </section>
                     ))}
 
