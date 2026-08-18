@@ -134,6 +134,48 @@ const Block: React.FC<BlockProps> = ({block, isDark, projectTitle}) => {
         }
 
         case 'figure':
+            if (block.pending) {
+                // Screenshot slot: visible on dev so the Overseer sees exactly
+                // where each capture lands. Swap `pending` off when the real
+                // asset exists at `src`.
+                return (
+                    <figure className="m-0">
+                        <div
+                            className="flex flex-col items-center justify-center gap-2 rounded-xl px-6 py-10 text-center"
+                            style={{
+                                border: `2px dashed ${isDark ? 'rgba(148,163,184,0.4)' : 'rgba(100,116,139,0.4)'}`,
+                                background: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)',
+                            }}
+                        >
+                            <span aria-hidden="true" style={{fontSize: 28}}>📸</span>
+                            <span className="text-sm font-semibold" style={{color: isDark ? '#cbd5e1' : '#475569'}}>
+                                Screenshot slot
+                            </span>
+                            {block.capture && (
+                                <span className="max-w-md text-sm" style={{color: muted}}>
+                                    {block.capture}
+                                </span>
+                            )}
+                            {block.src && (
+                                <code
+                                    className="mt-1 rounded px-2 py-1 text-xs"
+                                    style={{
+                                        background: isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)',
+                                        color: isDark ? '#93c5fd' : '#1d4ed8',
+                                    }}
+                                >
+                                    {block.src}
+                                </code>
+                            )}
+                        </div>
+                        {block.caption && (
+                            <figcaption className="mt-2 text-center text-xs italic" style={{color: muted}}>
+                                {block.caption}
+                            </figcaption>
+                        )}
+                    </figure>
+                );
+            }
             return (
                 <figure className="m-0">
                     {block.videoUrl ? (

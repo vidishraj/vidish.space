@@ -30,8 +30,12 @@ export type ContentBlock =
     | {type: 'decision'; decision: string; why: string; tradeoff?: string}
     /** Hard-problem card: Problem → Approach → Result. */
     | {type: 'challenge'; problem: string; approach: string; result: string}
-    /** Captioned media. Captions are what separate a case study from an image dump. */
-    | {type: 'figure'; src?: string; videoUrl?: string; caption?: string; alt?: string}
+    /**
+     * Captioned media. Captions are what separate a case study from an image dump.
+     * `pending: true` renders a labeled placeholder slot (with `capture`
+     * instructions and the target `src` path) until the real asset lands.
+     */
+    | {type: 'figure'; src?: string; videoUrl?: string; caption?: string; alt?: string; pending?: boolean; capture?: string}
     /** Highlighted statement / outcome strip. */
     | {type: 'callout'; text: string; label?: string};
 
