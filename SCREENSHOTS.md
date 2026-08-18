@@ -22,6 +22,9 @@ off), no code changes.
 | 4 | `public/assets/projects/akkountant/agent-chat.webp` | Akkountant · The solution | Agent chat answering a portfolio question, ideally with an uploaded receipt in-thread (**mask data**) |
 | 5 | `public/assets/projects/akkountant/wealth-digest.webp` | Akkountant · Results | The daily wealth digest — email or in-app panel (**mask data**) |
 | 6 | `public/assets/projects/tripsplit/balances.webp` | TripSplit · The solution | Balances / settle-up screen with a few multi-currency expenses |
+| 11 | `public/assets/projects/makaan/price-map.webp` | Makaan · The solution | Interactive price map (Bangalore) with locality overlays |
+| 12 | `public/assets/projects/makaan/valuation.webp` | Makaan · Results | A "Value My Property" result — estimate, rent, comparables |
+| 13 | `public/assets/projects/satte-nights/table.webp` | Satte Nights · The solution | Busy table mid-hand on a phone — play chips visible, **no real usernames** |
 
 ## Card images (grid thumbnails — currently using old images, swap when ready)
 
@@ -30,6 +33,8 @@ off), no code changes.
 | 8 | `public/assets/projects/akkountant/card.webp` | `akkountantModal/akkountant.webp` | Dashboard overview — the strongest single screen (**mask data**) |
 | 9 | `public/assets/projects/tripsplit/card.webp` | `tripsplitModal/tripsplit.webp` | Trip home screen |
 | 10 | `public/assets/projects/vidish-space/card.webp` | `vidishSpaceModal/vidishSpaceDark.webp` | The current site — monsoon or winter full-page looks best on cards |
+| 14 | `public/assets/projects/makaan/card.webp` | *(none — card currently text-only)* | Makaan dashboard/map — strongest single screen |
+| 15 | `public/assets/projects/satte-nights/card.webp` | *(none — card currently text-only)* | A table mid-hand — **no real usernames** |
 
 ## How to hand them over
 
@@ -37,4 +42,4 @@ Drop files at the exact paths above inside the repo (any checkout), or just
 give them to vidish_space_lead with the slot number — placement, WebP
 conversion, and the `pending` flag flips are handled from there.
 
-> Note: LeetcodeToGit removed from the portfolio (Overseer, 2026-08-18). Slots for the two new projects (Makkan, Satte Nights) will be added once their content lands.
+> Notes: LeetcodeToGit removed (Overseer, 2026-08-18). Makaan + Satte Nights case-studies added — their slots are 11-15 above. Slot numbering keeps gaps intentionally (7 removed) so in-flight captures never go stale.

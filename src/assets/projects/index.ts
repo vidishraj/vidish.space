@@ -381,34 +381,268 @@ The brief I set myself: build a site that *demonstrates* rather than *lists* —
 };
 
 // ─────────────────────────────────────────────────────────────
-// TODO(overseer): NEW PERSONAL PROJECTS — fill in from Overseer's material.
-// Each becomes a full deep-dive entry like the ones above. Suggested tabs:
-// Overview → Demo (videoUrl) → Architecture (diagram imgSrc) → Hard problems
-// → Stack & numbers (metrics + techStack). Delete these placeholders once
-// real entries exist.
+// NEW FLAGSHIP PROJECTS — authored from rig-lead context
+// (real_estate_lead: bead vs-c4z · workbench_lead: bead vs-vjl)
 // ─────────────────────────────────────────────────────────────
 
-const newProjectPlaceholders: Project[] = [
-    // {
-    //     id: 'new-project-1',
-    //     kind: 'personal',
-    //     featured: true,
-    //     title: 'New Project 1',
-    //     tagline: 'One-line outcome-first pitch.',
-    //     hookMetric: {value: '—', label: 'strongest number'},
-    //     tags: ['Stack', 'Chips'],
-    //     image: '/assets/newProject1/hero.webp',
-    //     sections: [
-    //         {title: 'Overview', description: '<p>…</p>', imgSrc: '/assets/newProject1/hero.webp'},
-    //         {title: 'Demo', description: '<p>60–90s walkthrough.</p>', videoUrl: 'https://www.loom.com/share/…'},
-    //         {title: 'Architecture', description: '<ul><li>…</li></ul>', imgSrc: '/assets/newProject1/architecture.png'},
-    //         {title: 'Hard problems', description: '<p>…</p>'},
-    //     ],
-    //     metrics: [{value: '—', label: '—'}],
-    //     techStack: [],
-    //     links: {github: '', website: ''},
-    // },
-];
+const makaan: Project = {
+    id: 'makaan',
+    kind: 'personal',
+    featured: true,
+    title: 'Makaan',
+    tagline: "~300,000 live property listings from India's biggest portals, unified into one trustworthy market-intelligence dashboard — with an AI analyst on top.",
+    hookMetric: {value: '~300k', label: 'listings, de-duplicated across 3 portals'},
+    tags: ['TypeScript', 'Node.js', 'React', 'SQLite', 'Claude SDK'],
+    facts: {
+        role: 'Creator & sole developer',
+        timeline: '5-week build → actively developed',
+        status: 'live',
+        team: 'Solo',
+        platform: 'Web',
+    },
+    tldr: [
+        'Aggregates and de-duplicates ~300k residential listings from 99acres, MagicBricks and Housing.com across Bangalore and Kolkata.',
+        'Interactive price maps, buy-vs-rent analytics, and an AI chat that grounds every answer in a live SQL query.',
+        'Paste a Google Maps link, get a valuation: median-based comparables within an adaptive 1–5 km radius.',
+    ],
+    sections: [
+        {
+            title: 'The problem',
+            blocks: [
+                {
+                    type: 'text',
+                    md: `Researching Indian real estate means juggling three portals that overlap, disagree, and skew: "starting-from" project prices posing as listings, duplicates everywhere, localities fragmented across a dozen spellings. There is no single trustworthy view of a city's market.
+
+So I built one — as a personal market-research project.`,
+                },
+            ],
+        },
+        {
+            title: 'The solution',
+            blocks: [
+                {
+                    type: 'features',
+                    items: [
+                        {icon: '🗺️', title: 'Interactive price maps', body: 'Locality-level price intelligence on themed map tiles — plus locality and builder comparisons and buy-vs-rent views.'},
+                        {icon: '🧹', title: 'One canonical dataset', body: 'Three portals normalized to a single schema with stable-id dedup: ~300k listings, zero duplicate IDs.'},
+                        {icon: '🤖', title: 'AI market analyst', body: 'Natural-language market Q&A where every number comes from a live SQL query — streamed, and never fabricated.'},
+                        {icon: '🏷️', title: 'Value My Property', body: 'Paste a Google Maps link or address → estimated sale price and expected rent from nearby comparable listings.'},
+                    ],
+                },
+                {
+                    type: 'figure',
+                    src: '/assets/projects/makaan/price-map.webp',
+                    pending: true,
+                    capture: 'The interactive price map (Bangalore) with locality overlays visible.',
+                    caption: 'The price map — ~236k Bangalore listings distilled into locality-level intelligence.',
+                },
+            ],
+        },
+        {
+            title: 'How it works',
+            blocks: [
+                {
+                    type: 'text',
+                    md: 'A TypeScript/Node pipeline — scrapers → normalizer → analysis → REST API — around a WAL-mode SQLite store, with a Vite + React dashboard and a Claude-powered agent, all on one pm2-managed VM behind nginx.',
+                },
+                {
+                    type: 'decision',
+                    decision: 'Single-box SQLite (WAL) instead of a hosted warehouse',
+                    why: 'Simplest possible operations for a one-machine research lab: fast local reads, zero infra overhead, trivially backed up.',
+                    tradeoff: 'Vertical scaling only — and the database eventually earned its own block volume as it grew.',
+                },
+                {
+                    type: 'decision',
+                    decision: 'Three messy sources, one canonical schema with stable-id upserts',
+                    why: 'The portals overlap and disagree; a single schema plus deduplication is what turns three feeds into one dataset you can trust.',
+                    tradeoff: 'Heavy per-source normalization — locality naming, free-text property types, and coordinate quality all needed dedicated handling.',
+                },
+                {
+                    type: 'decision',
+                    decision: 'The AI analyst must ground every number in a live SQL query',
+                    why: 'A market analyst that fabricates prices is worse than none. Tool-use forces every figure in a chat answer to come from the data.',
+                    tradeoff: 'Slower than freeform generation — token streaming keeps the experience feeling immediate.',
+                },
+            ],
+        },
+        {
+            title: 'Hard problems',
+            blocks: [
+                {
+                    type: 'challenge',
+                    problem: 'Portals cap every search at ~2,800 results — so naive crawling silently misses most of the market.',
+                    approach: 'Reverse-engineered each portal’s public data channels (sitemap-derived locality lists, a GraphQL cursor endpoint) and sliced the search space by locality → price band → BHK → property type so every slice stays under the cap, with polite pacing throughout.',
+                    result: 'One source’s coverage went ~32k → ~72k listings; another city grew ~5× to its true unique ceiling.',
+                },
+                {
+                    type: 'challenge',
+                    problem: 'Exhaustively crawling thousands of locality slices per city ran for days.',
+                    approach: 'A category-level saturation detector stops crawling once net-new-unique rows plateau — with big-inventory localities crawled first, so the plateau only trips after real inventory is captured.',
+                    result: 'Multi-day crawls now finish in hours, with wasted requests eliminated.',
+                },
+                {
+                    type: 'challenge',
+                    problem: '"Starting-from" project prices, placeholder coordinates, and fragmented locality names made naive averages meaningless.',
+                    approach: 'A dedicated data-quality layer: median/percentile statistics instead of means, sane-value bounds, coordinate validation, locality normalization, and per-unit vs project-aggregate separation.',
+                    result: 'Grounded medians and real comparables — 96–98% valid coordinates, 90–100% of listings carrying prices.',
+                },
+            ],
+        },
+        {
+            title: 'Results',
+            blocks: [
+                {
+                    type: 'callout',
+                    label: 'The dataset',
+                    text: '~300,000 de-duplicated listings across Bangalore and Kolkata, refreshed daily (~27k updates in a recent week) — queryable by map, chart, or plain English. Built solo in about five weeks.',
+                },
+                {
+                    type: 'figure',
+                    src: '/assets/projects/makaan/valuation.webp',
+                    pending: true,
+                    capture: 'A "Value My Property" result — estimate, expected rent, and the comparables it used.',
+                    caption: 'Value My Property — median-based comparables within an adaptive 1–5 km radius, with a confidence band.',
+                },
+            ],
+        },
+    ],
+    metrics: [
+        {value: '~300k', label: 'listings across 3 portals'},
+        {value: '0', label: 'duplicate listing IDs'},
+        {value: '96–98%', label: 'valid coordinates'},
+        {value: '~5 wks', label: 'solo build — ~197 commits, ~14.5k LOC'},
+    ],
+    techStack: ['TypeScript', 'Node.js', 'SQLite (WAL)', 'React', 'Vite', 'react-leaflet', 'Claude Agent SDK', 'Commander CLI', 'pm2', 'Nginx', 'Oracle Cloud'],
+    links: {website: 'https://makaan.vidish.online'},
+};
+
+const satteNights: Project = {
+    id: 'satte-nights',
+    kind: 'personal',
+    featured: true,
+    title: 'Satte Nights',
+    tagline: 'A private, real-time multiplayer poker night for a group of friends — five variants, play-money chips, installable on any phone.',
+    hookMetric: {value: '5', label: 'poker variants, 9-max tables'},
+    tags: ['TypeScript', 'Socket.IO', 'React', 'PWA', 'SQLite'],
+    facts: {
+        role: 'Creator & sole developer',
+        timeline: 'Actively developed',
+        status: 'live',
+        team: 'Solo',
+        platform: 'Web · installable PWA (invite-only)',
+    },
+    tldr: [
+        'A host opens a private table with a room code; friends join from their phones and play in real time — play-money chips only, no real currency anywhere.',
+        'Server-authoritative engine: your hole cards are physically absent from everyone else’s network traffic.',
+        'An append-only chip ledger keeps every game zero-sum — with exact-stack rejoins and minimal who-pays-whom settlement across game nights.',
+    ],
+    sections: [
+        {
+            title: 'The problem',
+            blocks: [
+                {
+                    type: 'text',
+                    md: `Poker night with friends scattered across cities needs more than a video call: the variants people actually want to play, chips that survive people dropping in and out, and a table that fits a phone screen.
+
+Public poker apps are bloated, ad-ridden, or built around real money. This is the opposite — a **private, invite-only home game with play chips**, built for exactly one friend group.`,
+                },
+            ],
+        },
+        {
+            title: 'The solution',
+            blocks: [
+                {
+                    type: 'features',
+                    items: [
+                        {icon: '🃏', title: 'Five variants, home-game rules', body: "Texas Hold'em, Omaha, Omaha Double Board, Super Hold'em, Pineapple — plus bomb pots, dealer's choice, timed sessions, and a per-action clock."},
+                        {icon: '📱', title: 'Installable PWA', body: 'Full-screen from the home screen on iOS and Android; join with a room code — no app store, no sign-up funnel.'},
+                        {icon: '🔄', title: 'Life-proof sessions', body: 'Rebuys, sit-out/sit-in, leave and rejoin with your exact stack; a disconnect grace window with auto-act keeps the table moving.'},
+                        {icon: '🧮', title: 'Settle Up', body: 'Pick any set of past games — it aggregates each player’s net and computes the minimal set of transfers between friends. Play-chip accounting, nothing more.'},
+                    ],
+                },
+                {
+                    type: 'figure',
+                    src: '/assets/projects/satte-nights/table.webp',
+                    pending: true,
+                    capture: 'A busy table mid-hand on a phone (play chips visible, no real usernames).',
+                    caption: 'A full table on a phone — geometry-driven seating that never overlaps, from heads-up to 9-max.',
+                },
+            ],
+        },
+        {
+            title: 'How it works',
+            blocks: [
+                {
+                    type: 'text',
+                    md: 'A TypeScript monorepo: a shared types-and-events package, an authoritative Node + Socket.IO game server with SQLite underneath (accounts, ledger, snapshots), and a React + Vite PWA client. The server is the single source of truth — clients only render what they’re told.',
+                },
+                {
+                    type: 'decision',
+                    decision: 'The server builds a different view of the table for every player',
+                    why: 'Anti-cheat by construction: a seat’s hole cards are only ever serialized to that seat (or at a legitimate reveal) — dev-tools snooping finds nothing, because the data was never sent.',
+                    tradeoff: 'Per-viewer serialization on every state change instead of one broadcast — more server compute, bought deliberately.',
+                },
+                {
+                    type: 'decision',
+                    decision: 'Tables live for their whole session — even with zero players seated',
+                    why: 'It matches a real poker night: the room is the evening. People drift in and out, and can always rejoin the same table.',
+                    tradeoff: 'The server owns timer and teardown lifecycle independent of who’s seated — careful state management, plus hand-boundary snapshots so even a server restart can’t kill the night.',
+                },
+                {
+                    type: 'decision',
+                    decision: 'Every chip movement is an append-only ledger entry',
+                    why: 'Grants, buy-ins, cash-outs and hand settlements that always balance make every game provably zero-sum — and exact-stack rejoins plus cross-night settlement fall out for free.',
+                    tradeoff: 'Every feature that touches chips must be expressed as balanced ledger entries — no shortcuts allowed.',
+                },
+            ],
+        },
+        {
+            title: 'Hard problems',
+            blocks: [
+                {
+                    type: 'challenge',
+                    problem: 'Real-time multiplayer poker must never leak a hidden card — and a browser client is the least trustworthy renderer imaginable.',
+                    approach: 'One server-side reveal rule drives the per-viewer state: cards flow only to their own seat, to showdown contenders, or on a voluntary show — including folded bluff reveals.',
+                    result: 'Hole cards are physically absent from the wire unless you’re allowed to see them; every reveal path flows through a single rule.',
+                },
+                {
+                    type: 'challenge',
+                    problem: 'Chips must be conserved across chaotic join/leave/rejoin — and friends want to settle across multiple nights.',
+                    approach: 'The ledger banks a leaver’s stack keyed to account + room and restores it exactly on rejoin; Settle Up aggregates nets across chosen games and solves minimal cash-flow (largest-creditor vs largest-debtor).',
+                    result: 'Exact-stack rejoins, and a one-tap "fewest transfers" settlement that provably balances — because every game is zero-sum by construction.',
+                },
+                {
+                    type: 'challenge',
+                    problem: 'A 9-max table with 2–4 hole cards per variant plus a 5-card community board must never overlap on a phone screen.',
+                    approach: 'A geometry-driven seat ring with seat-count-responsive scaling — pods, cards, board, and bet chips all shrink as seats fill — plus explicit z-layering so the board can never hide behind a player.',
+                    result: 'Zero visual overlaps from heads-up to a packed 9-seat table, on any variant.',
+                },
+            ],
+        },
+        {
+            title: 'Results',
+            blocks: [
+                {
+                    type: 'callout',
+                    label: 'Built for exactly ten people',
+                    text: 'No ads, no telemetry, no real money — a private table that survives disconnects, server restarts, and real life, backed by 150+ automated server-side tests.',
+                },
+                {
+                    type: 'text',
+                    md: 'Live as an installable PWA with zero-downtime client deploys — heavy iteration ships same-day without interrupting a game in progress.',
+                },
+            ],
+        },
+    ],
+    metrics: [
+        {value: '5', label: 'poker variants'},
+        {value: '9-max', label: 'tables, overlap-free on phones'},
+        {value: '150+', label: 'automated server-side tests'},
+        {value: '0', label: 'real money — play chips only'},
+    ],
+    techStack: ['TypeScript', 'Node.js', 'Socket.IO', 'React', 'Vite', 'PWA', 'better-sqlite3', 'bcrypt', 'npm workspaces', 'Web Audio', 'systemd', 'Nginx'],
+    links: {website: 'https://poker.vidish.online'},
+};
 
 // ─────────────────────────────────────────────────────────────
 // CLIENT WORK — short write-ups (context → role → outcome → stack).
@@ -748,7 +982,8 @@ const clientProjects: Project[] = [
 // Vidish.Online leads — it's the flagship (and the visitor is standing in it).
 export const personalProjects: Project[] = [
     vidishSpace,
-    ...newProjectPlaceholders,
+    makaan,
+    satteNights,
     akkountant,
     tripsplit,
 ];
