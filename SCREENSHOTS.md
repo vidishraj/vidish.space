@@ -22,7 +22,6 @@ off), no code changes.
 | 4 | `public/assets/projects/akkountant/agent-chat.webp` | Akkountant · The solution | Agent chat answering a portfolio question, ideally with an uploaded receipt in-thread (**mask data**) |
 | 5 | `public/assets/projects/akkountant/wealth-digest.webp` | Akkountant · Results | The daily wealth digest — email or in-app panel (**mask data**) |
 | 6 | `public/assets/projects/tripsplit/balances.webp` | TripSplit · The solution | Balances / settle-up screen with a few multi-currency expenses |
-| 7 | `public/assets/projects/leetcode-to-git/synced-repo.webp` | LeetcodeToGit · How it works | GitHub repo after a sync — folder tree + generated commit history |
 
 ## Card images (grid thumbnails — currently using old images, swap when ready)
 
@@ -32,10 +31,10 @@ off), no code changes.
 | 9 | `public/assets/projects/tripsplit/card.webp` | `tripsplitModal/tripsplit.webp` | Trip home screen |
 | 10 | `public/assets/projects/vidish-space/card.webp` | `vidishSpaceModal/vidishSpaceDark.webp` | The current site — monsoon or winter full-page looks best on cards |
 
-*(LeetcodeToGit's card (`gitLeet.webp`) is a logo lock-up, still fine.)*
-
 ## How to hand them over
 
 Drop files at the exact paths above inside the repo (any checkout), or just
 give them to vidish_space_lead with the slot number — placement, WebP
 conversion, and the `pending` flag flips are handled from there.
+
+> Note: LeetcodeToGit removed from the portfolio (Overseer, 2026-08-18). Slots for the two new projects (Makkan, Satte Nights) will be added once their content lands.

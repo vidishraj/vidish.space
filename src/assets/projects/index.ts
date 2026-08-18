@@ -380,74 +380,6 @@ The brief I set myself: build a site that *demonstrates* rather than *lists* —
     links: {github: 'https://github.com/vidishraj/vidish.online', website: 'https://vidish.online'},
 };
 
-const leetcodeToGit: Project = {
-    id: 'leetcode-to-git',
-    kind: 'personal',
-    title: 'LeetcodeToGit',
-    tagline: 'Every accepted LeetCode solution, automatically committed to GitHub — a versioned coding journal with zero effort.',
-    hookMetric: {value: '0', label: 'manual steps per solve'},
-    tags: ['Python', 'GraphQL', 'GitHub API', 'CLI'],
-    image: '/assets/leetcodeToGitModal/gitLeet.webp',
-    facts: {
-        role: 'Creator',
-        status: 'completed',
-        team: 'Solo',
-        platform: 'Developer tool (CLI)',
-    },
-    tldr: [
-        'Pulls your accepted solutions from LeetCode’s GraphQL API.',
-        'Commits each one to a GitHub repo, organised by problem, with language detection.',
-        'Your grind becomes a public, versioned portfolio artifact instead of dying in a browser tab.',
-    ],
-    sections: [
-        {
-            title: 'The problem',
-            blocks: [
-                {
-                    type: 'text',
-                    md: 'Hundreds of hours of LeetCode practice produce… nothing visible. Solutions live inside LeetCode’s editor, unversioned, unshareable, and invisible to anyone looking at your GitHub. The work deserves a repository.',
-                },
-            ],
-        },
-        {
-            title: 'How it works',
-            blocks: [
-                {
-                    type: 'features',
-                    items: [
-                        {icon: '🔍', title: 'Fetch via GraphQL', body: 'Reads your accepted submissions directly from LeetCode’s GraphQL API.'},
-                        {icon: '🗂️', title: 'Organise & dedupe', body: 'One folder per problem, language-aware filenames, existing solutions skipped.'},
-                        {icon: '⬆️', title: 'Commit via GitHub API', body: 'Each solution lands as a proper commit — a real contribution history from your practice.'},
-                    ],
-                },
-                {
-                    type: 'figure',
-                    src: '/assets/projects/leetcode-to-git/synced-repo.webp',
-                    pending: true,
-                    capture: 'The GitHub repo after a sync — folder-per-problem tree and the commit history it generated.',
-                    caption: 'The synced repository — every accepted solution, versioned and public.',
-                },
-            ],
-        },
-        {
-            title: 'Outcome',
-            blocks: [
-                {
-                    type: 'callout',
-                    label: 'Outcome',
-                    text: 'A one-command bridge between practice and portfolio — the coding journal maintains itself.',
-                },
-            ],
-        },
-    ],
-    metrics: [
-        {value: 'GraphQL', label: 'LeetCode API'},
-        {value: 'Auto', label: 'commit per accepted solution'},
-    ],
-    techStack: ['Python', 'GraphQL', 'GitHub REST API', 'CLI'],
-    links: {github: 'https://github.com/vidishraj/LeetcodeToGit'},
-};
-
 // ─────────────────────────────────────────────────────────────
 // TODO(overseer): NEW PERSONAL PROJECTS — fill in from Overseer's material.
 // Each becomes a full deep-dive entry like the ones above. Suggested tabs:
@@ -819,7 +751,6 @@ export const personalProjects: Project[] = [
     ...newProjectPlaceholders,
     akkountant,
     tripsplit,
-    leetcodeToGit,
 ];
 
 export {clientProjects};
