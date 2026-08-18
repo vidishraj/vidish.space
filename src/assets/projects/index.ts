@@ -470,8 +470,8 @@ So I built one — as a personal market-research project.`,
             blocks: [
                 {
                     type: 'challenge',
-                    problem: 'Portals cap every search at ~2,800 results — so naive crawling silently misses most of the market.',
-                    approach: 'Reverse-engineered each portal’s public data channels (sitemap-derived locality lists, a GraphQL cursor endpoint) and sliced the search space by locality → price band → BHK → property type so every slice stays under the cap, with polite pacing throughout.',
+                    problem: 'Each portal caps how many results any search can return — so naive collection silently misses most of the market.',
+                    approach: 'Built an exhaustive slicing strategy over the portals’ public data channels — locality → price band → BHK → property type — so complete coverage comes from many small, well-formed queries with polite pacing, not brute force.',
                     result: 'One source’s coverage went ~32k → ~72k listings; another city grew ~5× to its true unique ceiling.',
                 },
                 {
@@ -534,7 +534,7 @@ const satteNights: Project = {
     tldr: [
         'A host opens a private table with a room code; friends join from their phones and play in real time — play-money chips only, no real currency anywhere.',
         'Server-authoritative engine: your hole cards are physically absent from everyone else’s network traffic.',
-        'An append-only chip ledger keeps every game zero-sum — with exact-stack rejoins and minimal who-pays-whom settlement across game nights.',
+        'An append-only chip ledger keeps every game zero-sum — with exact-stack rejoins and a fewest-transfers who-owes-whom-in-chips answer across game nights.',
     ],
     sections: [
         {
@@ -557,7 +557,7 @@ Public poker apps are bloated, ad-ridden, or built around real money. This is th
                         {icon: '🃏', title: 'Five variants, home-game rules', body: "Texas Hold'em, Omaha, Omaha Double Board, Super Hold'em, Pineapple — plus bomb pots, dealer's choice, timed sessions, and a per-action clock."},
                         {icon: '📱', title: 'Installable PWA', body: 'Full-screen from the home screen on iOS and Android; join with a room code — no app store, no sign-up funnel.'},
                         {icon: '🔄', title: 'Life-proof sessions', body: 'Rebuys, sit-out/sit-in, leave and rejoin with your exact stack; a disconnect grace window with auto-act keeps the table moving.'},
-                        {icon: '🧮', title: 'Settle Up', body: 'Pick any set of past games — it aggregates each player’s net and computes the minimal set of transfers between friends. Play-chip accounting, nothing more.'},
+                        {icon: '🧮', title: 'Settle Up', body: 'Pick any set of past games — it computes who owes whom in chips, with the fewest transfers. Play-chip accounting, nothing more.'},
                     ],
                 },
                 {
@@ -591,7 +591,7 @@ Public poker apps are bloated, ad-ridden, or built around real money. This is th
                 {
                     type: 'decision',
                     decision: 'Every chip movement is an append-only ledger entry',
-                    why: 'Grants, buy-ins, cash-outs and hand settlements that always balance make every game provably zero-sum — and exact-stack rejoins plus cross-night settlement fall out for free.',
+                    why: 'Grants, buy-ins, chip-outs and hand settlements that always balance make every game provably zero-sum — and exact-stack rejoins plus cross-night settlement fall out for free.',
                     tradeoff: 'Every feature that touches chips must be expressed as balanced ledger entries — no shortcuts allowed.',
                 },
             ],
@@ -608,8 +608,8 @@ Public poker apps are bloated, ad-ridden, or built around real money. This is th
                 {
                     type: 'challenge',
                     problem: 'Chips must be conserved across chaotic join/leave/rejoin — and friends want to settle across multiple nights.',
-                    approach: 'The ledger banks a leaver’s stack keyed to account + room and restores it exactly on rejoin; Settle Up aggregates nets across chosen games and solves minimal cash-flow (largest-creditor vs largest-debtor).',
-                    result: 'Exact-stack rejoins, and a one-tap "fewest transfers" settlement that provably balances — because every game is zero-sum by construction.',
+                    approach: 'The ledger banks a leaver’s stack keyed to account + room and restores it exactly on rejoin; Settle Up aggregates nets across chosen games and computes a minimal-transfer solve (largest-surplus vs largest-deficit).',
+                    result: 'Exact-stack rejoins, and a one-tap "who-owes-whom in chips, fewest transfers" answer that provably balances — because every game is zero-sum by construction.',
                 },
                 {
                     type: 'challenge',
