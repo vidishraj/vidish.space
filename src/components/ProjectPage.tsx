@@ -1,9 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {motion, useReducedMotion} from 'framer-motion';
-import '../assets/modalStyles/akkountantModal.css';
-import '../assets/modalStyles/tripsplitModal.css';
-import '../assets/modalStyles/vidishSpaceModal.css';
-import '../assets/modalStyles/leetcodeToGitModal.css';
 import type {Project} from '../assets/projects/types';
 import {ProjectBadge, StatRow, StatusChip, TechChips} from './ProjectPrimitives';
 import {ProjectBlockList, renderMarkdown} from './ProjectBlocks';

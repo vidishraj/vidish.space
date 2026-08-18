@@ -1,25 +1,10 @@
 import type {Project} from './types';
-import akkountantInfo from '../modalInfo/akkountantInfo.json';
-import tripsplitInfo from '../modalInfo/tripsplitInfo.json';
-import vidishSpaceInfo from '../modalInfo/vidishSpaceInfo.json';
-import leetcodeToGitInfo from '../modalInfo/leetcodeToGitInfo.json';
 
 export type {Project, ProjectKind, ProjectMetric, ProjectSection} from './types';
 
-/** Drop empty-string link values from the legacy JSONs so no dead icons render. */
-const cleanLinks = (links?: {github?: string; designDoc?: string; website?: string}) => {
-    if (!links) return undefined;
-    const out: {github?: string; designDoc?: string; website?: string} = {};
-    if (links.github) out.github = links.github;
-    if (links.designDoc) out.designDoc = links.designDoc;
-    if (links.website) out.website = links.website;
-    return Object.keys(out).length ? out : undefined;
-};
-
 // ─────────────────────────────────────────────────────────────
 // PERSONAL PROJECTS
-// Deep-dive tabs come from the existing modalInfo JSONs (rich HTML content
-// authored earlier); card-level hooks/metrics/tags are defined here.
+// All entries use the typed content-block case-study format.
 // ─────────────────────────────────────────────────────────────
 
 const akkountant: Project = {
@@ -27,37 +12,215 @@ const akkountant: Project = {
     kind: 'personal',
     featured: true,
     title: 'Akkountant',
-    tagline: 'Tracks every rupee across 6 banks and 6 investment types — automatically, from your inbox.',
-    hookMetric: {value: '45k req / 5 min', label: 'price refresh cycle'},
-    tags: ['Flask', 'React', 'Gmail API', 'Cron', 'Multiprocessing'],
+    tagline: 'A personal wealth platform with an AI agent that reads your statements, answers portfolio questions, and briefs you every morning.',
+    hookMetric: {value: '6 banks', label: 'auto-ingested from Gmail'},
+    tags: ['Python', 'React', 'Claude SDK', 'MCP', 'MySQL'],
     image: '/assets/akkountantModal/akkountant.webp',
-    sections: akkountantInfo.sections,
-    metrics: [
-        {value: '6', label: 'bank formats parsed'},
-        {value: '6', label: 'investment types tracked'},
-        {value: '23', label: 'API endpoints'},
-        {value: '45k+', label: 'HTTP requests per refresh, in 5 min'},
+    facts: {
+        role: 'Creator & sole developer',
+        timeline: 'v1 2023 → actively developed',
+        status: 'live',
+        team: 'Solo',
+        platform: 'Web',
+    },
+    tldr: [
+        'Auto-ingests statements from 6 banks via Gmail and tracks 6 investment types — the foundation layer.',
+        'An LLM agent (with MCP tools) chats over your portfolio, reads uploaded receipts and statements, and inserts investments for you.',
+        'Engineered like production infra: zero-loss coverage gates on every rate feed, a 112-test regression suite, nightly processing windows.',
     ],
-    techStack: ['Python', 'Flask', 'SQLAlchemy', 'React', 'Firebase Auth', 'Gmail API', 'Google Drive API', 'Cron', 'Multiprocessing', 'Nginx'],
-    links: cleanLinks(akkountantInfo.links),
+    sections: [
+        {
+            title: 'The problem',
+            blocks: [
+                {
+                    type: 'text',
+                    md: `Personal finances fragment across banks, brokers, and funds — and every tracking app dies the same death: manual entry. Akkountant started as the fix for that (statements auto-ingested from Gmail, investments tracked across 6 types).
+
+The current generation asks the next question: once the system holds all your financial data, **why are you still clicking through dashboards?** You should just ask.`,
+                },
+            ],
+        },
+        {
+            title: 'The solution',
+            blocks: [
+                {
+                    type: 'features',
+                    items: [
+                        {icon: '🤖', title: 'AI investment agent', body: 'Chat over your portfolio in natural language — upload receipts, statements, or screenshots and the agent reads them, answers, and inserts investments via MCP tools.'},
+                        {icon: '📬', title: 'Daily wealth digest', body: 'A proactive AI briefing summarising portfolio changes and actionable items, generated on schedule.'},
+                        {icon: '📄', title: 'Hybrid statement extraction', body: 'Known bank layouts parse via patterns; everything else — masked, scanned, novel formats — falls through to LLM extraction. Same interface, far broader coverage.'},
+                        {icon: '🛡️', title: 'Zero-loss rate ingestion', body: 'Every rate feed (MF NAV, gold, NPS, PPF, EPF) is coverage-gated: a degraded fetch can never overwrite last-known-good data.'},
+                    ],
+                },
+                {
+                    type: 'figure',
+                    src: '/assets/akkountantModal/akkountant_transactions.png',
+                    caption: 'The transactions dashboard — every entry arrived here on its own, parsed from a bank email.',
+                },
+            ],
+        },
+        {
+            title: 'How it works',
+            blocks: [
+                {
+                    type: 'text',
+                    md: 'Two services on a Linux box: an HTTP surface (Flask + FastAPI) for the app and agent chat, and a window-gated scheduler that does the heavy ingestion between **1–7 AM IST**. MySQL underneath; Claude via the agent SDK with MCP tools on top.',
+                },
+                {
+                    type: 'decision',
+                    decision: 'Stale-but-accurate beats fresh-but-empty: coverage gates on every rate write',
+                    why: 'A vendor outage once returned an empty payload that silently overwrote last-good gold rates — the dashboard showed ₹0 gains. Now a shared BaseRateTask refuses any write below a 98% success ratio, with a hard floor at 50% and a refuse-on-empty guard.',
+                    tradeoff: 'Rates can run a day stale during vendor outages — acceptable for a money app where "fresh but wrong" is the worst outcome.',
+                },
+                {
+                    type: 'decision',
+                    decision: 'One SQLAlchemy instance owned by the app, never per-call engines',
+                    why: 'Agent conversation writes were silently splitting across sessions, corrupting chat state. All DB access now routes through the app-owned instance with per-task session cleanup in the scheduler loop.',
+                    tradeoff: 'The migration itself briefly broke the scheduler (a hotfix-grade regression) — but it eliminated an entire class of session-drift bugs.',
+                },
+                {
+                    type: 'decision',
+                    decision: 'SSE-over-POST chat with a battle-tested polyfill instead of hand-rolled streaming',
+                    why: 'iOS Safari tears down fetch-driven SSE streams after the first frame; the Microsoft fetch-event-source polyfill handles WebKit correctly.',
+                    tradeoff: 'One more third-party dependency on a financial app — mitigated with a pinned, integrity-hashed lockfile.',
+                },
+            ],
+        },
+        {
+            title: 'Hard problems',
+            blocks: [
+                {
+                    type: 'challenge',
+                    problem: 'A rate-vendor outage silently overwrote last-known-good prices with empty data — the dashboard showed ₹0 balances, indistinguishable from a real crash.',
+                    approach: 'Built a three-tier coverage gate at the write boundary (refuse-on-empty → 50% hard floor → 98% partial-success gate), hoisted it into a shared base class, and migrated all five rate feeds to inherit it.',
+                    result: 'Verified against a real vendor 503: the dashboard held last-good values. Zero silent-loss incidents since; the gate logic carries a 112-test regression suite.',
+                },
+                {
+                    type: 'challenge',
+                    problem: 'The AI agent confidently "read" attachments it could not actually see — hallucinating receipt contents because the SDK silently dropped mis-shaped image blocks.',
+                    approach: 'Traced the mismatch between the API’s nested content-block shape and the SDK’s MCP shape; fixed the block format, added PDF text-extraction (PDFs aren’t a valid image block), and hardened the prompt with a verbatim-citation rule: if you can’t quote the attachment, say you can’t see it.',
+                    result: 'No hallucinated attachment content since — verified against a corpus of receipts, statements, and screenshots.',
+                },
+            ],
+        },
+        {
+            title: 'Results',
+            blocks: [
+                {
+                    type: 'callout',
+                    label: 'The shape of it',
+                    text: 'One-user production, engineered like a fleet: every rate source coverage-gated, statements from six banks ingesting themselves nightly, and an AI agent that answers questions the dashboards used to make you dig for.',
+                },
+                {
+                    type: 'text',
+                    md: 'Live and in daily development. The platform runs unattended: Gmail ingest, nightly rate refreshes, reconciliation backstops, and the morning wealth digest all happen without a human in the loop.',
+                },
+            ],
+        },
+    ],
+    metrics: [
+        {value: '6', label: 'bank statement formats auto-ingested'},
+        {value: '5', label: 'rate feeds with zero-loss coverage gates'},
+        {value: '112', label: 'tests in the rate-pipeline regression suite'},
+        {value: '1–7 AM', label: 'IST nightly processing window'},
+    ],
+    techStack: ['Python', 'Flask', 'FastAPI', 'SQLAlchemy', 'MySQL', 'systemd', 'React 18', 'TypeScript', 'Vite', 'MUI', 'Firebase Auth', 'Anthropic Claude SDK', 'MCP', 'PyMuPDF', 'Gmail API', 'SSE', 'Nginx', 'GitHub Actions'],
+    // Repo links intentionally omitted pending Overseer confirmation that the
+    // current repos are public (per akkountant_lead).
+    links: {website: 'https://akkountant.vidish.online'},
 };
 
 const tripsplit: Project = {
     id: 'tripsplit',
     kind: 'personal',
     title: 'TripSplit',
-    tagline: 'Group-trip expenses, split fairly across currencies — no more "who owes whom".',
+    tagline: 'Group-trip expenses split fairly across currencies — no spreadsheets, no "who owes whom" arguments.',
     hookMetric: {value: '3', label: 'currencies per trip'},
     tags: ['Flask', 'React', 'Firebase', 'Multi-currency'],
     image: '/assets/tripsplitModal/tripsplit.webp',
-    sections: tripsplitInfo.sections,
+    facts: {
+        role: 'Creator & sole developer',
+        status: 'live',
+        team: 'Solo',
+        platform: 'Web',
+    },
+    tldr: [
+        'Create a trip, share a 6-character code, and everyone logs expenses in their own currency.',
+        'Real-time exchange rates convert everything automatically; balances update live.',
+        'Settle-up tells each person exactly who to pay and how much — the argument is over.',
+    ],
+    sections: [
+        {
+            title: 'The problem',
+            blocks: [
+                {
+                    type: 'text',
+                    md: 'Group trips end one of two ways: one exhausted person playing accountant in a spreadsheet, or total amnesia about who paid for what. Add multiple currencies — the India-trip rupees, the layover euros — and even the spreadsheet person gives up.',
+                },
+            ],
+        },
+        {
+            title: 'The solution',
+            blocks: [
+                {
+                    type: 'features',
+                    items: [
+                        {icon: '🎫', title: 'Trips as shareable codes', body: 'Create a trip with up to 3 currencies; friends join with a 6-character code and a join-request flow existing members approve.'},
+                        {icon: '💱', title: 'Multi-currency expenses', body: 'Enter any expense in any trip currency — real-time exchange rates convert it for everyone automatically.'},
+                        {icon: '⚖️', title: 'Live balances & settle-up', body: 'Who owes whom, personal (unsplit) expenses, and the exact transfers that settle the trip.'},
+                        {icon: '👥', title: 'Member management', body: 'Join requests, safe removal (only when not tied to expenses), rename/delete guarded by trip state.'},
+                    ],
+                },
+                {
+                    type: 'figure',
+                    src: '/assets/tripsplitModal/tripsplit_home.png',
+                    caption: 'A trip dashboard — expenses, members, and running balances in one place.',
+                },
+            ],
+        },
+        {
+            title: 'How it works',
+            blocks: [
+                {
+                    type: 'text',
+                    md: 'A deliberately boring stack doing careful work: **Flask + SQLAlchemy** behind a **React** front-end, **Firebase** email auth, and a rates API for live conversion.',
+                },
+                {
+                    type: 'decision',
+                    decision: 'Balances are computed, never stored',
+                    why: 'Storing running balances invites drift the moment an expense is edited or a member removed — recomputing from the expense ledger makes every screen self-consistent by construction.',
+                    tradeoff: 'More computation per view on large trips — irrelevant at trip scale, priceless for correctness.',
+                },
+                {
+                    type: 'decision',
+                    decision: 'Currency conversion happens at entry time, at real rates',
+                    why: 'Converting once, when the expense is logged, gives every member a stable view — totals don’t mysteriously shift when rates move a week later.',
+                    tradeoff: 'A trip settled late uses entry-time rates rather than settlement-day rates — predictability beats precision here.',
+                },
+            ],
+        },
+        {
+            title: 'Results',
+            blocks: [
+                {
+                    type: 'callout',
+                    label: 'Field-tested',
+                    text: 'Built for real trips and used on them — the "who owes whom" conversation now takes exactly one screen.',
+                },
+            ],
+        },
+    ],
     metrics: [
         {value: '3', label: 'currencies per trip'},
         {value: '6-char', label: 'join code'},
-        {value: 'Live', label: 'settle-up balances'},
+        {value: 'Live', label: 'rates & settle-up balances'},
     ],
-    techStack: ['Python', 'Flask', 'React', 'Firebase Auth', 'REST APIs'],
-    links: cleanLinks(tripsplitInfo.links),
+    techStack: ['Python', 'Flask', 'SQLAlchemy', 'React', 'Firebase Auth', 'REST APIs', 'Nginx'],
+    links: {
+        github: 'https://github.com/vidishraj/trip_split_backend',
+        designDoc: 'https://github.com/vidishraj/trip_split_ui',
+        website: 'https://tripsplit.vidish.online/trip',
+    },
 };
 
 // Flagship entry — authored as the exemplar for the project-page format:
@@ -192,30 +355,73 @@ The brief I set myself: build a site that *demonstrates* rather than *lists* —
         {value: '~1 min', label: 'push → live, fail-loud CI/CD'},
     ],
     techStack: ['React 18', 'TypeScript', 'Vite 6', 'Framer Motion', 'Tailwind', 'SCSS Modules', 'Lottie', 'GitHub Actions', 'Nginx', "Let's Encrypt", 'Oracle Cloud'],
-    links: cleanLinks(vidishSpaceInfo.links),
+    links: {github: 'https://github.com/vidishraj/vidish.online', website: 'https://vidish.online'},
 };
 
 const leetcodeToGit: Project = {
     id: 'leetcode-to-git',
     kind: 'personal',
     title: 'LeetcodeToGit',
-    tagline: 'Pushes every accepted LeetCode solution to GitHub — a versioned coding journal, zero effort.',
+    tagline: 'Every accepted LeetCode solution, automatically committed to GitHub — a versioned coding journal with zero effort.',
     hookMetric: {value: '0', label: 'manual steps per solve'},
     tags: ['Python', 'GraphQL', 'GitHub API', 'CLI'],
     image: '/assets/leetcodeToGitModal/gitLeet.webp',
-    // Fix a case-mismatched image path (LG_stage1.png → Lg_stage1.png on disk)
-    sections: leetcodeToGitInfo.sections.map(s => ({
-        ...s,
-        imgSrc: s.imgSrc === '/assets/leetcodeToGitModal/LG_stage1.png'
-            ? '/assets/leetcodeToGitModal/Lg_stage1.png'
-            : s.imgSrc,
-    })),
+    facts: {
+        role: 'Creator',
+        status: 'completed',
+        team: 'Solo',
+        platform: 'Developer tool (CLI)',
+    },
+    tldr: [
+        'Pulls your accepted solutions from LeetCode’s GraphQL API.',
+        'Commits each one to a GitHub repo, organised by problem, with language detection.',
+        'Your grind becomes a public, versioned portfolio artifact instead of dying in a browser tab.',
+    ],
+    sections: [
+        {
+            title: 'The problem',
+            blocks: [
+                {
+                    type: 'text',
+                    md: 'Hundreds of hours of LeetCode practice produce… nothing visible. Solutions live inside LeetCode’s editor, unversioned, unshareable, and invisible to anyone looking at your GitHub. The work deserves a repository.',
+                },
+            ],
+        },
+        {
+            title: 'How it works',
+            blocks: [
+                {
+                    type: 'features',
+                    items: [
+                        {icon: '🔍', title: 'Fetch via GraphQL', body: 'Reads your accepted submissions directly from LeetCode’s GraphQL API.'},
+                        {icon: '🗂️', title: 'Organise & dedupe', body: 'One folder per problem, language-aware filenames, existing solutions skipped.'},
+                        {icon: '⬆️', title: 'Commit via GitHub API', body: 'Each solution lands as a proper commit — a real contribution history from your practice.'},
+                    ],
+                },
+                {
+                    type: 'figure',
+                    src: '/assets/leetcodeToGitModal/LG_remote.png',
+                    caption: 'The synced repository — every accepted solution, versioned and public.',
+                },
+            ],
+        },
+        {
+            title: 'Outcome',
+            blocks: [
+                {
+                    type: 'callout',
+                    label: 'Outcome',
+                    text: 'A one-command bridge between practice and portfolio — the coding journal maintains itself.',
+                },
+            ],
+        },
+    ],
     metrics: [
         {value: 'GraphQL', label: 'LeetCode API'},
         {value: 'Auto', label: 'commit per accepted solution'},
     ],
     techStack: ['Python', 'GraphQL', 'GitHub REST API', 'CLI'],
-    links: cleanLinks(leetcodeToGitInfo.links),
+    links: {github: 'https://github.com/vidishraj/LeetcodeToGit'},
 };
 
 // ─────────────────────────────────────────────────────────────
@@ -338,82 +544,123 @@ const clientProjects: Project[] = [
     {
         id: 'client-raheee',
         kind: 'client',
-        title: 'Mobile app refactor — 154 MB → 20 MB',
-        tagline: 'Two-week sprint: security hardening, TypeScript migration, reels-style video player, and an 87% smaller app.',
-        hookMetric: {value: '154→20 MB', label: 'app size'},
-        tags: ['React', 'TypeScript', 'Capacitor', 'CI/CD'],
+        title: 'Mobile app — attribution, parity & pipeline',
+        tagline: 'Ongoing frontend-led engagement on a Capacitor + React mobile app: ad-attribution rebuilt natively, Android brought to iOS parity, and an automated App Store pipeline.',
+        hookMetric: {value: '−40%', label: 'Android bundle size'},
+        tags: ['React', 'Capacitor', 'TypeScript', 'iOS/Android'],
         client: {
             name: 'Raheee',
             logo: '/assets/clients/rahee_logo.avif',
-            role: 'Full-Stack Developer',
-            duration: '2-week sprint (~118 hrs)',
+            role: 'Frontend Lead (freelance)',
+            duration: 'Ongoing · 2026 —',
         },
-        facts: {role: 'Full-Stack Developer', timeline: '2-week sprint (~118 hrs)', status: 'completed', platform: 'Mobile (Capacitor)'},
+        facts: {role: 'Frontend Lead (freelance)', timeline: 'Ongoing · 2026 —', status: 'in-development', platform: 'Mobile (Capacitor 7, iOS + Android)'},
         sections: [
             {
                 title: 'Context',
                 blocks: [
-                    {type: 'text', md: 'A Capacitor + React mobile app that had grown to 154 MB with security gaps, an untyped codebase, and a video experience that needed a rethink.'},
+                    {type: 'text', md: 'What began as a two-week rescue sprint (security hardening, TypeScript migration, and a major app-size reduction) grew into an ongoing, frontend-led engagement on a Capacitor 7 + React mobile app shipping in native iOS and Android shells — 110+ hours in June–July 2026 alone.'},
                 ],
             },
             {
                 title: 'My role',
                 blocks: [
                     {type: 'features', items: [
-                        {icon: '🛡️', title: 'End-to-end refactor', body: 'Security hardening, TypeScript migration, architecture overhaul.'},
-                        {icon: '🎬', title: 'Reels-style video player', body: 'Complete rewrite of the video experience.'},
-                        {icon: '🚀', title: 'Release pipeline', body: 'Set up the deployment pipeline for streamlined releases.'},
+                        {icon: '📈', title: 'Ad-attribution rebuilt natively', body: 'A custom Capacitor bridge for Meta attribution — Android Install Referrer, iOS App Tracking Transparency, and app events wired end-to-end.'},
+                        {icon: '🤖', title: 'Android parity with iOS', body: 'R8 minification, resource shrinking, theme/edge-to-edge fixes, back-button handling, verified App Links — a ~40% smaller bundle and faster cold start.'},
+                        {icon: '🚢', title: 'Release pipeline', body: 'Replaced flaky hosted CI with a reliable Xcode-archive → TestFlight pipeline and automated App Store review submission.'},
+                        {icon: '💬', title: 'Streamed conversational booking UI', body: 'An SSE-streamed, backend-driven booking flow rendered as a typed widget system, shipped behind a feature flag.'},
+                        {icon: '🧹', title: 'The original rescue sprint', body: 'Security hardening, TypeScript migration, reels-style video player rewrite, and a dramatic app-size reduction.'},
                     ]},
+                ],
+            },
+            {
+                title: 'Hard problems',
+                blocks: [
+                    {
+                        type: 'challenge',
+                        problem: 'The Meta Ads dashboard showed ~0 attributed installs despite 50+ real installs a day — product events never reached the Meta SDK at all.',
+                        approach: 'Diagnosed the missing native layers (Android Install Referrer + advertising-ID provider; iOS App Tracking Transparency + AEM lifecycle) and built a small native Capacitor bridge exposing standard and custom app events to the JS layer.',
+                        result: 'Install and custom-event attribution restored end-to-end on both platforms.',
+                    },
+                    {
+                        type: 'challenge',
+                        problem: 'A bloated, crash-prone Android build lagged far behind the iOS experience.',
+                        approach: 'R8 minification with resource shrinking and keep-rules, status-bar/edge-to-edge and theme fixes, hardware back-button handling, and native config hardening (permissions, network security, verified App Links).',
+                        result: 'A ~40% smaller Android app bundle, faster cold start, and behavioral parity with iOS.',
+                    },
                 ],
             },
             {
                 title: 'Outcome',
                 blocks: [
-                    {type: 'callout', label: 'Outcome', text: 'App size cut from 154 MB to 20 MB — an 87% reduction — with a hardened, typed codebase, delivered in a single two-week sprint.'},
+                    {type: 'callout', label: 'Outcome', text: 'An engagement that earned its own extension: from rescue sprint to ongoing frontend ownership — shipping continuously through TestFlight and app-store review with an automated submission pipeline.'},
+                    {type: 'text', md: '[rahee.ai](https://rahee.ai)'},
                 ],
             },
         ],
-        techStack: ['React', 'TypeScript', 'Capacitor', 'Mobile', 'Video Player', 'CI/CD'],
+        techStack: ['React', 'TypeScript', 'Capacitor 7', 'iOS (Xcode)', 'Android (R8)', 'Meta SDK', 'SSE', 'TestFlight', 'CI/CD'],
+        links: {website: 'https://rahee.ai'},
     },
     {
         id: 'client-soultalk',
         kind: 'client',
-        title: 'Wellness AI platform — sole developer',
-        tagline: 'Built the entire product end-to-end: Node/Express backend, React Native app, landing site, and infra.',
-        hookMetric: {value: '216', label: 'commits, solo, 6 months'},
-        tags: ['Node.js', 'React Native', 'Docker', 'AI'],
+        title: 'LLM wellness platform — solo, to the App Store',
+        tagline: 'Sole developer of an LLM-backed wellness platform: FastAPI backend, React Native iOS app, and infra — shipped to the Apple App Store.',
+        hookMetric: {value: '808', label: 'commits, solo, 4 repos'},
+        tags: ['FastAPI', 'React Native', 'Redis', 'AWS', 'LLM'],
         client: {
             name: 'SoulTalk',
             logo: '/assets/clients/soultalk_logo.svg',
             role: 'Sole Developer',
-            duration: '6 months',
+            duration: 'Beta May 2026 → App Store Aug 2026',
         },
-        facts: {role: 'Sole Developer', timeline: '6 months', status: 'completed', team: 'Solo', platform: 'Mobile + Web'},
+        facts: {role: 'Sole Developer', timeline: 'Beta May 2026 → App Store Aug 2026', status: 'live', team: 'Solo', platform: 'iOS + Web'},
         sections: [
             {
                 title: 'Context',
                 blocks: [
-                    {type: 'text', md: 'An early-stage wellness startup that needed a full product — mobile app, backend, and web presence — with a single engineer owning all of it.'},
+                    {type: 'text', md: 'An early-stage wellness startup that needed a full product — iOS app, backend, marketing site, and infrastructure — with a single engineer owning all of it, from blank repo to the App Store.'},
                 ],
             },
             {
                 title: 'My role',
                 blocks: [
                     {type: 'features', items: [
-                        {icon: '🏗️', title: 'The entire platform', body: 'Node/Express backend, React Native mobile app, and landing website — from a blank repo.'},
-                        {icon: '🤖', title: 'AI wellness features', body: 'Designed and implemented conversational interfaces.'},
-                        {icon: '⚙️', title: 'All the infrastructure', body: 'Docker, CI/CD pipelines, cloud deployment — plus architecture, testing, and releases.'},
+                        {icon: '🐍', title: 'Async Python backend (~32k LOC)', body: 'FastAPI + SQLAlchemy 2.0 + Pydantic v2, PostgreSQL on AWS RDS, S3, and a durable Redis-backed job queue.'},
+                        {icon: '📱', title: 'React Native iOS app', body: 'Expo-based app with real-time streaming AI over WebSockets, push notifications, delivered via TestFlight to the App Store.'},
+                        {icon: '🔒', title: 'Privacy engineering', body: 'GDPR/CCPA data export and hard-delete erasure built in from the start.'},
+                        {icon: '⚙️', title: 'All the infrastructure', body: 'Docker, GitHub Actions CI/CD, migration deploys with auto-rollback, monitoring, backups, rate-limiting.'},
                     ]},
+                ],
+            },
+            {
+                title: 'Hard problems',
+                blocks: [
+                    {
+                        type: 'challenge',
+                        problem: 'LLM responses take seconds, a journaling UX must feel instant — and token cost scales with every user.',
+                        approach: 'Streamed model output to the client over a WebSocket relay with mid-stream error recovery; deferred and parallelized heavier post-processing so the primary response renders first; cached stable prompt prefixes.',
+                        result: '~30-50% lower input-token cost and ~0.5-1.5s faster time-to-first-token; long-form reports render in ~10-12s without blocking the UI.',
+                    },
+                    {
+                        type: 'challenge',
+                        problem: 'Each entry fans out to async AI jobs — crashes and retries caused duplicate processing or silently-dropped work, and plaintext in job args would break privacy guarantees.',
+                        approach: 'Durable Redis-backed queue with per-generation idempotency keys, a recovery sweep with a retry ceiling, worker-liveness gating in deploys — and jobs carry only record IDs, never content, so erasure stays enforceable at the database.',
+                        result: 'No duplicate AI runs, no silent drops, and GDPR-clean job arguments.',
+                    },
                 ],
             },
             {
                 title: 'Outcome',
                 blocks: [
-                    {type: 'callout', label: 'Outcome', text: '216 commits over 6 months as the sole developer — a complete, deployed product from a blank repo.'},
+                    {type: 'callout', label: 'Outcome', text: 'Live on the Apple App Store (US + Canada) — ~808 commits across 4 repos as the sole developer, from blank repo to public launch in about six months, and still shipping.'},
+                    {type: 'text', md: '[Marketing site](https://soultalkapp.com) · [On the App Store](https://apps.apple.com/app/id6759283325)'},
                 ],
             },
         ],
-        techStack: ['Node.js', 'Express', 'React Native', 'React', 'Docker', 'CI/CD', 'AI/ML'],
+        techStack: ['Python', 'FastAPI', 'SQLAlchemy 2.0', 'Pydantic v2', 'Redis (arq)', 'PostgreSQL (RDS)', 'AWS S3', 'React Native (Expo)', 'WebSockets', 'Docker', 'GitHub Actions', 'Nginx'],
+        links: {website: 'https://soultalkapp.com'},
     },
     {
         id: 'client-cipherome',

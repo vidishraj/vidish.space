@@ -416,8 +416,8 @@ export const timelineData = (season: Season) => {
                                         <h3 className="font-semibold text-lg"
                                             style={{color: textColor}}>AI & Full-Stack</h3>
                                         <p style={{color: textColor}}>Built AI pipelines with vector databases and LLM integrations
-                                            for Movo. Shipped an entire wellness platform as the sole developer for SoulTalk—216
-                                            commits of pure hustle.</p>
+                                            for Movo. Shipped an entire LLM wellness platform to the App Store as the sole developer
+                                            for SoulTalk—808 commits of pure hustle.</p>
                                     </div>
                                 </div>
                             </div>
