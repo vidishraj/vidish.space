@@ -29,6 +29,10 @@ export interface ProjectTheme {
     /** Success emphasis (challenge results) */
     success: string;
     successSoftBg: string;
+    /** Warm accent — the "client work" family (badges, client eyebrows) */
+    accentWarmText: string;
+    accentWarmSoftBg: string;
+    accentWarmBorder: string;
 }
 
 const DARK: ProjectTheme = {
@@ -46,6 +50,9 @@ const DARK: ProjectTheme = {
     chipText: '#cbd5e1',
     success: '#34d399',
     successSoftBg: 'rgba(52,211,153,0.08)',
+    accentWarmText: '#fcd34d',
+    accentWarmSoftBg: 'rgba(251,191,36,0.14)',
+    accentWarmBorder: 'rgba(251,191,36,0.35)',
 };
 
 const LIGHT: ProjectTheme = {
@@ -63,6 +70,9 @@ const LIGHT: ProjectTheme = {
     chipText: '#334155',
     success: '#059669',
     successSoftBg: 'rgba(16,185,129,0.07)',
+    accentWarmText: '#b45309',
+    accentWarmSoftBg: 'rgba(217,119,6,0.10)',
+    accentWarmBorder: 'rgba(217,119,6,0.30)',
 };
 
 export const projectTheme = (isDark: boolean): ProjectTheme => (isDark ? DARK : LIGHT);

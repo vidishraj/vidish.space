@@ -147,7 +147,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project, isDark, onOpen, class
             {/* Body */}
             <div className="flex flex-grow flex-col p-5">
                 {isClient && project.client && (
-                    <div className="mb-1 text-[11px] font-semibold uppercase tracking-wider" style={{color: isDark ? '#fcd34d' : '#b45309'}}>
+                    <div className="mb-1 text-[11px] font-semibold uppercase tracking-wider" style={{color: t.accentWarmText}}>
                         {project.client.name} · {project.client.role}
                     </div>
                 )}

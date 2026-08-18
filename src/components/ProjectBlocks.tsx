@@ -32,6 +32,9 @@ const Block: React.FC<BlockProps> = ({block, isDark, projectTitle}) => {
 
     switch (block.type) {
         case 'text':
+            // Deliberate: markdown bodies ride Tailwind's prose plugin (incl.
+            // prose-invert) rather than theme tokens — the plugin styles
+            // nested markup (links, lists, code) that tokens can't reach.
             return (
                 <div
                     className={`prose max-w-none text-sm sm:text-base ${isDark ? 'prose-invert text-gray-200' : 'text-gray-700'}`}

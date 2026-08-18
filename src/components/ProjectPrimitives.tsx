@@ -5,11 +5,21 @@ import {projectTheme} from './projectTheme';
 // ─── StatusChip ──────────────────────────────────────────────
 // "● Live" style badge — the honesty signal almost no portfolio has.
 
-const STATUS_META: Record<ProjectStatus, {label: string; color: string; colorDark: string}> = {
-    'live': {label: 'Live', color: '#059669', colorDark: '#34d399'},
-    'in-development': {label: 'In development', color: '#b45309', colorDark: '#fbbf24'},
-    'completed': {label: 'Completed', color: '#1d4ed8', colorDark: '#93c5fd'},
-    'archived': {label: 'Archived', color: '#64748b', colorDark: '#94a3b8'},
+const STATUS_LABEL: Record<ProjectStatus, string> = {
+    'live': 'Live',
+    'in-development': 'In development',
+    'completed': 'Completed',
+    'archived': 'Archived',
+};
+
+/** Status colors are theme tokens so they can never drift from the system. */
+const statusColor = (status: ProjectStatus, t: ReturnType<typeof projectTheme>): string => {
+    switch (status) {
+        case 'live': return t.success;
+        case 'in-development': return t.accentWarmText;
+        case 'completed': return t.accentText;
+        case 'archived': return t.textMuted;
+    }
 };
 
 export const StatusChip: React.FC<{status: ProjectStatus; isDark?: boolean; className?: string}> = ({
@@ -17,9 +27,8 @@ export const StatusChip: React.FC<{status: ProjectStatus; isDark?: boolean; clas
     isDark = false,
     className = '',
 }) => {
-    const meta = STATUS_META[status];
-    const color = isDark ? meta.colorDark : meta.color;
     const t = projectTheme(isDark);
+    const color = statusColor(status, t);
     return (
         <span
             className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${className}`}
@@ -40,7 +49,7 @@ export const StatusChip: React.FC<{status: ProjectStatus; isDark?: boolean; clas
                     boxShadow: status === 'live' ? `0 0 6px ${color}` : undefined,
                 }}
             />
-            {meta.label}
+            {STATUS_LABEL[status]}
         </span>
     );
 };
@@ -54,15 +63,16 @@ export const ProjectBadge: React.FC<{kind: ProjectKind; isDark?: boolean; classN
     className = '',
 }) => {
     const isClient = kind === 'client';
+    const t = projectTheme(isDark);
     const style: React.CSSProperties = isClient
         ? {
-            background: isDark ? 'rgba(251, 191, 36, 0.14)' : 'rgba(217, 119, 6, 0.10)',
-            color: isDark ? '#fcd34d' : '#b45309',
-            border: `1px solid ${isDark ? 'rgba(251,191,36,0.35)' : 'rgba(217,119,6,0.30)'}`,
+            background: t.accentWarmSoftBg,
+            color: t.accentWarmText,
+            border: `1px solid ${t.accentWarmBorder}`,
         }
         : {
-            background: projectTheme(isDark).accentSoftBg,
-            color: projectTheme(isDark).accentText,
+            background: t.accentSoftBg,
+            color: t.accentText,
             border: `1px solid ${isDark ? 'rgba(96,165,250,0.35)' : 'rgba(37,99,235,0.30)'}`,
         };
     return (

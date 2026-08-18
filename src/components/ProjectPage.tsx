@@ -155,7 +155,7 @@ const ProjectPage: React.FC<ProjectPageProps> = ({project, projects, onClose, on
                     <ProjectBadge kind={project.kind} isDark={isDark} />
                     {project.facts?.status && <StatusChip status={project.facts.status} isDark={isDark} />}
                     {project.client && (
-                        <span className="text-xs font-semibold uppercase tracking-wider" style={{color: isDark ? '#fcd34d' : '#b45309'}}>
+                        <span className="text-xs font-semibold uppercase tracking-wider" style={{color: t.accentWarmText}}>
                             {project.client.name} · {project.client.role} · {project.client.duration}
                         </span>
                     )}
