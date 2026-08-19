@@ -26,8 +26,7 @@ off), no code changes.
 | ~~29~~ ✅ | `public/assets/projects/akkountant/vault.webp` | Akkountant · Beyond investments | **DELIVERED** 2026-08-19 — six identity-document cards solid-filled (thumbnail + name/label) per Overseer 'censor the vault files'; folders/ZIP/UI raw |
 | ~~25~~ ✅ | `public/assets/projects/akkountant/visitors.webp` | Akkountant · Running it like production | **DELIVERED** 2026-08-19 — IP column **solid-filled** (third-party personal data), rest raw. Use a solid fill, never a mosaic: pixelation at sub-character cell size is reversible against a small alphabet in a known font |
 | 6 | `public/assets/projects/tripsplit/balances.webp` | TripSplit · The solution | Balances / settle-up screen with a few multi-currency expenses |
-| 11 | `public/assets/projects/makaan/price-map.webp` | Makaan · The solution | Interactive price map (Bangalore) with locality overlays |
-| 12 | `public/assets/projects/makaan/valuation.webp` | Makaan · Results | A "Value My Property" result — estimate, rent, comparables |
+| ~~11–12, 30–33~~ ✅ | `makaan/{map,search,places,prices,valuation,chat}.webp` | Makaan · 5 sections | **DELIVERED** 2026-08-19 — 6 Overseer captures, all raw (aggregated public-listing data, demo chat; nothing to redact); write-up restructured one section per product tab |
 | 13 | `public/assets/projects/satte-nights/table.webp` | Satte Nights · The solution | Busy table mid-hand on a phone — play chips visible, **no real usernames** |
 | ~~16~~ ✅ | `public/assets/projects/united-majdoors/dashboard.webp` | United Majdoors · The solution | **DELIVERED** 2026-08-19 — RAW per explicit Overseer instruction |
 | ~~17~~ ✅ | `public/assets/projects/united-majdoors/terminal.webp` | United Majdoors · Results | **DELIVERED** 2026-08-19 — Settings view (accounts + usage), emails-only redaction per Overseer |
@@ -39,7 +38,7 @@ off), no code changes.
 | ~~8~~ ✅ | `public/assets/projects/akkountant/card.webp` | *(was illustration)* | **DELIVERED** 2026-08-19 — portfolio overview, raw |
 | 9 | `public/assets/projects/tripsplit/card.webp` | `tripsplitModal/tripsplit.webp` | Trip home screen |
 | 10 | `public/assets/projects/vidish-space/card.webp` | `vidishSpaceModal/vidishSpaceDark.webp` | The current site — monsoon or winter full-page looks best on cards |
-| 14 | `public/assets/projects/makaan/card.webp` | *(none — card currently text-only)* | Makaan dashboard/map — strongest single screen |
+| ~~14~~ ✅ | `public/assets/projects/makaan/card.webp` | *(was monogram)* | **DELIVERED** 2026-08-19 — the map, raw |
 | 15 | `public/assets/projects/satte-nights/card.webp` | *(none — card currently text-only)* | A table mid-hand — **no real usernames** |
 | ~~18~~ ✅ | `public/assets/projects/united-majdoors/card.webp` | *(was monogram)* | **DELIVERED** 2026-08-19 — Overseer-supplied akkountant-filtered board, RAW (clean by construction; also the How-it-works figure) |
 

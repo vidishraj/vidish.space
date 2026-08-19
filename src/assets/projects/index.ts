@@ -680,6 +680,7 @@ const makaan: Project = {
     tagline: "~300,000 live property listings from India's biggest portals, unified into one trustworthy market-intelligence dashboard — with an AI analyst on top.",
     hookMetric: {value: '~300k', label: 'listings, de-duplicated across 3 portals'},
     tags: ['TypeScript', 'Node.js', 'React', 'SQLite', 'Claude SDK'],
+    image: '/assets/projects/makaan/card.webp',
     facts: {
         role: 'Creator & sole developer',
         timeline: '5-week build → actively developed',
@@ -718,10 +719,87 @@ So I built one — as a personal market-research project.`,
                 },
                 {
                     type: 'figure',
-                    src: '/assets/projects/makaan/price-map.webp',
-                    pending: true,
-                    capture: 'The interactive price map (Bangalore) with locality overlays visible.',
-                    caption: 'The price map — ~236k Bangalore listings distilled into locality-level intelligence.',
+                    src: '/assets/projects/makaan/map.webp',
+                    alt: 'Makaan map view of Bangalore: 163K listings across 499 localities plotted as colour-coded price dots, with per-source counts and 2,37,358 of 2,45,682 listings geolocated',
+                    caption: 'The map — 163K Bangalore listings across 499 localities, colour-coded by price, with every source counted. 2,37,358 of 2,45,682 listings geolocated.',
+                },
+            ],
+        },
+        {
+            title: 'Search the whole market at once',
+            blocks: [
+                {
+                    type: 'text',
+                    md: `**Use case:** *"Show me every 3-BHK apartment under ₹2 Cr in the city — from all three portals, no duplicates."*
+
+One search across everything: buy or rent, BHK, property type, furnishing, and price band, with live per-source counts so you can see exactly where a result came from. The header does the arithmetic for you — matching listings, average price, median ₹/sqft — before you've opened a single one.`,
+                },
+                {
+                    type: 'figure',
+                    src: '/assets/projects/makaan/search.webp',
+                    alt: 'Makaan search: filters for buy/rent, BHK, type, furnishing and price, per-source counts (99acres 27,759 · magicbricks 70,568 · housing 49,653), and 1,39,262 matching listings with avg ₹2.79 Cr and median ₹10,760/sqft',
+                    caption: 'Search — 1,39,262 matches across three sources in one result table, each row tagged to the portal it came from.',
+                },
+            ],
+        },
+        {
+            title: 'Where the portals disagree',
+            blocks: [
+                {
+                    type: 'text',
+                    md: `**Use case:** *"Is this locality actually expensive, or is one portal skewing it?"*
+
+The Places view puts the three portals' median prices side by side for 407 localities and sorts by the **gap between them** — which turns the dataset's messiness into a feature. A +496% disagreement isn't noise to hide; it's the single most useful thing a buyer can know before trusting any one site's number.`,
+                },
+                {
+                    type: 'figure',
+                    src: '/assets/projects/makaan/places.webp',
+                    alt: 'Places view titled "Where the portals disagree": 407 localities with 99acres, magicbricks and housing medians side by side, sorted by source gap, with value ranges',
+                    caption: '"Where the portals disagree" — per-locality medians from each source, ranked by gap. The disagreement is the insight.',
+                },
+            ],
+        },
+        {
+            title: 'The shape of the market',
+            blocks: [
+                {
+                    type: 'text',
+                    md: `**Use case:** *"What does this city actually sell — and what's normal?"*
+
+Prices gives the structural view over 1,00,475 buy listings: mean and median (they differ, deliberately — medians resist "starting-from" outliers), the full price distribution by band, the BHK mix with median per configuration, and a ranked spread from the most affordable to the most expensive localities by ₹/sqft.`,
+                },
+                {
+                    type: 'figure',
+                    src: '/assets/projects/makaan/prices.webp',
+                    alt: 'Prices view: mean ₹2.60 Cr, median ₹2.01 Cr, median ₹11,519/sqft; price distribution by band; BHK mix with 3 BHK dominant at 42,751 listings; affordable-to-expensive locality ranking',
+                    caption: 'Price structure — distribution, BHK mix (3 BHK dominates at 42,751 listings), and the affordable↔expensive locality ladder.',
+                },
+            ],
+        },
+        {
+            title: 'Value My Property & the analyst',
+            blocks: [
+                {
+                    type: 'text',
+                    md: `**Use case:** *"What's this specific flat worth — to buy, and to rent out?"*
+
+Paste a Google Maps link or an address. Makaan finds comparable listings within an adaptive 1–5 km radius and returns a median-based sale estimate and expected rent with a confidence band — add details (BHK, area, floor) to sharpen it.`,
+                },
+                {
+                    type: 'figure',
+                    src: '/assets/projects/makaan/valuation.webp',
+                    alt: 'Value My Property: "What\'s it worth?" — paste a Google Maps link or type an address to get an expected sale price and rent grounded in nearby listings',
+                    caption: '"What\'s it worth?" — a Google Maps link in, a grounded sale-and-rent estimate out.',
+                },
+                {
+                    type: 'text',
+                    md: `And when the question doesn't fit a filter — *"plotted gated-community land in Kolkata, preferably new launches?"* — the **AI analyst** answers with tables of real projects, localities, listing counts and price ranges, every figure pulled from a live SQL query. It also says what it *can't* certify (launch dates the data doesn't carry) instead of making something up.`,
+                },
+                {
+                    type: 'figure',
+                    src: '/assets/projects/makaan/chat.webp',
+                    alt: 'Makaan AI chat answering a question about plotted gated-community land in Kolkata with tables of projects, localities, listing counts and price ranges, and an explicit note about what the data cannot certify',
+                    caption: 'The analyst — real projects, counts and price ranges from the database, plus an honest "here\'s what I can\'t certify."',
                 },
             ],
         },
@@ -782,13 +860,6 @@ So I built one — as a personal market-research project.`,
                     type: 'callout',
                     label: 'The dataset',
                     text: '~300,000 de-duplicated listings across Bangalore and Kolkata, refreshed daily (~27k updates in a recent week) — queryable by map, chart, or plain English. Built solo in about five weeks.',
-                },
-                {
-                    type: 'figure',
-                    src: '/assets/projects/makaan/valuation.webp',
-                    pending: true,
-                    capture: 'A "Value My Property" result — estimate, expected rent, and the comparables it used.',
-                    caption: 'Value My Property — median-based comparables within an adaptive 1–5 km radius, with a confidence band.',
                 },
             ],
         },
