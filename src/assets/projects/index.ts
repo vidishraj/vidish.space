@@ -249,6 +249,7 @@ const unitedMajdoors: Project = {
     tagline: 'A command centre for a fleet of autonomous AI coding agents — one person operating a 50-seat software team from a browser. This site is the fleet’s work.',
     hookMetric: {value: '50+', label: 'agent seats across 11 rigs'},
     tags: ['TypeScript', 'Next.js', 'WebSockets', 'node-pty', 'Claude Agent SDK'],
+    image: '/assets/projects/united-majdoors/card.webp',
     facts: {
         role: 'Creator & fleet operator',
         timeline: 'Jan 2026 → present · ~7 months in production',
@@ -288,9 +289,8 @@ const unitedMajdoors: Project = {
                 {
                     type: 'figure',
                     src: '/assets/projects/united-majdoors/dashboard.webp',
-                    pending: true,
-                    capture: 'The fleet dashboard — rigs, agents, and the kanban. REDACT anything naming client projects/tenants.',
-                    caption: 'The command centre — a software team’s worth of agents, one operator.',
+                    alt: 'The United Majdoors dashboard with three live agent panes',
+                    caption: 'The command centre — three agents live at once. Pane contents pixelated: the fleet’s work is its tenants’ business.',
                 },
             ],
         },
@@ -300,6 +300,12 @@ const unitedMajdoors: Project = {
                 {
                     type: 'text',
                     md: 'A Next.js + TypeScript app around a custom Node server that owns every agent process: **node-pty** spawns real terminals, **xterm.js** renders them live over WebSockets, and 28 REST route groups drive fleet operations. Underneath: Gas Town’s runtime and **Beads** — issues in a database — as the durable work record.',
+                },
+                {
+                    type: 'figure',
+                    src: '/assets/projects/united-majdoors/card.webp',
+                    alt: 'The beads work board showing 2,123 issues across four status columns',
+                    caption: '2,123 units of durable work across the fleet — open, in progress, blocked, done. Card contents pixelated.',
                 },
                 {
                     type: 'decision',
