@@ -25,7 +25,7 @@ off), no code changes.
 | 11 | `public/assets/projects/makaan/price-map.webp` | Makaan · The solution | Interactive price map (Bangalore) with locality overlays |
 | 12 | `public/assets/projects/makaan/valuation.webp` | Makaan · Results | A "Value My Property" result — estimate, rent, comparables |
 | 13 | `public/assets/projects/satte-nights/table.webp` | Satte Nights · The solution | Busy table mid-hand on a phone — play chips visible, **no real usernames** |
-| ~~16~~ ✅ | `public/assets/projects/united-majdoors/dashboard.webp` | United Majdoors · The solution | **DELIVERED** 2026-08-19 (pixel-redacted by vidish_space_lead) |
+| ~~16~~ ✅ | `public/assets/projects/united-majdoors/dashboard.webp` | United Majdoors · The solution | **DELIVERED** 2026-08-19 — pixel-redacted (restored after escalation items B/C; Overseer-supplied replacement solved the card) |
 | 17 | `public/assets/projects/united-majdoors/terminal.webp` | United Majdoors · Results | Live agent terminal streaming mid-task. **REDACT tenant names, paths, tokens** |
 
 ## Card images (grid thumbnails — currently using old images, swap when ready)
@@ -37,7 +37,7 @@ off), no code changes.
 | 10 | `public/assets/projects/vidish-space/card.webp` | `vidishSpaceModal/vidishSpaceDark.webp` | The current site — monsoon or winter full-page looks best on cards |
 | 14 | `public/assets/projects/makaan/card.webp` | *(none — card currently text-only)* | Makaan dashboard/map — strongest single screen |
 | 15 | `public/assets/projects/satte-nights/card.webp` | *(none — card currently text-only)* | A table mid-hand — **no real usernames** |
-| ~~18~~ ✅ | `public/assets/projects/united-majdoors/card.webp` | *(was monogram)* | **DELIVERED** 2026-08-19 — beads board, pixel-redacted (also used as a How-it-works figure) |
+| ~~18~~ ✅ | `public/assets/projects/united-majdoors/card.webp` | *(was monogram)* | **DELIVERED** 2026-08-19 — Overseer-supplied akkountant-filtered board, RAW (clean by construction; also the How-it-works figure) |
 
 ## How to hand them over
 

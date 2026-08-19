@@ -304,8 +304,8 @@ const unitedMajdoors: Project = {
                 {
                     type: 'figure',
                     src: '/assets/projects/united-majdoors/card.webp',
-                    alt: 'The beads work board showing 2,123 issues across four status columns',
-                    caption: '2,123 units of durable work across the fleet — open, in progress, blocked, done. Card contents pixelated.',
+                    alt: 'The beads work board filtered to one project, showing 118 of 2,131 fleet issues',
+                    caption: 'One project’s slice of the board — 118 of 2,131 issues of durable work across the fleet.',
                 },
                 {
                     type: 'decision',
