@@ -234,6 +234,155 @@ const tripsplit: Project = {
     },
 };
 
+// ─────────────────────────────────────────────────────────────
+// THE FLAGSHIP — United Majdoors (bead vs-cux: smorgasbord_lead,
+// verified + hardened by the system's builder). Publish constraints (§8):
+// Gas Town/Beads credited, control-plane framing, private repo (no link),
+// neutral multi-workspace language, roles not personas, no tenant names.
+// ─────────────────────────────────────────────────────────────
+
+const unitedMajdoors: Project = {
+    id: 'united-majdoors',
+    kind: 'personal',
+    featured: true,
+    title: 'United Majdoors',
+    tagline: 'A command centre for a fleet of autonomous AI coding agents — one person operating a 50-seat software team from a browser. This site is the fleet’s work.',
+    hookMetric: {value: '50+', label: 'agent seats across 11 rigs'},
+    tags: ['TypeScript', 'Next.js', 'WebSockets', 'node-pty', 'Claude Agent SDK'],
+    facts: {
+        role: 'Creator & fleet operator',
+        timeline: 'Jan 2026 → present · ~7 months in production',
+        status: 'live',
+        team: 'Solo — plus the fleet itself',
+        platform: 'Internal platform (private)',
+    },
+    tldr: [
+        'A browser command centre that runs dozens of autonomous Claude agents organised into per-project teams — dashboard, kanban, live terminals, push notifications.',
+        'Built on Steve Yegge’s open-source Gas Town framework: the original work is the control plane, the central cross-login relay, and operating a real production fleet.',
+        'The proof is recursive — this portfolio, including the page you’re reading, is built and maintained by agents inside it.',
+    ],
+    sections: [
+        {
+            title: 'The problem',
+            blocks: [
+                {
+                    type: 'text',
+                    md: `One person running many AI coding agents hits a wall fast: agents live in terminal multiplexers you can’t see into, they die mid-task on provider errors, messages between them silently vanish across workspace boundaries — and no human can watch fifty terminals at once.
+
+[Gas Town](https://github.com/steveyegge/gastown), Steve Yegge’s open-source agent-fleet framework, provides the primitives: agents, work-tracking, command-line tools. The gap United Majdoors fills is everything between those primitives and *one person actually operating a production fleet*: the eyes, the controls, and the nervous system.`,
+                },
+            ],
+        },
+        {
+            title: 'The solution',
+            blocks: [
+                {
+                    type: 'features',
+                    items: [
+                        {icon: '🖥️', title: 'Live terminals in the browser', body: 'Every agent’s real terminal, streamed over WebSockets — watch an agent think in real time, attach and detach, survive a refresh.'},
+                        {icon: '📋', title: 'Fleet operations dashboard', body: 'Per-project teams (a lead, crew, reviewers) on a kanban of durable work items — assign, track, and message from one screen.'},
+                        {icon: '📡', title: 'A central cross-workspace relay', body: 'The nervous system: any agent can message any other, even across workspace boundaries the native tooling can’t cross.'},
+                        {icon: '🔔', title: 'Push when humans matter', body: 'Service-worker notifications the moment an agent needs input — operate the fleet from a phone.'},
+                    ],
+                },
+                {
+                    type: 'figure',
+                    src: '/assets/projects/united-majdoors/dashboard.webp',
+                    pending: true,
+                    capture: 'The fleet dashboard — rigs, agents, and the kanban. REDACT anything naming client projects/tenants.',
+                    caption: 'The command centre — a software team’s worth of agents, one operator.',
+                },
+            ],
+        },
+        {
+            title: 'How it works',
+            blocks: [
+                {
+                    type: 'text',
+                    md: 'A Next.js + TypeScript app around a custom Node server that owns every agent process: **node-pty** spawns real terminals, **xterm.js** renders them live over WebSockets, and 28 REST route groups drive fleet operations. Underneath: Gas Town’s runtime and **Beads** — issues in a database — as the durable work record.',
+                },
+                {
+                    type: 'decision',
+                    decision: 'The durable unit of work is a database record — messages are only ephemeral nudges',
+                    why: 'Agents die: provider errors, restarts, crashes. If work lived in chat, a dead agent meant lost work. With work-as-data, a restarted agent reads its record and resumes exactly where it left off.',
+                    tradeoff: 'More ceremony — nothing counts until it’s written down. A message alone is never "done."',
+                },
+                {
+                    type: 'decision',
+                    decision: 'Drive agents through their real terminals, not a hidden headless API',
+                    why: 'Full fidelity: the operator sees exactly what the agent sees, can attach and detach at will, and the same session survives a browser refresh.',
+                    tradeoff: 'The server must manage real OS processes and PTY lifecycles — heavier than stateless HTTP, worth every gram.',
+                },
+                {
+                    type: 'decision',
+                    decision: 'One central relay process that owns every agent in every workspace',
+                    why: 'Native peer messaging only reaches agents in the same workspace; a fleet spans several. The one process that owns all of them can bridge any two.',
+                    tradeoff: 'The relay becomes a hub the whole fleet depends on — restarting it bounces everyone. Mitigated by staggered recovery and the durable work layer: a bounce loses nothing.',
+                },
+            ],
+        },
+        {
+            title: 'Hard problems',
+            blocks: [
+                {
+                    type: 'challenge',
+                    problem: 'The islands problem: agents in different workspaces couldn’t message each other — deliveries silently vanished with no error, just dropped.',
+                    approach: 'Built a central relay into the one process that owns every agent’s session: messages push straight into the target’s live terminal — no polling, no database round-trip — with self-configuring credentials written fresh on every startup.',
+                    result: 'Any agent reaches any other, across any workspace, reliably. The flagship engineering story of the platform.',
+                },
+                {
+                    type: 'challenge',
+                    problem: 'The fleet’s merge authority ran on its own isolated login — unlistable, unmessageable, failing with opaque errors — so ready-to-ship work stalled with nowhere to go.',
+                    approach: 'Taught the relay to resolve the isolated operations agents by their fixed on-disk locations and route to them explicitly, making one command the single dependable channel.',
+                    result: 'Handoffs to the merge authority became instant and reliable — ready work stopped stalling.',
+                },
+                {
+                    type: 'challenge',
+                    problem: 'A database-backed mailbox for agent comms added write pressure, polling latency, and could loop on acknowledgements.',
+                    approach: 'Retired mail entirely for push: instant in-session delivery for coordination, with the durable work record as the only source of truth underneath.',
+                    result: 'Dramatically less database pressure, zero inbox polling — comms became instant nudges over durable work.',
+                },
+                {
+                    type: 'challenge',
+                    problem: 'Agents crash mid-task, and a fleet-wide restart bounces every agent at once — either could strand hours of work.',
+                    approach: '"Stopped is not dead": a watcher auto-starts any idle agent the moment work lands on its record; restarts recover on a staggered ramp; each agent reloads its identity and context on resume.',
+                    result: 'A self-healing fleet — many full restarts and provider outages in seven months of production, zero lost work.',
+                },
+            ],
+        },
+        {
+            title: 'Results',
+            blocks: [
+                {
+                    type: 'callout',
+                    label: 'The recursive proof',
+                    text: 'Every page of this portfolio — including the case study you are reading — was written, reviewed, and deployed by agents running inside United Majdoors. The system’s output is the site itself.',
+                },
+                {
+                    type: 'text',
+                    md: 'Seven months of continuous production running a real multi-project fleet. There is no public demo — the control plane drives a private fleet and holds its keys — so the observable output is the work the fleet ships.',
+                },
+                {
+                    type: 'figure',
+                    src: '/assets/projects/united-majdoors/terminal.webp',
+                    pending: true,
+                    capture: 'A live agent terminal streaming in the browser mid-task. REDACT tenant/client names and any paths/tokens.',
+                    caption: 'Watching an agent think — a real PTY, streamed live to the dashboard.',
+                },
+            ],
+        },
+    ],
+    metrics: [
+        {value: '45,399', label: 'lines of TypeScript/TSX'},
+        {value: '204', label: 'commits · ~7 months in production'},
+        {value: '11', label: 'rigs · 50+ agent seats'},
+        {value: '28', label: 'REST API route groups'},
+    ],
+    techStack: ['TypeScript', 'Next.js (App Router)', 'React', 'Tailwind', 'Node.js', 'node-pty', 'xterm.js', 'WebSockets', 'web-push', 'Claude Agent SDK', 'Gas Town (Go)', 'Beads / Dolt', 'systemd', 'Vitest'],
+    // Repo is private by design (it holds the fleet's keys) — no links.
+    // Gas Town is credited with a public link inside "The problem".
+};
+
 // Flagship entry — authored as the exemplar for the project-page format:
 // the fixed narrative spine (Problem → Solution → How it works → Hard
 // problems → Results) rendered with typed content blocks.
@@ -961,6 +1110,7 @@ const clientProjects: Project[] = [
                         {icon: '🖥️', title: 'POC contract tool', body: 'Tkinter GUI with a Flask backend.'},
                         {icon: '📄', title: 'PDF-parsing automation', body: 'Automated the contract auditing workflow.'},
                         {icon: '📦', title: 'Windows Server deployment', body: 'Shipped via uWSGI + IIS.'},
+                        {icon: '🌱', title: 'First corporate engineering', body: 'Git, Jira, and collaborative development — where the professional habits started.'},
                     ]},
                 ],
             },
@@ -981,6 +1131,7 @@ const clientProjects: Project[] = [
 
 // Vidish.Online leads — it's the flagship (and the visitor is standing in it).
 export const personalProjects: Project[] = [
+    unitedMajdoors,
     vidishSpace,
     makaan,
     satteNights,
