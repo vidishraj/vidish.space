@@ -25,7 +25,7 @@ off), no code changes.
 | 11 | `public/assets/projects/makaan/price-map.webp` | Makaan · The solution | Interactive price map (Bangalore) with locality overlays |
 | 12 | `public/assets/projects/makaan/valuation.webp` | Makaan · Results | A "Value My Property" result — estimate, rent, comparables |
 | 13 | `public/assets/projects/satte-nights/table.webp` | Satte Nights · The solution | Busy table mid-hand on a phone — play chips visible, **no real usernames** |
-| ~~16~~ ✅ | `public/assets/projects/united-majdoors/dashboard.webp` | United Majdoors · The solution | **DELIVERED** 2026-08-19 — pixel-redacted (restored after escalation items B/C; Overseer-supplied replacement solved the card) |
+| ~~16~~ ✅ | `public/assets/projects/united-majdoors/dashboard.webp` | United Majdoors · The solution | **DELIVERED** 2026-08-19 — RAW per explicit Overseer instruction |
 | 17 | `public/assets/projects/united-majdoors/terminal.webp` | United Majdoors · Results | Live agent terminal streaming mid-task. **REDACT tenant names, paths, tokens** |
 
 ## Card images (grid thumbnails — currently using old images, swap when ready)

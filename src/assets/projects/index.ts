@@ -290,7 +290,7 @@ const unitedMajdoors: Project = {
                     type: 'figure',
                     src: '/assets/projects/united-majdoors/dashboard.webp',
                     alt: 'The United Majdoors dashboard with three live agent panes',
-                    caption: 'The command centre — three agents live at once. Pane contents pixelated: the fleet’s work is its tenants’ business.',
+                    caption: 'The command centre — three agents live at once, mid-conversation.',
                 },
             ],
         },
