@@ -23,7 +23,7 @@ off), no code changes.
 | 5 | `public/assets/projects/akkountant/wealth-digest.webp` | Akkountant · Results | The daily wealth digest — email or in-app panel |
 | ~~19–24~~ ✅ | `akkountant/{home,portfolio,asset-cards,stocks,jobs,timestamps}.webp` | Akkountant · 4 sections | **DELIVERED** 2026-08-19 — 6 Overseer captures, raw; write-up restructured around them |
 | ~~26–28~~ ✅ | `akkountant/{transactions,statements,freelance}.webp` | Akkountant · Beyond investments | **DELIVERED** 2026-08-19 — transactions (refs solid-filled), statements (raw), freelance (client labels solid-filled) |
-| 29 | `public/assets/projects/akkountant/vault.webp` | Akkountant · Beyond investments | Document Vault — **HELD pending Overseer decision**: capture shows identity documents (Aadhaar, PAN, passport, DL w/ photo, policy number). Options: reshoot with only folders + a non-identity doc, or explicit ship-raw |
+| ~~29~~ ✅ | `public/assets/projects/akkountant/vault.webp` | Akkountant · Beyond investments | **DELIVERED** 2026-08-19 — six identity-document cards solid-filled (thumbnail + name/label) per Overseer 'censor the vault files'; folders/ZIP/UI raw |
 | ~~25~~ ✅ | `public/assets/projects/akkountant/visitors.webp` | Akkountant · Running it like production | **DELIVERED** 2026-08-19 — IP column **solid-filled** (third-party personal data), rest raw. Use a solid fill, never a mosaic: pixelation at sub-character cell size is reversible against a small alphabet in a known font |
 | 6 | `public/assets/projects/tripsplit/balances.webp` | TripSplit · The solution | Balances / settle-up screen with a few multi-currency expenses |
 | 11 | `public/assets/projects/makaan/price-map.webp` | Makaan · The solution | Interactive price map (Bangalore) with locality overlays |

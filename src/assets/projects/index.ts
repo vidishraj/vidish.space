@@ -142,6 +142,16 @@ The **Freelance** module is a small invoicing product in its own right: create, 
                     alt: 'Freelance dashboard: paid earnings, unpaid value, monthly average with trend, invoice status bar, monthly earnings chart, and a client-distribution donut',
                     caption: 'Freelance — invoicing, signing, and a revenue dashboard. Client names redacted from the distribution chart.',
                 },
+                {
+                    type: 'text',
+                    md: `And the **Document Vault**: folders, labelled files, and upload — the important paperwork kept next to the finances it relates to, instead of scattered across a downloads folder.`,
+                },
+                {
+                    type: 'figure',
+                    src: '/assets/projects/akkountant/vault.webp',
+                    alt: 'Document Vault: two folders, a labelled tax ZIP, and a row of document cards with download and delete actions — document contents redacted',
+                    caption: 'The Document Vault — folders, labels, and a row of documents. Document contents and names redacted; they’re identity papers.',
+                },
             ],
         },
         {
