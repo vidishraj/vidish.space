@@ -258,7 +258,7 @@ const unitedMajdoors: Project = {
     },
     tldr: [
         'A browser command centre that runs dozens of autonomous Claude agents organised into per-project teams — dashboard, kanban, live terminals, push notifications.',
-        'Built on Steve Yegge’s open-source Gas Town framework: the original work is the control plane, the central cross-login relay, and operating a real production fleet.',
+        'Built on Steve Yegge’s open-source Gas Town framework: the original work is the control plane, the central cross-workspace relay, and operating a real production fleet.',
         'The proof is recursive — this portfolio, including the page you’re reading, is built and maintained by agents inside it.',
     ],
     sections: [
@@ -269,7 +269,7 @@ const unitedMajdoors: Project = {
                     type: 'text',
                     md: `One person running many AI coding agents hits a wall fast: agents live in terminal multiplexers you can’t see into, they die mid-task on provider errors, messages between them silently vanish across workspace boundaries — and no human can watch fifty terminals at once.
 
-[Gas Town](https://github.com/steveyegge/gastown), Steve Yegge’s open-source agent-fleet framework, provides the primitives: agents, work-tracking, command-line tools. The gap United Majdoors fills is everything between those primitives and *one person actually operating a production fleet*: the eyes, the controls, and the nervous system.`,
+[Gas Town](https://github.com/gastownhall/gastown), Steve Yegge’s open-source agent-fleet framework, provides the primitives: agents, work-tracking, command-line tools. The gap United Majdoors fills is everything between those primitives and *one person actually operating a production fleet*: the eyes, the controls, and the nervous system.`,
                 },
             ],
         },
@@ -332,14 +332,14 @@ const unitedMajdoors: Project = {
                 },
                 {
                     type: 'challenge',
-                    problem: 'The fleet’s merge authority ran on its own isolated login — unlistable, unmessageable, failing with opaque errors — so ready-to-ship work stalled with nowhere to go.',
+                    problem: 'The fleet’s merge authority ran in its own isolated workspace — unlistable, unmessageable, failing with opaque errors — so ready-to-ship work stalled with nowhere to go.',
                     approach: 'Taught the relay to resolve the isolated operations agents by their fixed on-disk locations and route to them explicitly, making one command the single dependable channel.',
                     result: 'Handoffs to the merge authority became instant and reliable — ready work stopped stalling.',
                 },
                 {
                     type: 'challenge',
                     problem: 'A database-backed mailbox for agent comms added write pressure, polling latency, and could loop on acknowledgements.',
-                    approach: 'Retired mail entirely for push: instant in-session delivery for coordination, with the durable work record as the only source of truth underneath.',
+                    approach: 'Retired mail entirely for push: the agent harness’s native in-session delivery within a workspace, and the relay bridging everything across workspaces — with the durable work record as the only source of truth underneath.',
                     result: 'Dramatically less database pressure, zero inbox polling — comms became instant nudges over durable work.',
                 },
                 {
