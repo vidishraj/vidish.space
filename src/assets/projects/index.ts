@@ -159,9 +159,8 @@ A one-user app still needs operations. The **Jobs** panel shows every scheduled 
                 {
                     type: 'figure',
                     src: '/assets/projects/akkountant/visitors.webp',
-                    pending: true,
-                    capture: 'The Portfolio Visitors panel. REDACT the IP column — the rows are real third-party visitors. The four stat cards and the city/ISP/browser columns carry the whole point.',
-                    caption: 'Visitors — unique/total/live/countries at the top, every hit below. On a money app this is a security panel as much as analytics.',
+                    alt: 'Portfolio Visitors panel: unique visitors, total visits, live tracked, countries, and a per-visit table with city, country, ISP, browser — IP column redacted',
+                    caption: 'Visitors — unique/total/live/countries at the top, every hit below. On a money app this is a security panel as much as analytics. (Visitor IPs redacted — their data, not mine.)',
                 },
             ],
         },
