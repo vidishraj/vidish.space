@@ -19,8 +19,10 @@ off), no code changes.
 | 1 | `public/assets/projects/vidish-space/hero-summer.webp` | Vidish.Online · The solution | Full hero in **summer**, leaves mid-fall, season picker visible |
 | 2 | `public/assets/projects/vidish-space/weather-monsoon.webp` | Vidish.Online · Hard problems | Hero in **monsoon** mid-rain — lightning flash if you can catch it (20–45 s cycle) |
 | 3 | `public/assets/projects/vidish-space/case-study.webp` | Vidish.Online · Results | This case-study page or the new Projects grid — the newest surface |
-| 4 | `public/assets/projects/akkountant/agent-chat.webp` | Akkountant · The solution | Agent chat answering a portfolio question, ideally with an uploaded receipt in-thread (**mask data**) |
-| 5 | `public/assets/projects/akkountant/wealth-digest.webp` | Akkountant · Results | The daily wealth digest — email or in-app panel (**mask data**) |
+| 4 | `public/assets/projects/akkountant/agent-chat.webp` | Akkountant · Results | Agent chat ("Ask about investments…") answering a question, ideally with an uploaded receipt in-thread |
+| 5 | `public/assets/projects/akkountant/wealth-digest.webp` | Akkountant · Results | The daily wealth digest — email or in-app panel |
+| ~~19–24~~ ✅ | `akkountant/{home,portfolio,asset-cards,stocks,jobs,timestamps}.webp` | Akkountant · 4 sections | **DELIVERED** 2026-08-19 — 6 Overseer captures, raw; write-up restructured around them |
+| 25 | `public/assets/projects/akkountant/visitors.webp` | Akkountant · Running it like production | Portfolio Visitors panel. **REDACT the IP column** — the rows are real third-party visitors; the stat cards + city/ISP/browser columns carry the point |
 | 6 | `public/assets/projects/tripsplit/balances.webp` | TripSplit · The solution | Balances / settle-up screen with a few multi-currency expenses |
 | 11 | `public/assets/projects/makaan/price-map.webp` | Makaan · The solution | Interactive price map (Bangalore) with locality overlays |
 | 12 | `public/assets/projects/makaan/valuation.webp` | Makaan · Results | A "Value My Property" result — estimate, rent, comparables |
@@ -32,7 +34,7 @@ off), no code changes.
 
 | # | Path | Replaces | Capture |
 |---|------|----------|---------|
-| 8 | `public/assets/projects/akkountant/card.webp` | `akkountantModal/akkountant.webp` | Dashboard overview — the strongest single screen (**mask data**) |
+| ~~8~~ ✅ | `public/assets/projects/akkountant/card.webp` | *(was illustration)* | **DELIVERED** 2026-08-19 — portfolio overview, raw |
 | 9 | `public/assets/projects/tripsplit/card.webp` | `tripsplitModal/tripsplit.webp` | Trip home screen |
 | 10 | `public/assets/projects/vidish-space/card.webp` | `vidishSpaceModal/vidishSpaceDark.webp` | The current site — monsoon or winter full-page looks best on cards |
 | 14 | `public/assets/projects/makaan/card.webp` | *(none — card currently text-only)* | Makaan dashboard/map — strongest single screen |

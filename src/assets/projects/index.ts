@@ -15,7 +15,7 @@ const akkountant: Project = {
     tagline: 'A personal wealth platform with an AI agent that reads your statements, answers portfolio questions, and briefs you every morning.',
     hookMetric: {value: '6 banks', label: 'auto-ingested from Gmail'},
     tags: ['Python', 'React', 'Claude SDK', 'MCP', 'MySQL'],
-    image: '/assets/akkountantModal/akkountant.webp',
+    image: '/assets/projects/akkountant/card.webp',
     facts: {
         role: 'Creator & sole developer',
         timeline: 'v1 2023 → actively developed',
@@ -54,10 +54,53 @@ The current generation asks the next question: once the system holds all your fi
                 },
                 {
                     type: 'figure',
-                    src: '/assets/projects/akkountant/agent-chat.webp',
-                    pending: true,
-                    capture: 'The AI agent chat answering a portfolio question — ideally with an uploaded receipt/statement in the thread. MASK real amounts/account numbers or use demo data.',
-                    caption: 'The investment agent — ask in plain language, attach a receipt, and it does the bookkeeping.',
+                    src: '/assets/projects/akkountant/home.webp',
+                    alt: 'Akkountant home screen with four modules: Investments, Transactions, Freelance, Files',
+                    caption: 'Four modules, one login — Investments, Transactions, Freelance, and Files. The "Ask about investments…" bar in the header is the agent.',
+                },
+            ],
+        },
+        {
+            title: 'The portfolio at a glance',
+            blocks: [
+                {
+                    type: 'text',
+                    md: `**Use case:** *"How am I doing, overall, right now?"* — answered in one screen without opening six broker apps.
+
+The Investments view opens on a single total asset value with invested vs. current, absolute and percentage change, an allocation bar across all six asset classes, and realized gains split by equity vs. F&O. Every number on it arrived automatically: statements from Gmail, prices from the nightly rate jobs.`,
+                },
+                {
+                    type: 'figure',
+                    src: '/assets/projects/akkountant/portfolio.webp',
+                    alt: 'Portfolio overview: total asset value, invested vs current, allocation bar, realized gains, and an invested-vs-current bar chart per asset class',
+                    caption: 'One number to rule them all — then the allocation bar and the invested-vs-current chart show *where* the change came from.',
+                },
+                {
+                    type: 'text',
+                    md: `Below the headline, each asset class gets its own card — total, invested, change, change % — with inline actions: **refresh** prices, **upload** a statement, **add** an entry, or, for stocks, **link** a broker. Six asset types, six different data sources, one consistent surface.`,
+                },
+                {
+                    type: 'figure',
+                    src: '/assets/projects/akkountant/asset-cards.webp',
+                    alt: 'Six asset-class cards — Stocks, Mutual Funds, NPS, EPF, PPF, Gold — each with total, invested, change, and action buttons',
+                    caption: 'Stocks, mutual funds, NPS, EPF, PPF, gold — every class with its own refresh, upload, and add actions.',
+                },
+            ],
+        },
+        {
+            title: 'Drilling into holdings',
+            blocks: [
+                {
+                    type: 'text',
+                    md: `**Use case:** *"Which positions are actually carrying the portfolio — and which are dragging it?"*
+
+Open any asset class and you get the full ledger: holdings sorted by P&L, each with live price, average cost, quantity, and the per-position gain — plus tabs for **equity history**, **F&O history**, and the **source emails** the data was parsed from. Realized and unrealized P&L are kept honestly separate, so the number you see is the number you'd get.`,
+                },
+                {
+                    type: 'figure',
+                    src: '/assets/projects/akkountant/stocks.webp',
+                    alt: 'Stocks detail: total asset value, invested, change, realized and F&O P&L, and a holdings list sorted by P&L with live price, average cost, and quantity',
+                    caption: 'The stocks ledger — every holding with live price, average cost, quantity, and P&L, sortable; history and source emails one tab away.',
                 },
             ],
         },
@@ -85,6 +128,40 @@ The current generation asks the next question: once the system holds all your fi
                     decision: 'SSE-over-POST chat with a battle-tested polyfill instead of hand-rolled streaming',
                     why: 'iOS Safari tears down fetch-driven SSE streams after the first frame; the Microsoft fetch-event-source polyfill handles WebKit correctly.',
                     tradeoff: 'One more third-party dependency on a financial app — mitigated with a pinned, integrity-hashed lockfile.',
+                },
+            ],
+        },
+        {
+            title: 'Running it like production',
+            blocks: [
+                {
+                    type: 'text',
+                    md: `**Use case:** *"Did last night's jobs actually run — and can I trust today's numbers?"*
+
+A one-user app still needs operations. The **Jobs** panel shows every scheduled task — mail checks, statement parsing, each rate feed, the wealth digest — as a run-history strip with success rate, priority, and a health badge. **Degraded** isn't hidden; it's the whole point of the coverage gates: a feed can report trouble without ever corrupting the data underneath. Any job can be triggered on demand.`,
+                },
+                {
+                    type: 'figure',
+                    src: '/assets/projects/akkountant/jobs.webp',
+                    alt: 'Jobs Management panel: per-job run-history strips with success rate, priority, and Healthy/Degraded health badges, plus a run-now job picker',
+                    caption: 'Jobs Management — run history per task, success rates, health badges, and a "Run now" picker. Degraded is a signal, not a secret.',
+                },
+                {
+                    type: 'text',
+                    md: `Two smaller panels close the loop on trust: **File Timestamps** shows exactly when each rate file was last refreshed (the receipts behind "stale-but-accurate"), and a **Visitors** view tracks who's hitting the app — IP, city, ISP, browser — which on a personal finance tool doubles as a lightweight intrusion check.`,
+                },
+                {
+                    type: 'figure',
+                    src: '/assets/projects/akkountant/timestamps.webp',
+                    alt: 'File Timestamps panel listing each rate file (EPF, Gold, MF, NPS, PPF, Stocks) with its last-refresh time',
+                    caption: 'File Timestamps — the provenance of every number on the dashboard, one glance.',
+                },
+                {
+                    type: 'figure',
+                    src: '/assets/projects/akkountant/visitors.webp',
+                    pending: true,
+                    capture: 'The Portfolio Visitors panel. REDACT the IP column — the rows are real third-party visitors. The four stat cards and the city/ISP/browser columns carry the whole point.',
+                    caption: 'Visitors — unique/total/live/countries at the top, every hit below. On a money app this is a security panel as much as analytics.',
                 },
             ],
         },
@@ -119,9 +196,16 @@ The current generation asks the next question: once the system holds all your fi
                 },
                 {
                     type: 'figure',
+                    src: '/assets/projects/akkountant/agent-chat.webp',
+                    pending: true,
+                    capture: 'The AI agent chat ("Ask about investments…") answering a question — ideally with an uploaded receipt in the thread.',
+                    caption: 'The investment agent — ask in plain language, attach a receipt, and it does the bookkeeping.',
+                },
+                {
+                    type: 'figure',
                     src: '/assets/projects/akkountant/wealth-digest.webp',
                     pending: true,
-                    capture: 'The daily wealth digest (email or in-app panel). MASK real figures or use demo data.',
+                    capture: 'The daily wealth digest (email or in-app panel).',
                     caption: 'The morning wealth digest — the portfolio explains itself before you ask.',
                 },
             ],
