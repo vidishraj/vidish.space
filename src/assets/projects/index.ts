@@ -371,9 +371,8 @@ const unitedMajdoors: Project = {
                 {
                     type: 'figure',
                     src: '/assets/projects/united-majdoors/terminal.webp',
-                    pending: true,
-                    capture: 'A live agent terminal streaming in the browser mid-task. REDACT tenant/client names and any paths/tokens.',
-                    caption: 'Watching an agent think — a real PTY, streamed live to the dashboard.',
+                    alt: 'United Majdoors settings: per-workspace account logins and live rate-limit utilization',
+                    caption: 'Operations, not just orchestration — per-workspace logins managed from the dashboard, with live rate-limit utilization so the operator sees the fleet’s fuel gauge.',
                 },
             ],
         },
