@@ -162,7 +162,7 @@ export function ProjectsGrid({projects, showFilter = true}: ProjectsGridProps) {
                     <motion.div
                         key={p.id}
                         variants={itemVariants}
-                        className={p.featured ? 'lg:col-span-2' : ''}
+                        className={`h-full ${p.featured ? 'lg:col-span-2' : ''}`}
                     >
                         <ProjectCard project={p} isDark={isDark} onOpen={open} />
                     </motion.div>

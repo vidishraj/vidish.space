@@ -68,9 +68,11 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project, isDark, onOpen, class
         >
             {/* Media */}
             <div
-                className="relative w-full overflow-hidden"
+                className="relative w-full flex-shrink-0 overflow-hidden"
                 style={{
-                    height: isClient ? 120 : 176,
+                    // One media-band height for EVERY card so titles/bodies
+                    // start at the same y across a row, personal or client.
+                    height: 168,
                     background: isDark
                         ? 'linear-gradient(135deg, #0b1220, #1e293b)'
                         : 'linear-gradient(135deg, #f8fafc, #e2e8f0)',
@@ -103,7 +105,18 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project, isDark, onOpen, class
                             }}
                         />
                     </div>
-                ) : null}
+                ) : (
+                    // No screenshot yet: a deliberate monogram, not a void.
+                    // Replaced automatically once the card image lands.
+                    <div aria-hidden="true" className="flex h-full w-full items-center justify-center">
+                        <span
+                            className="select-none text-8xl font-bold leading-none"
+                            style={{color: t.textPrimary, opacity: 0.07}}
+                        >
+                            {project.title.charAt(0)}
+                        </span>
+                    </div>
+                )}
 
                 {project.cardVideo && !reduceMotion && (
                     <video
