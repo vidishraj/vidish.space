@@ -50,6 +50,7 @@ The current generation asks the next question: once the system holds all your fi
                         {icon: '📬', title: 'Daily wealth digest', body: 'A proactive AI briefing summarising portfolio changes and actionable items, generated on schedule.'},
                         {icon: '📄', title: 'Hybrid statement extraction', body: 'Known bank layouts parse via patterns; everything else — masked, scanned, novel formats — falls through to LLM extraction. Same interface, far broader coverage.'},
                         {icon: '🛡️', title: 'Zero-loss rate ingestion', body: 'Every rate feed (MF NAV, gold, NPS, PPF, EPF) is coverage-gated: a degraded fetch can never overwrite last-known-good data.'},
+                        {icon: '🧾', title: 'Freelance invoicing & document vault', body: 'Create, sign, and track invoices with a revenue dashboard; keep important documents in a labelled vault alongside the finances they relate to.'},
                     ],
                 },
                 {
@@ -101,6 +102,45 @@ Open any asset class and you get the full ledger: holdings sorted by P&L, each w
                     src: '/assets/projects/akkountant/stocks.webp',
                     alt: 'Stocks detail: total asset value, invested, change, realized and F&O P&L, and a holdings list sorted by P&L with live price, average cost, and quantity',
                     caption: 'The stocks ledger — every holding with live price, average cost, quantity, and P&L, sortable; history and source emails one tab away.',
+                },
+            ],
+        },
+        {
+            title: 'Beyond investments',
+            blocks: [
+                {
+                    type: 'text',
+                    md: `**Use case:** *"Where did the money actually go this month — and is every statement accounted for?"*
+
+The **Transactions** module is the foundation layer in action: a calendar marks each day a statement or transaction email arrived, Gmail and Google Drive show as connected sources, and the ledger runs to **11,418 transactions** with credit/debit/net totals, bank and month filters, and a one-click **Scan** to pull anything new.`,
+                },
+                {
+                    type: 'figure',
+                    src: '/assets/projects/akkountant/transactions.webp',
+                    alt: 'Transactions view: monthly calendar with statement markers, Gmail and Drive connected, credit/debit/net totals, and a filterable ledger of 11,418 transactions',
+                    caption: 'Transactions — 11,418 rows that typed themselves in. Transaction references redacted.',
+                },
+                {
+                    type: 'text',
+                    md: `Behind it sits the **Statements** view: every parsed statement as a card — bank, period, items extracted vs. inserted, processing status — with per-bank counts across the six supported formats. When a statement shows "no items extracted," that's the hybrid extractor telling you a layout needs attention, not silently skipping it.`,
+                },
+                {
+                    type: 'figure',
+                    src: '/assets/projects/akkountant/statements.webp',
+                    alt: 'Statements view: 121 statements across 6 banks, each card showing period, items extracted and inserted, and processed status',
+                    caption: '121 statements across six banks — each one auditable down to how many items it yielded.',
+                },
+                {
+                    type: 'text',
+                    md: `**Use case:** *"As a freelancer, what did I earn, who still owes me, and how is it trending?"*
+
+The **Freelance** module is a small invoicing product in its own right: create, manage, and sign invoices, sign documents, export, manage customers — and a dashboard with paid vs. unpaid value, a six-month average with trend, invoice status distribution, monthly earnings, and a client split.`,
+                },
+                {
+                    type: 'figure',
+                    src: '/assets/projects/akkountant/freelance.webp',
+                    alt: 'Freelance dashboard: paid earnings, unpaid value, monthly average with trend, invoice status bar, monthly earnings chart, and a client-distribution donut',
+                    caption: 'Freelance — invoicing, signing, and a revenue dashboard. Client names redacted from the distribution chart.',
                 },
             ],
         },
