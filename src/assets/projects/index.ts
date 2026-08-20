@@ -1114,43 +1114,56 @@ const clientProjects: Project[] = [
     {
         id: 'client-socgen',
         kind: 'client',
-        title: 'Regulatory pipeline — monolith to cloud',
-        tagline: 'Migrated a mission-critical Java 8 monolith to Java 17 microservices on AWS for 1,000+ users.',
-        hookMetric: {value: '3.5 yrs', label: 'platform ownership'},
-        tags: ['Java 17', 'Spring Boot', 'AWS', 'React'],
+        title: 'Regulatory data platform — monolith to cloud',
+        tagline: 'Three and a half years on a global bank’s regulatory data platform: a Java 8 monolith with a JSP front-end rebuilt as Java 17 microservices on AWS, serving 1,000+ daily users on 50K+ transactions a day.',
+        hookMetric: {value: '50K+', label: 'transactions daily'},
+        tags: ['Java 17', 'Spring Boot', 'AWS', 'React', 'PostgreSQL'],
         client: {
             name: 'Societe Generale',
             logo: '/assets/clients/socgen_logo.svg',
             role: 'Software Engineer',
             duration: 'Jul 2022 – Feb 2026',
         },
-        facts: {role: 'Software Engineer', timeline: 'Jul 2022 – Feb 2026', status: 'completed', platform: 'Banking · AWS'},
+        facts: {role: 'Software Engineer', timeline: 'Jul 2022 – Feb 2026', status: 'completed', team: 'Team of 8 · India + France', platform: 'Banking · AWS'},
         sections: [
             {
                 title: 'Context',
                 blocks: [
-                    {type: 'text', md: 'A mission-critical regulatory data pipeline at a global bank, running on an aging Java 8 monolith with a legacy JSP front-end and manual deployments.'},
+                    {type: 'text', md: 'A mission-critical regulatory data pipeline at a global bank — the systems that process banking data the regulator gets to see — running on an aging Java 8 monolith with a legacy JSP front-end and manual deployments. Joined straight out of university in 2022; spent the first six months maintaining the microservice chain crunching that data, then moved onto the rebuild that became the next three years: replacing the monolith with **Java 17 Spring Boot microservices on AWS** and the JSP front-end with **React + TypeScript**.'},
                 ],
             },
             {
                 title: 'My role',
                 blocks: [
                     {type: 'features', items: [
-                        {icon: '🧩', title: '5+ Spring Boot microservices', body: 'Built and maintained services handling large-scale banking data processing.'},
-                        {icon: '⚛️', title: 'React + TypeScript front-end', body: 'Developed the platform UI that replaced the legacy JSP application.'},
-                        {icon: '🔁', title: 'CI/CD and containerisation', body: 'Jenkins pipelines, Docker images, deployment via AWS ECS & ECR.'},
-                        {icon: '🤝', title: 'Cross-team architecture', body: 'Worked directly with French teams on architecture decisions and sprint delivery.'},
+                        {icon: '🧩', title: '5+ Spring Boot microservices', body: 'Built and maintained the Java 17 services doing the platform’s large-scale banking-data processing.'},
+                        {icon: '⚛️', title: 'React + TypeScript front-end', body: 'The UI that replaced the legacy JSP application — serving 1,000+ daily users, with a 25% improvement in UI responsiveness.'},
+                        {icon: '🗄️', title: 'The data layer', body: 'PostgreSQL schema design and query optimisation for transaction processing at 50K+ transactions a day — query work that also cut API response times by 15%.'},
+                        {icon: '📊', title: 'Analytics pipelines', body: 'Databricks for data-processing tasks — SQL plus workflow orchestration feeding the platform’s analytics.'},
+                        {icon: '🔁', title: 'CI/CD and containerisation', body: 'Jenkins pipelines, Docker images, ECS/ECR task definitions, CloudWatch debugging, Secrets Manager configuration — deployment time down 20% and the delivery path documented.'},
+                        {icon: '🤝', title: 'Distributed delivery', body: 'Sprint delivery and architecture decisions across teams in France and India — 90% sprint-commitment completion, code reviews in a team of 8, coverage held above 70%.'},
                     ]},
+                ],
+            },
+            {
+                title: 'Engineering discipline',
+                blocks: [
+                    {type: 'text', md: 'The unglamorous work that makes a regulated platform operable: comprehensive structured logging rolled out across the microservices — **cutting production-issue debugging time by 30%** — SOLID-principled services using deliberate design patterns (Factory, Singleton) to keep technical debt down, and delivery documentation maintained so deployments stopped being tribal knowledge.'},
                 ],
             },
             {
                 title: 'Outcome',
                 blocks: [
-                    {type: 'callout', label: 'Outcome', text: 'Platform migrated to Java 17 microservices on AWS, serving 1,000+ users — carried through to pre-prod with a fully containerised delivery pipeline.'},
+                    {type: 'callout', label: 'Outcome', text: 'The platform migrated from a Java 8 monolith to Java 17 microservices on AWS, serving 1,000+ daily users — carried through to pre-prod on a fully containerised delivery pipeline, with a React front-end in place of the JSP legacy and deployment time down 20%.'},
                 ],
             },
         ],
-        techStack: ['Java 17', 'Spring Boot', 'React', 'TypeScript', 'AWS ECS/ECR', 'Docker', 'Jenkins', 'PostgreSQL'],
+        metrics: [
+            {value: '50K+', label: 'transactions processed daily'},
+            {value: '1,000+', label: 'daily users on the front-end'},
+            {value: '3.5 yrs', label: 'on the platform · team of 8'},
+        ],
+        techStack: ['Java 17', 'Spring Boot', 'React', 'TypeScript', 'PostgreSQL', 'Databricks', 'AWS ECS/ECR', 'RDS', 'Secrets Manager', 'CloudWatch', 'Docker', 'Jenkins'],
     },
     {
         id: 'client-movo',
@@ -1412,28 +1425,29 @@ const clientProjects: Project[] = [
             {
                 title: 'Context',
                 blocks: [
-                    {type: 'text', md: 'Contract auditing at a Big-4 firm relied on slow, manual PDF review.'},
+                    {type: 'text', md: 'Contract auditing at a Big-4 firm relied on slow, manual PDF review and manual data entry. The internship brief: prove it could be automated — requirements gathered from the team doing the work, solutions demonstrated back to the stakeholders.'},
                 ],
             },
             {
                 title: 'My role',
                 blocks: [
                     {type: 'features', items: [
-                        {icon: '🖥️', title: 'POC contract tool', body: 'Tkinter GUI with a Flask backend.'},
-                        {icon: '📄', title: 'PDF-parsing automation', body: 'Automated the contract auditing workflow.'},
-                        {icon: '📦', title: 'Windows Server deployment', body: 'Shipped via uWSGI + IIS.'},
-                        {icon: '🌱', title: 'First corporate engineering', body: 'Git, Jira, and collaborative development — where the professional habits started.'},
+                        {icon: '🖥️', title: 'Desktop contract tool', body: 'A Python/Tkinter application built on an MVC pattern for the internal team — cutting manual data-entry time by 15%.'},
+                        {icon: '🗄️', title: 'The data layer', body: 'Database schema design with SQLAlchemy ORM over MySQL — consistent data and a 20% improvement in query response time.'},
+                        {icon: '📄', title: 'PDF-parsing automation', body: 'Automated the contract-auditing workflow that had been hours of manual review.'},
+                        {icon: '📦', title: 'Windows Server deployment', body: 'Shipped via IIS and Apache, working with the IT team through the compatibility issues — full lifecycle, requirements to production.'},
+                        {icon: '🌱', title: 'Two proofs-of-concept', body: 'Requirements gathering, build, and stakeholder demos — plus Git, Jira, and collaborative development: where the professional habits started.'},
                     ]},
                 ],
             },
             {
                 title: 'Outcome',
                 blocks: [
-                    {type: 'callout', label: 'Outcome', text: 'A deployed proof-of-concept that automated contract auditing and saved hours of manual review.'},
+                    {type: 'callout', label: 'Outcome', text: 'Two proof-of-concept projects carried from requirements to Windows Server deployment — contract auditing automated, manual data entry down 15%, and a first full pass through the professional development lifecycle.'},
                 ],
             },
         ],
-        techStack: ['Python', 'Flask', 'Tkinter', 'PDF Parsing', 'Windows Server', 'uWSGI', 'IIS'],
+        techStack: ['Python', 'Tkinter', 'Flask', 'SQLAlchemy', 'MySQL', 'PDF Parsing', 'Windows Server', 'IIS', 'Apache'],
     },
 ];
 
