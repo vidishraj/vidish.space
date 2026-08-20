@@ -882,6 +882,7 @@ const satteNights: Project = {
     tagline: 'A private, real-time multiplayer poker night for a group of friends — five variants, play-money chips, installable on any phone.',
     hookMetric: {value: '5', label: 'poker variants, 9-max tables'},
     tags: ['TypeScript', 'Socket.IO', 'React', 'PWA', 'SQLite'],
+    image: '/assets/projects/satte-nights/card.webp',
     facts: {
         role: 'Creator & sole developer',
         timeline: 'Actively developed',
@@ -920,10 +921,32 @@ Public poker apps are bloated, ad-ridden, or built around real money. This is th
                 },
                 {
                     type: 'figure',
-                    src: '/assets/projects/satte-nights/table.webp',
-                    pending: true,
-                    capture: 'A busy table mid-hand on a phone (play chips visible, no real usernames).',
-                    caption: 'A full table on a phone — geometry-driven seating that never overlaps, from heads-up to 9-max.',
+                    src: '/assets/projects/satte-nights/lobby.webp',
+                    alt: 'Satte Nights lobby on a phone: signed in as tester, buy-in in chips, and Create table / Join with code / My Results / Settle Up',
+                    caption: 'The whole lobby — set a chip buy-in, create a table or join with a code. No store, no sign-up funnel, no money.',
+                },
+            ],
+        },
+        {
+            title: 'Setting up a night',
+            blocks: [
+                {
+                    type: 'text',
+                    md: `**Use case:** *"Host tonight's game exactly the way this group likes to play."*
+
+The host picks a variant — each card shows its hole-card count and betting structure — or hands the choice to the table with **dealer's choice**, sets the blinds, and tunes the house rules: a per-action clock from 10 to 45 seconds, a session length that ends the night cleanly after the current hand, and bomb-pot cadence with its ante.`,
+                },
+                {
+                    type: 'figure',
+                    src: '/assets/projects/satte-nights/setup.webp',
+                    alt: 'Game setup: five variants with hole-card counts and betting structure, single game or dealer’s choice, and blind configuration',
+                    caption: 'Five variants, each labelled with its shape — 2-card NL to 4-card PL double-board — plus blinds and dealer’s choice.',
+                },
+                {
+                    type: 'figure',
+                    src: '/assets/projects/satte-nights/options.webp',
+                    alt: 'Table options: action clock from 10 to 45 seconds, session length from 15 to 60 minutes, and bomb pot frequency with ante',
+                    caption: 'House rules — action clock, a session that ends after the current hand, bomb pots. The knobs a real home game argues about.',
                 },
             ],
         },
@@ -988,6 +1011,12 @@ Public poker apps are bloated, ad-ridden, or built around real money. This is th
                 {
                     type: 'text',
                     md: 'Live as an installable PWA with zero-downtime client deploys — heavy iteration ships same-day without interrupting a game in progress.',
+                },
+                {
+                    type: 'figure',
+                    src: '/assets/projects/satte-nights/table.webp',
+                    alt: 'A live table: room code in the header and share bar, variant and blinds shown, session clock counting down, one seat with play chips, waiting for players',
+                    caption: 'A table the moment it opens — share the room code, and the session clock is already running. (Demo room; the code expired with its session.)',
                 },
             ],
         },
