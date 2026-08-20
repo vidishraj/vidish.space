@@ -35,6 +35,9 @@ const ProjectPage: React.FC<ProjectPageProps> = ({project, projects, onClose, on
     const containerRef = useRef<HTMLDivElement>(null);
     const reduceMotion = useReducedMotion();
     const [activeSec, setActiveSec] = useState(0);
+    // Portrait hero images must never be cover-cropped: a phone-width capture
+    // blown up to fill a wide band shows a giant blurry center slice.
+    const [heroPortrait, setHeroPortrait] = useState(false);
 
     useFocusTrap(true, containerRef);
 
@@ -59,6 +62,7 @@ const ProjectPage: React.FC<ProjectPageProps> = ({project, projects, onClose, on
     useEffect(() => {
         containerRef.current?.scrollTo({top: 0});
         setActiveSec(0);
+        setHeroPortrait(false); // re-measured by the next hero's onLoad
     }, [project.id]);
 
     // Scroll-spy for the section nav
@@ -245,8 +249,12 @@ const ProjectPage: React.FC<ProjectPageProps> = ({project, projects, onClose, on
                         <img
                             src={project.image}
                             alt={`${project.title} preview`}
-                            className="w-full object-cover"
-                            style={{maxHeight: '46vh'}}
+                            className={`w-full ${heroPortrait ? 'object-contain' : 'object-cover'}`}
+                            style={{maxHeight: '46vh', background: heroPortrait ? t.mediaBg : undefined}}
+                            onLoad={(e) => {
+                                const img = e.currentTarget;
+                                setHeroPortrait(img.naturalHeight > img.naturalWidth);
+                            }}
                             onError={(e) => {
                                 (e.currentTarget.parentElement as HTMLElement).style.display = 'none';
                             }}
