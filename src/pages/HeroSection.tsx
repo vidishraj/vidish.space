@@ -60,25 +60,14 @@ const HeroSection = () => {
                         onSeasonChange={setSeason}
                     />
 
-                    {/* Conversion layer: what I do, proof, and the next step. */}
+                    {/* Conversion layer, grouped: one pitch line, one action
+                        row (availability + both CTAs), one quiet proof line. */}
                     <p className={styles.heroPitch} style={{color: palette.textSecondary}}>
                         I build complete products solo: backend, mobile, AI, and the
                         infrastructure they run on.
                     </p>
 
-                    <div
-                        className={styles.heroAvailability}
-                        style={{
-                            color: palette.textPrimary,
-                            border: `1px solid ${isMonsoon ? 'rgba(52,211,153,0.4)' : 'rgba(5,150,105,0.35)'}`,
-                            background: isMonsoon ? 'rgba(52,211,153,0.08)' : 'rgba(5,150,105,0.07)',
-                        }}
-                    >
-                        <span className={styles.heroDot} aria-hidden="true"/>
-                        Available for projects
-                    </div>
-
-                    <div className={styles.heroCtas}>
+                    <div className={styles.heroActionRow}>
                         <a
                             href="#section4"
                             className={styles.heroCta}
@@ -107,16 +96,9 @@ const HeroSection = () => {
                     </div>
 
                     <div className={styles.heroProof} style={{color: palette.textSecondary}}>
-                        <span>10+ clients</span>
-                        <span aria-hidden="true">·</span>
-                        <span>2 apps shipped to the App Store</span>
-                        <span aria-hidden="true">·</span>
-                        <span>3.5 yrs banking infrastructure</span>
-                        <span aria-hidden="true">·</span>
-                        <span>AI agents in production</span>
+                        10+ clients&ensp;·&ensp;2 apps shipped to the App Store&ensp;·&ensp;3.5 yrs
+                        banking infrastructure&ensp;·&ensp;AI agents in production
                     </div>
-
-                    <div className={styles.scrollHint} aria-hidden="true" style={{color: palette.textPrimary}}/>
                 </div>
             </BackgroundBeamsWithCollision>
         </section>
