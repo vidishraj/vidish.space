@@ -1170,15 +1170,15 @@ const clientProjects: Project[] = [
         kind: 'client',
         title: 'AI enrollment platform — pipelines & CRM integrations',
         tagline: 'Backend and AI work on an AI enrollment system for youth programs: SMS/email pipelines, a vector-DB knowledge base, and Salesforce/LeagueApps integrations.',
-        hookMetric: {value: '5 mo', label: 'backend + frontend engagement'},
+        hookMetric: {value: '548', label: 'commits across backend + frontend'},
         tags: ['Node.js', 'LangChain', 'Vector DB', 'Salesforce'],
         client: {
             name: 'Movo',
             logo: '/assets/clients/movoai_logo.png',
             role: 'Full-Stack Developer',
-            duration: 'Dec 2025 – Apr 2026',
+            duration: 'Dec 2025 – Mar 2026',
         },
-        facts: {role: 'Full-Stack Developer', timeline: 'Dec 2025 – Apr 2026', status: 'completed', platform: 'SaaS · AI'},
+        facts: {role: 'Full-Stack Developer', timeline: 'Dec 2025 – Mar 2026', status: 'completed', platform: 'SaaS · AI'},
         sections: [
             {
                 title: 'Context',
@@ -1199,9 +1199,14 @@ const clientProjects: Project[] = [
             {
                 title: 'Outcome',
                 blocks: [
-                    {type: 'callout', label: 'Outcome', text: 'AI features and CRM integrations shipped to production across backend and frontend in a five-month engagement, December 2025 to April 2026.'},
+                    {type: 'callout', label: 'Outcome', text: '548 commits in three months: 485 on the backend, where I ended up the second most active contributor in the repo, and 63 on the frontend. The backend work alone came to +159k/−44k lines by git’s count, lockfiles excluded. The AI features and CRM integrations shipped to production.'},
                 ],
             },
+        ],
+        metrics: [
+            {value: '548', label: 'commits, backend + frontend'},
+            {value: '#2', label: 'most active contributor on the backend repo'},
+            {value: 'Dec–Mar', label: '2025–26 engagement'},
         ],
         techStack: ['Node.js', 'React', 'LangChain', 'Vector DB', 'Salesforce API', 'LeagueApps API'],
     },
