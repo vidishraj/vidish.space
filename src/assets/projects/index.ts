@@ -1350,7 +1350,7 @@ const clientProjects: Project[] = [
                         type: 'figure',
                         src: '/assets/projects/soultalk/whats-inside.webp',
                         caption: 'The product surface: daily reflections, an affirmation mirror, SoulSights, SoulSignals, SoulShifts, and personality tests. Every feature here, front to back, one developer.',
-                        alt: 'SoulTalk "What\u2019s Inside" screen listing Daily Reflection, Affirmation Mirror, SoulSight, SoulSignals, SoulShifts and Personality Tests',
+                        alt: 'SoulTalk "What’s Inside" screen listing Daily Reflection, Affirmation Mirror, SoulSight, SoulSignals, SoulShifts and Personality Tests',
                     },
                 ],
             },
@@ -1366,8 +1366,8 @@ const clientProjects: Project[] = [
                     {
                         type: 'figure',
                         src: '/assets/projects/soultalk/reflection.webp',
-                        caption: 'What the streaming work buys: SoulPal\u2019s reflection on a journal entry, rendering as it generates instead of after a long wait.',
-                        alt: 'SoulTalk journal entry screen showing SoulPal\u2019s multi-paragraph AI reflection on what the user wrote',
+                        caption: 'What the streaming work buys: SoulPal’s reflection on a journal entry, rendering as it generates instead of after a long wait.',
+                        alt: 'SoulTalk journal entry screen showing SoulPal’s multi-paragraph AI reflection on what the user wrote',
                     },
                     {
                         type: 'challenge',
@@ -1384,8 +1384,8 @@ const clientProjects: Project[] = [
                     {
                         type: 'figure',
                         src: '/assets/projects/soultalk/soulsight.webp',
-                        caption: 'A SoulSight: the long-form report the async pipeline assembles from a stretch of entries, written by the model and delivered in ~10\u201312 seconds.',
-                        alt: 'SoulTalk SoulSight screen showing a long-form AI-written chapter titled from the user\u2019s recent journal entries',
+                        caption: 'A SoulSight: the long-form report the async pipeline assembles from a stretch of entries, written by the model and delivered in ~10–12 seconds.',
+                        alt: 'SoulTalk SoulSight screen showing a long-form AI-written chapter titled from the user’s recent journal entries',
                     },
                     {type: 'text', md: '[Marketing site](https://soultalkapp.com) · [On the App Store](https://apps.apple.com/app/id6759283325)'},
                 ],

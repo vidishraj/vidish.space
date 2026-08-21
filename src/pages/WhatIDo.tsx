@@ -17,7 +17,7 @@ interface ServiceCard {
 
 const services: ServiceCard[] = [
     {
-        emoji: '\u{2699}\u{FE0F}',
+        emoji: '⚙️',
         title: 'Backend & APIs',
         description:
             'Microservices handling 50,000+ daily transactions, REST APIs powering 1,000+ users, and third-party integrations with platforms like Salesforce, Mindbody, and Keycloak.',
@@ -25,7 +25,7 @@ const services: ServiceCard[] = [
         proof: {label: 'Société Générale', projectId: 'client-socgen'},
     },
     {
-        emoji: '\u{1F4BB}',
+        emoji: '💻',
         title: 'Frontend & Mobile',
         description:
             'Responsive web apps, interactive dashboards with million-row tables, and cross-platform mobile apps. Shipped iOS and Android builds from scratch.',
@@ -33,7 +33,7 @@ const services: ServiceCard[] = [
         proof: {label: 'Rahee', projectId: 'client-raheee'},
     },
     {
-        emoji: '\u{1F916}',
+        emoji: '🤖',
         title: 'AI-Powered Features',
         description:
             'Conversational AI across SMS, email, and voice. RAG pipelines with vector search, LLM-driven insight engines, and intelligent lead scoring systems.',
@@ -41,7 +41,7 @@ const services: ServiceCard[] = [
         proof: {label: 'Movo', projectId: 'client-movo'},
     },
     {
-        emoji: '\u{1F9E0}',
+        emoji: '🧠',
         title: 'Agentic Systems',
         description:
             'Claude agents with scoped tool surfaces: an accounting agent that reads receipts and files investments over MCP, a trip operator with 11 tools, SQL-grounded analysts, and a 50-seat agent fleet that builds and maintains this very site.',
@@ -49,7 +49,7 @@ const services: ServiceCard[] = [
         proof: {label: 'United Majdoors', projectId: 'united-majdoors'},
     },
     {
-        emoji: '\u{2601}\u{FE0F}',
+        emoji: '☁️',
         title: 'Cloud & Infrastructure',
         description:
             'Containerized deployments on AWS, CI/CD pipelines that cut deployment time by 20%, and cloud migrations of legacy enterprise systems.',
@@ -57,7 +57,7 @@ const services: ServiceCard[] = [
         proof: {label: 'SoulTalk', projectId: 'client-soultalk'},
     },
     {
-        emoji: '\u{1F527}',
+        emoji: '🔧',
         title: 'Hardware & Embedded',
         description:
             'UART protocol implementations for microcontrollers, QR-based validation systems on Raspberry Pi, and bridging firmware with cloud backends.',
@@ -65,7 +65,7 @@ const services: ServiceCard[] = [
         proof: {label: 'Nyxidiom', projectId: 'client-nyxidiom'},
     },
     {
-        emoji: '\u{1F680}',
+        emoji: '🚀',
         title: 'End-to-End Delivery',
         description:
             'Solo-built entire products from architecture to app store. Took codebases from 154MB down to 20MB, and shipped production systems in as little as two weeks.',
