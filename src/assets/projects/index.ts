@@ -1261,6 +1261,7 @@ const clientProjects: Project[] = [
         tagline: 'Ongoing frontend-led engagement on a Capacitor + React mobile app: ad-attribution rebuilt natively, Android brought to iOS parity, and an automated App Store pipeline.',
         hookMetric: {value: '−40%', label: 'Android bundle size'},
         tags: ['React', 'Capacitor', 'TypeScript', 'iOS/Android'],
+        image: '/assets/projects/raheee/card.webp',
         client: {
             name: 'Raheee',
             logo: '/assets/clients/rahee_logo.avif',
@@ -1285,6 +1286,12 @@ const clientProjects: Project[] = [
                         {icon: '💬', title: 'Streamed conversational booking UI', body: 'An SSE-streamed, backend-driven booking flow rendered as a typed widget system, shipped behind a feature flag.'},
                         {icon: '🧹', title: 'The original rescue sprint', body: 'Security hardening, TypeScript migration, reels-style video player rewrite, and a dramatic app-size reduction.'},
                     ]},
+                    {
+                        type: 'figure',
+                        src: '/assets/projects/raheee/my-corner.webp',
+                        caption: 'The product: travel inspiration saved from Instagram and YouTube into one corner, organized by destination. This front-end is the engagement.',
+                        alt: 'Rahee app screen saving travel videos from Instagram and YouTube into a personal collection organized by country',
+                    },
                 ],
             },
             {
@@ -1302,12 +1309,24 @@ const clientProjects: Project[] = [
                         approach: 'R8 minification with resource shrinking and keep-rules, status-bar/edge-to-edge and theme fixes, hardware back-button handling, and native config hardening (permissions, network security, verified App Links).',
                         result: 'A ~40% smaller Android app bundle, faster cold start, and behavioral parity with iOS.',
                     },
+                    {
+                        type: 'figure',
+                        src: '/assets/projects/raheee/ai-trip.webp',
+                        caption: 'The AI trip planner: instant daily plans built from saved places, refined in conversation.',
+                        alt: 'Rahee itinerary screen showing a generated multi-day Georgian honeymoon plan with day-by-day legs',
+                    },
                 ],
             },
             {
                 title: 'Outcome',
                 blocks: [
                     {type: 'callout', label: 'Outcome', text: 'The rescue sprint turned into ongoing frontend ownership, shipping continuously through TestFlight and app-store review with an automated submission pipeline.'},
+                    {
+                        type: 'figure',
+                        src: '/assets/projects/raheee/insights.webp',
+                        caption: 'Per-place insights inside a plan: photo spots, timing, and tips for every stop.',
+                        alt: 'Rahee place detail screen for Dragon Bridge, Da Nang with photograph spots and visiting tips',
+                    },
                     {type: 'text', md: '[rahee.ai](https://rahee.ai) · [On the App Store](https://apps.apple.com/in/app/rahee-ai-from-reels-to-trips/id6748941312)'},
                 ],
             },
