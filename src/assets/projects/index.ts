@@ -1419,42 +1419,97 @@ const clientProjects: Project[] = [
         id: 'client-nyxidiom',
         kind: 'client',
         title: 'Embedded kiosk — Raspberry Pi × STM32',
-        tagline: 'Container return/deposit kiosk: Pi ↔ STM32 over UART, QR scanning, server sync, and a hardware simulator.',
-        hookMetric: {value: '71', label: 'commits, 3.5 months'},
-        tags: ['Python', 'Raspberry Pi', 'UART', 'STM32'],
+        tagline: 'Built the entire Pi side of a container return/deposit kiosk: the custom UART protocol to the STM32, the five-sequence control loop, offline-first server sync, and the simulator that made it all testable without hardware.',
+        hookMetric: {value: '100%', label: 'of the Pi-side code, by git blame'},
+        tags: ['Python', 'Raspberry Pi', 'STM32 · UART', 'SQLite', 'evdev'],
         client: {
             name: 'Nyxidiom',
             logo: '/assets/clients/nyxidiom_logo.webp',
             logoBg: '#1a1a2e',
             role: 'Embedded Systems Developer',
-            duration: '3.5 months',
+            duration: 'Jul – Oct 2025',
         },
-        facts: {role: 'Embedded Systems Developer', timeline: '3.5 months', status: 'completed', platform: 'Embedded (Pi + STM32)'},
+        facts: {role: 'Embedded Systems Developer', timeline: 'Jul – Oct 2025 · 3.5 months', status: 'completed', platform: 'Embedded (Pi + STM32)'},
         sections: [
             {
                 title: 'Context',
                 blocks: [
-                    {type: 'text', md: 'A physical container return/deposit kiosk requiring reliable communication between a Raspberry Pi controller and STM32 hardware.'},
+                    {type: 'text', md: 'A physical container return and deposit kiosk: a Raspberry Pi controller driving STM32 hardware (actuators, door solenoids, sensors, indicator lights) over a custom serial protocol, with QR-coded containers and a central server behind it.\n\nI built the whole Pi side. At my final commit, every source file in the application was 100% my code by git blame, about 5,900 live lines; the hardware team then field-tuned that codebase on the real machines for months, building on it rather than replacing it.'},
                 ],
             },
             {
-                title: 'My role',
+                title: 'What I built',
                 blocks: [
                     {type: 'features', items: [
-                        {icon: '📡', title: 'Pi ↔ STM32 over UART', body: 'Built the Pi-side system and its hardware protocol.'},
-                        {icon: '📷', title: 'QR scanning, sync, audit', body: 'Scanning, server synchronisation, and audit logging for the kiosk.'},
-                        {icon: '🧪', title: 'Hardware simulator', body: 'The whole stack testable without physical devices.'},
+                        {icon: '📡', title: 'The UART protocol layer', body: 'A framed byte protocol to the STM32 with 9 message types and ACK discipline. I codified the spec as machine-readable JSON mirrored in code, so firmware, application, and simulator shared one byte-exact reference.'},
+                        {icon: '🎛️', title: 'The kiosk control loop', body: 'Five hardware sequences, from button press through container storage to error recovery, in a deliberately single-threaded cooperative loop that stays responsive to sensor events mid-sequence.'},
+                        {icon: '📷', title: 'QR scanning on raw HID', body: 'Replaced keyboard-emulation capture with direct evdev device access and a full scancode map. Scans get format and hash validation; mismatches are logged as fraud attempts.'},
+                        {icon: '🌐', title: 'Offline-first server sync', body: 'Server-first container validation with a local SQLite fallback, bidirectional sync of containers and audit logs, and an automatic lock-down mode after prolonged offline periods.'},
+                        {icon: '🧾', title: 'A structured audit trail', body: 'Every return, fraud attempt, hardware error, and lifecycle event logged to the database and synced to the server.'},
+                        {icon: '🔧', title: 'The STM32 simulator', body: 'A 677-line interactive emulator of the microcontroller over virtual serial ports: full sequences, jams, QR flows. The whole stack ran on a dev machine before hardware was available.'},
                     ]},
+                ],
+            },
+            {
+                title: 'Hard problems',
+                blocks: [
+                    {
+                        type: 'challenge',
+                        problem: 'Sequences block waiting for hardware ACKs, but sensor changes and button presses arrive at any moment on the same line. The naive design recursed: waiting for an ACK processed messages, which triggered sequences, which waited for ACKs. Infinite recursion, and sequences re-triggering mid-flight.',
+                        approach: 'Rewrote the ACK wait to process incoming messages directly, without re-entering the sequence-trigger path, and added per-sequence re-entry guards set and cleared in try/finally. Raised the ACK timeout to match real actuator speeds.',
+                        result: 'A single-threaded machine that keeps a multi-step actuator sequence moving while staying responsive to the hardware, with no threads to reason about.',
+                    },
+                    {
+                        type: 'challenge',
+                        problem: 'The USB QR scanner presents as a keyboard. Keystroke-listener capture leaked scans into any terminal session and was unreliable on the headless kiosk.',
+                        approach: 'Rewrote scanning against the raw HID device via evdev with a full scancode-to-character map, isolated the scanner thread from the main loop through an atomic temp-file handoff (write-then-rename, read-and-unlink), and added a thread-safe partial-scan timeout.',
+                        result: 'Deterministic scanning on a headless machine, and a race-free handoff between the scanner thread and the control loop.',
+                    },
+                    {
+                        type: 'challenge',
+                        problem: 'The kiosk must keep accepting and rejecting containers when the network or server is down, then reconcile, without double-syncing or losing audit records.',
+                        approach: 'Validation tries the server first and falls back to the local database on failure; initial sync pushes all local containers and audit logs before pulling fresh state, with guards against immediate duplicate syncs; prolonged loss of server contact flips the device into a restricted secure mode that any successful healthcheck clears.',
+                        result: 'A kiosk that degrades gracefully offline, locks itself down when abandoned by the network, and keeps a reconcilable audit trail.',
+                    },
+                ],
+            },
+            {
+                title: 'Decisions',
+                blocks: [
+                    {
+                        type: 'decision',
+                        decision: 'One single-threaded cooperative loop instead of threads or a state-machine framework',
+                        why: 'On a device you debug over SSH, being able to reason about one loop is worth more than concurrency. I wrote the early abstractions, then deliberately collapsed them back into one protocol class and one main loop.',
+                        tradeoff: 'Blocking ACK waits are what made the re-entrancy work necessary, and the QR scanner still needs its one thread, bridged by an atomic file handoff.',
+                    },
+                    {
+                        type: 'decision',
+                        decision: 'The wire protocol lives as data, not just code',
+                        why: 'Two people on two sides of a UART link must agree byte for byte. A JSON spec mirrored in code enums gave the firmware side, my side, and the simulator a single unambiguous reference.',
+                        tradeoff: 'The spec is duplicated between JSON and enums and both must move together.',
+                    },
+                    {
+                        type: 'decision',
+                        decision: 'Simulator-first development',
+                        why: 'The emulator existed from day two and stayed in lockstep with the protocol, so sequences, jams, and QR flows were tested on a laptop with virtual serial ports before physical hardware was available.',
+                        tradeoff: 'Nearly 700 extra lines maintained in parallel with the real protocol.',
+                    },
                 ],
             },
             {
                 title: 'Outcome',
                 blocks: [
-                    {type: 'callout', label: 'Outcome', text: 'A testable, auditable embedded system: 71 commits over 3.5 months, with a simulator that let software progress without hardware on the desk.'},
+                    {type: 'callout', label: 'Outcome', text: '71 commits over 3.5 months, +9.0k/−2.9k lines: the complete Pi-side application, from the serial protocol to the audit trail, handed off to the hardware team, whose months of field work built on this codebase rather than replacing it.'},
                 ],
             },
         ],
-        techStack: ['Python', 'Raspberry Pi', 'UART', 'STM32', 'QR Scanning', 'Embedded'],
+        metrics: [
+            {value: '71', label: 'commits in 3.5 months'},
+            {value: '100%', label: 'of Pi-side code by blame at handoff'},
+            {value: '9', label: 'UART message types implemented'},
+            {value: '677', label: 'lines of hardware simulator'},
+        ],
+        techStack: ['Python 3', 'pyserial', 'evdev', 'Pydantic v2', 'SQLite', 'requests', 'Raspberry Pi', 'STM32', 'UART', 'com0com/socat'],
     },
     {
         id: 'client-pwc',
