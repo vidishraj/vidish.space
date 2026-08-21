@@ -1168,10 +1168,10 @@ const clientProjects: Project[] = [
     {
         id: 'client-movo',
         kind: 'client',
-        title: 'AI enrollment platform — pipelines & CRM integrations',
-        tagline: 'Backend and AI work on an AI enrollment system for youth programs: SMS/email pipelines, a vector-DB knowledge base, and Salesforce/LeagueApps integrations.',
-        hookMetric: {value: '548', label: 'commits across backend + frontend'},
-        tags: ['Node.js', 'LangChain', 'Vector DB', 'Salesforce'],
+        title: 'AI enrollment platform — RAG, insights & CRM integrations',
+        tagline: 'Three months deep in an AI enrollment system for youth programs: built the vector knowledge base behind agent answers, the LLM insights engine, and three CRM integrations. 548 commits.',
+        hookMetric: {value: '548', label: 'commits in three months'},
+        tags: ['TypeScript', 'PostgreSQL · pgvector', 'OpenAI', 'BullMQ', 'Salesforce'],
         client: {
             name: 'Movo',
             logo: '/assets/clients/movoai_logo.png',
@@ -1183,32 +1183,76 @@ const clientProjects: Project[] = [
             {
                 title: 'Context',
                 blocks: [
-                    {type: 'text', md: '[Movo](https://www.trymovo.ai) is an AI enrollment system for youth programs (sports academies, classes, training facilities): it answers parent calls instantly, runs outbound calls, SMS and email in 100+ languages, and carries the sales cycle from first contact to enrolment, plugged into whatever software the operator already runs.\n\nMy engagement covered the machinery behind that: the AI pipelines handling inbound SMS and email, the knowledge base that grounds the answers, and the CRM integrations the product syncs with.'},
+                    {type: 'text', md: '[Movo](https://www.trymovo.ai) is an AI enrollment system for youth programs (sports academies, classes, training facilities): it answers parent calls instantly, runs outbound calls, SMS and email in 100+ languages, and carries the sales cycle from first contact to enrolment, plugged into whatever software the operator already runs.\n\nMy engagement covered the machinery behind that: the retrieval layer that grounds agent answers, the intelligence the product surfaces to academy owners, the messaging pipeline itself, and the CRM integrations it syncs with. By the end I was the second most active contributor in the backend repo, by commit count, out of about 16.'},
                 ],
             },
             {
-                title: 'My role',
+                title: 'What I built',
                 blocks: [
                     {type: 'features', items: [
-                        {icon: '🤖', title: 'SMS/email AI pipelines', body: 'Plus a vector database with a knowledge base for intelligent query handling.'},
-                        {icon: '🔗', title: 'CRM integrations', body: 'LeagueApps and Salesforce wired in for seamless data sync.'},
-                        {icon: '📊', title: 'Insights engine & lead scoring v2', body: 'With multi-location support.'},
+                        {icon: '📚', title: 'The vector knowledge base', body: 'pgvector-backed semantic search over academy data (pricing, schedules, programs, documents) powering agent answers. HNSW indexing with raw-SQL cosine similarity on the hot path, domain-aware chunking, and content-hash dedup so CRM re-syncs update instead of duplicating.'},
+                        {icon: '🧠', title: 'The LLM insights engine', body: 'Rewrote rule-based report generators into LLM category agents plus a curator that dedups and merges, generating prioritized business insights for academy owners on a schedule. 89% of the module’s current code is mine.'},
+                        {icon: '🔗', title: 'Three CRM/data integrations', body: 'Salesforce through the Merge unified-CRM API (solo, 100% of the module); a LeagueApps read-sync plus an audited write bridge (solo, end to end); Mindbody normalizers and their cron sync runtime.'},
+                        {icon: '💬', title: 'The interactions pipeline', body: 'My largest single work area, shared with the team: the SMS conversation processor, Twilio and SendGrid webhook layers, email processing, and a debounced message queue that turns rapid-fire parent texts into one coherent reply.'},
+                        {icon: '🎯', title: 'Lead Score v2', body: 'A multi-dimensional scoring engine (engagement, intent, responsiveness, momentum) working across calls, SMS and email, with an 858-line test file behind it.'},
+                        {icon: '🖥️', title: 'The frontend surfaces for all of it', body: 'The insights dashboard with drill-down to source conversations, CRM contact import with conflict detection, and the lead-score breakdown UI, in Next.js and React.'},
                     ]},
+                ],
+            },
+            {
+                title: 'Hard problems',
+                blocks: [
+                    {
+                        type: 'challenge',
+                        problem: 'The busiest table in the system conflated calls, SMS and emails into one wide schema of nullable columns, feeding webhooks, workers and analytics. It could not be constrained, indexed or queried per channel, and it could not go down for a rewrite.',
+                        approach: 'A staged dual-write migration on the live system: typed per-channel event tables, every write path converted to write old and new atomically in transactions, reads migrated next, then constraints, back-links and the elimination of UNION queries in analytics. Batch backfill scripts with a dry-run mode.',
+                        result: 'Channel-specific constraints and indexes on the hottest tables, safe rollback through the legacy table, no downtime and no data loss.',
+                    },
+                    {
+                        type: 'challenge',
+                        problem: 'Agents needed accurate, current answers about pricing and schedules; flat context files were stale and unranked, and every CRM re-sync duplicated content.',
+                        approach: 'Built the pgvector pipeline: embeddings in Postgres, HNSW indexing, chunking shaped to the domain (sliding windows for appointments, enrollment chunks grouped by class), content-hash dedup, batch queries collapsed into single parametrized SQL, and intent-weighted ranking so booking questions surface bookable items.',
+                        result: 'The retrieval layer behind agent answers across SMS and email, deduplicated across syncs, with sub-linear similarity lookup.',
+                    },
+                    {
+                        type: 'challenge',
+                        problem: 'Distributed workers plus retrying webhooks created real races: scheduled actions firing twice, SMS bookings double-firing, and compliance-critical opt-out checks failing open.',
+                        approach: 'A systematic pass applying compare-and-swap claims so only one worker wins an action, fail-closed opt-out checking (an errored check blocks the send), idempotency-key recovery in email threading, row-level locking with a quiet-window timer in the SMS queue, and clean rollback of partially launched campaigns.',
+                        result: 'Exactly-once semantics for scheduled actions and compliance that degrades safely instead of failing open.',
+                    },
+                ],
+            },
+            {
+                title: 'Decisions',
+                blocks: [
+                    {
+                        type: 'decision',
+                        decision: 'Salesforce through a unified-CRM API rather than a bespoke integration',
+                        why: 'Integrating via Merge’s unified API meant far less OAuth, token and webhook plumbing, and one interface that extends to more CRMs later.',
+                        tradeoff: 'A vendor dependency, and being limited to the unified data model.',
+                    },
+                    {
+                        type: 'decision',
+                        decision: 'A browser-extension write bridge for a CRM with no adequate write API',
+                        why: 'LeagueApps writes run as an authorized, audited internal tool: a staff member’s own logged-in session executes queued writes from the backend, with an audit log, encrypted keys at rest, and access pinned to the extension. No credentials are ever shared with the backend.',
+                        tradeoff: 'Writes only happen while a staff browser is open, hence the queue-and-poll design.',
+                    },
                 ],
             },
             {
                 title: 'Outcome',
                 blocks: [
-                    {type: 'callout', label: 'Outcome', text: '548 commits in three months: 485 on the backend, where I ended up the second most active contributor in the repo, and 63 on the frontend. The backend work alone came to +159k/−44k lines by git’s count, lockfiles excluded. The AI features and CRM integrations shipped to production.'},
+                    {type: 'callout', label: 'Outcome', text: '548 commits in three months: 485 on the backend, where I ended up the second most active contributor in the repo, and 63 on the frontend. The backend work came to +158k/−44k lines by git’s count, lockfiles excluded. Shipped to production throughout.'},
                 ],
             },
         ],
         metrics: [
-            {value: '548', label: 'commits, backend + frontend'},
+            {value: '548', label: 'commits in three months'},
             {value: '#2', label: 'most active contributor on the backend repo'},
-            {value: 'Dec–Mar', label: '2025–26 engagement'},
+            {value: '32/121', label: 'database migrations authored'},
+            {value: '3', label: 'CRM/data integrations built'},
         ],
-        techStack: ['Node.js', 'React', 'LangChain', 'Vector DB', 'Salesforce API', 'LeagueApps API'],
+        techStack: ['TypeScript', 'Node.js', 'Express', 'Prisma', 'PostgreSQL', 'pgvector', 'BullMQ', 'Redis', 'OpenAI SDK', 'Twilio', 'SendGrid', 'Merge API', 'Next.js', 'React', 'Tailwind', 'TanStack Query', 'Vitest'],
     },
     {
         id: 'client-raheee',
