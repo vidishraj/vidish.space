@@ -1322,6 +1322,7 @@ const clientProjects: Project[] = [
         tagline: 'Sole developer of an LLM-backed wellness platform: FastAPI backend, React Native iOS app, and infrastructure, shipped to the Apple App Store.',
         hookMetric: {value: '808', label: 'commits, solo, 4 repos'},
         tags: ['FastAPI', 'React Native', 'Redis', 'AWS', 'LLM'],
+        image: '/assets/projects/soultalk/card.webp',
         client: {
             name: 'SoulTalk',
             logo: '/assets/clients/soultalk_logo.svg',
@@ -1345,6 +1346,12 @@ const clientProjects: Project[] = [
                         {icon: '🔒', title: 'Privacy engineering', body: 'GDPR/CCPA data export and hard-delete erasure built in from the start.'},
                         {icon: '⚙️', title: 'All the infrastructure', body: 'Docker, GitHub Actions CI/CD, migration deploys with auto-rollback, monitoring, backups, rate-limiting.'},
                     ]},
+                    {
+                        type: 'figure',
+                        src: '/assets/projects/soultalk/whats-inside.webp',
+                        caption: 'The product surface: daily reflections, an affirmation mirror, SoulSights, SoulSignals, SoulShifts, and personality tests. Every feature here, front to back, one developer.',
+                        alt: 'SoulTalk "What\u2019s Inside" screen listing Daily Reflection, Affirmation Mirror, SoulSight, SoulSignals, SoulShifts and Personality Tests',
+                    },
                 ],
             },
             {
@@ -1355,6 +1362,12 @@ const clientProjects: Project[] = [
                         problem: 'LLM responses take seconds, a journaling UX has to feel instant, and token cost scales with every user.',
                         approach: 'Streamed model output to the client over a WebSocket relay with mid-stream error recovery; deferred and parallelized heavier post-processing so the primary response renders first; cached stable prompt prefixes.',
                         result: '~30-50% lower input-token cost and ~0.5-1.5s faster time-to-first-token; long-form reports render in ~10-12s without blocking the UI.',
+                    },
+                    {
+                        type: 'figure',
+                        src: '/assets/projects/soultalk/reflection.webp',
+                        caption: 'What the streaming work buys: SoulPal\u2019s reflection on a journal entry, rendering as it generates instead of after a long wait.',
+                        alt: 'SoulTalk journal entry screen showing SoulPal\u2019s multi-paragraph AI reflection on what the user wrote',
                     },
                     {
                         type: 'challenge',
@@ -1368,6 +1381,12 @@ const clientProjects: Project[] = [
                 title: 'Outcome',
                 blocks: [
                     {type: 'callout', label: 'Outcome', text: 'Live on the Apple App Store (US + Canada): ~808 commits across 4 repos as the sole developer, from blank repo to public launch in about six months, and still shipping.'},
+                    {
+                        type: 'figure',
+                        src: '/assets/projects/soultalk/soulsight.webp',
+                        caption: 'A SoulSight: the long-form report the async pipeline assembles from a stretch of entries, written by the model and delivered in ~10\u201312 seconds.',
+                        alt: 'SoulTalk SoulSight screen showing a long-form AI-written chapter titled from the user\u2019s recent journal entries',
+                    },
                     {type: 'text', md: '[Marketing site](https://soultalkapp.com) · [On the App Store](https://apps.apple.com/app/id6759283325)'},
                 ],
             },
