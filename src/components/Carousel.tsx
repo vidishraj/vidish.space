@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
-import {motion, useAnimation, useInView} from "framer-motion";
+import {motion, useInView} from "framer-motion";
 import ProjectPage from "./ProjectPage.tsx";
 import ProjectCard from "./ProjectCard.tsx";
 import {useThemeContext} from '../App';
@@ -27,16 +27,14 @@ export function ProjectsGrid({projects, showFilter = true}: ProjectsGridProps) {
     const {season} = useThemeContext();
     const isDark = season === 'monsoon';
     const t = projectTheme(isDark);
-    const isInView = useInView(gridRef, {once: true, amount: 0.15});
-    const controls = useAnimation();
+    // No amount threshold (any visible pixel triggers): on mobile the grid is
+    // one tall column, so a fractional threshold can exceed what a phone
+    // viewport can show at once — and the cards would never animate in at all.
+    const isInView = useInView(gridRef, {once: true});
     const [filter, setFilter] = useState<Filter>('all');
     const [active, setActive] = useState<Project | null>(null);
     // Whether the current open state has a history entry we pushed (vs deep link)
     const pushedRef = useRef(false);
-
-    useEffect(() => {
-        if (isInView) controls.start("visible");
-    }, [isInView, controls]);
 
     // Deep link: open a project if the page loads with #/project/<id>
     useEffect(() => {
@@ -162,7 +160,7 @@ export function ProjectsGrid({projects, showFilter = true}: ProjectsGridProps) {
                     <motion.div
                         key={p.id}
                         variants={itemVariants}
-                        className={`h-full ${p.featured ? 'lg:col-span-2' : ''}`}
+                        className="h-full"
                     >
                         <ProjectCard project={p} isDark={isDark} onOpen={open} />
                     </motion.div>

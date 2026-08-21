@@ -167,7 +167,20 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project, isDark, onOpen, class
                 <h3 className="mb-1.5 text-lg font-semibold leading-snug" style={{color: t.accentText}}>
                     {project.title}
                 </h3>
-                <p className="mb-4 flex-grow text-sm leading-relaxed" style={{color: t.textBody}}>
+                <p
+                    className="mb-4 flex-grow text-sm leading-relaxed"
+                    style={{
+                        color: t.textBody,
+                        // Equal-height cards: reserve three lines and truncate
+                        // past three, so short and long taglines take the same
+                        // vertical space.
+                        display: '-webkit-box',
+                        WebkitLineClamp: 3,
+                        WebkitBoxOrient: 'vertical',
+                        overflow: 'hidden',
+                        minHeight: '4.3rem',
+                    }}
+                >
                     {project.tagline}
                 </p>
                 <TechChips items={project.tags} isDark={isDark} max={5} />
