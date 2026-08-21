@@ -1168,22 +1168,22 @@ const clientProjects: Project[] = [
     {
         id: 'client-movo',
         kind: 'client',
-        title: 'AI pipelines & CRM integrations',
-        tagline: 'SMS/email AI pipelines, a vector-DB knowledge base, and Salesforce/LeagueApps integrations for a sports-ops platform.',
-        hookMetric: {value: '84', label: 'commits in 3 months'},
+        title: 'AI enrollment platform — pipelines & CRM integrations',
+        tagline: 'Backend and AI work on an AI enrollment system for youth programs: SMS/email pipelines, a vector-DB knowledge base, and Salesforce/LeagueApps integrations.',
+        hookMetric: {value: '5 mo', label: 'backend + frontend engagement'},
         tags: ['Node.js', 'LangChain', 'Vector DB', 'Salesforce'],
         client: {
             name: 'Movo',
             logo: '/assets/clients/movoai_logo.png',
             role: 'Full-Stack Developer',
-            duration: 'Dec 2025 – Mar 2026',
+            duration: 'Dec 2025 – Apr 2026',
         },
-        facts: {role: 'Full-Stack Developer', timeline: 'Dec 2025 – Mar 2026', status: 'completed', platform: 'SaaS · AI'},
+        facts: {role: 'Full-Stack Developer', timeline: 'Dec 2025 – Apr 2026', status: 'completed', platform: 'SaaS · AI'},
         sections: [
             {
                 title: 'Context',
                 blocks: [
-                    {type: 'text', md: 'A sports-operations platform that needed intelligent handling of inbound SMS/email and tighter integration with the CRMs its customers already used.'},
+                    {type: 'text', md: '[Movo](https://www.trymovo.ai) is an AI enrollment system for youth programs (sports academies, classes, training facilities): it answers parent calls instantly, runs outbound calls, SMS and email in 100+ languages, and carries the sales cycle from first contact to enrolment, plugged into whatever software the operator already runs.\n\nMy engagement covered the machinery behind that: the AI pipelines handling inbound SMS and email, the knowledge base that grounds the answers, and the CRM integrations the product syncs with.'},
                 ],
             },
             {
@@ -1199,7 +1199,7 @@ const clientProjects: Project[] = [
             {
                 title: 'Outcome',
                 blocks: [
-                    {type: 'callout', label: 'Outcome', text: '84 commits across backend (55 merged PRs) and frontend in a 3-month engagement, with the AI features and CRM integrations shipped to production.'},
+                    {type: 'callout', label: 'Outcome', text: 'AI features and CRM integrations shipped to production across backend and frontend in a five-month engagement, December 2025 to April 2026.'},
                 ],
             },
         ],
