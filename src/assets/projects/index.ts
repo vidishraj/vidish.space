@@ -1559,7 +1559,6 @@ const clientProjects: Project[] = [
 // Exports
 // ─────────────────────────────────────────────────────────────
 
-// Vidish.Online leads — it's the flagship (and the visitor is standing in it).
 export const personalProjects: Project[] = [
     unitedMajdoors,
     vidishSpace,
@@ -1571,8 +1570,32 @@ export const personalProjects: Project[] = [
 
 export {clientProjects};
 
-/** All projects, personal first, featured first within each group. */
-export const allProjects: Project[] = [
-    ...[...personalProjects].sort((a, b) => Number(!!b.featured) - Number(!!a.featured)),
-    ...clientProjects,
+// Presentation order set by the Overseer (2026-08-21): personal and client
+// interleaved, strongest first. The grid's Personal/Client filters subset
+// this list in place, so the relative order holds under every filter.
+// (Vidish.Online was not in the dictated list; it sits last pending a ruling.)
+const DISPLAY_ORDER: string[] = [
+    'united-majdoors',
+    'client-soultalk',
+    'akkountant',
+    'client-movo',
+    'client-socgen',
+    'client-raheee',
+    'makaan',
+    'tripsplit',
+    'satte-nights',
+    'client-nyxidiom',
+    'client-cipherome',
+    'client-pwc',
+    'vidish-space',
 ];
+
+/** All projects in display order; anything missing from the list lands at the end rather than vanishing. */
+export const allProjects: Project[] = (() => {
+    const pool = [...personalProjects, ...clientProjects];
+    const ordered = DISPLAY_ORDER
+        .map((id) => pool.find((proj) => proj.id === id))
+        .filter((proj): proj is Project => !!proj);
+    const rest = pool.filter((proj) => !DISPLAY_ORDER.includes(proj.id));
+    return [...ordered, ...rest];
+})();
