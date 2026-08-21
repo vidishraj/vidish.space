@@ -606,7 +606,7 @@ const vidishSpace: Project = {
     tagline: "You're looking at it: a hand-built portfolio with three seasonal worlds, a real-time weather engine, and its own CI/CD pipeline.",
     hookMetric: {value: '60 fps', label: 'weather, GPU-composited'},
     tags: ['React 18', 'TypeScript', 'Framer Motion', 'Vite', 'CI/CD'],
-    image: '/assets/vidishSpaceModal/vidishSpaceDark.webp',
+    image: '/assets/projects/vidish-space/card.webp',
     facts: {
         role: 'Design + Engineering',
         timeline: '2025 — present',
@@ -646,9 +646,8 @@ The brief I set myself was a site that demonstrates rather than lists, held to r
                 {
                     type: 'figure',
                     src: '/assets/projects/vidish-space/hero-summer.webp',
-                    pending: true,
-                    capture: 'Full hero section in SUMMER with leaves mid-fall; include the season picker.',
                     caption: 'The hero in summer. Switch seasons up top and the whole site changes with you.',
+                    alt: 'Vidish.Online hero in the summer theme: warm sunset art panels, name, season picker and call-to-action buttons',
                 },
             ],
         },
@@ -697,9 +696,8 @@ The brief I set myself was a site that demonstrates rather than lists, held to r
                 {
                     type: 'figure',
                     src: '/assets/projects/vidish-space/weather-monsoon.webp',
-                    pending: true,
-                    capture: 'Hero in MONSOON mid-rain; bonus points if you catch the lightning flash (20-45s cycle).',
-                    caption: 'The monsoon world: slanted rain, splash collisions, and the occasional lightning strike.',
+                    caption: 'The monsoon world: rain over the night city, with splash collisions and the occasional lightning strike.',
+                    alt: 'Vidish.Online hero in the monsoon theme: dark night art panels with rain falling over the page',
                 },
                 {
                     type: 'challenge',
@@ -723,10 +721,9 @@ The brief I set myself was a site that demonstrates rather than lists, held to r
                 },
                 {
                     type: 'figure',
-                    src: '/assets/projects/vidish-space/case-study.webp',
-                    pending: true,
-                    capture: 'This very case-study page (or the Projects grid), the newest part of the site.',
-                    caption: 'The case-study system: typed content blocks, facts panels, and deep links.',
+                    src: '/assets/projects/vidish-space/contact-calendar.webp',
+                    caption: 'The newest surface: a hand-rolled GitHub contribution calendar on the contact page, 3,254 contributions deep.',
+                    alt: 'Vidish.Online contact page with social links and a green GitHub contribution calendar in the monsoon theme',
                 },
             ],
         },

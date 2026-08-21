@@ -16,9 +16,9 @@ off), no code changes.
 
 | # | Path | Project · Section | Capture |
 |---|------|-------------------|---------|
-| 1 | `public/assets/projects/vidish-space/hero-summer.webp` | Vidish.Online · The solution | Full hero in **summer**, leaves mid-fall, season picker visible |
-| 2 | `public/assets/projects/vidish-space/weather-monsoon.webp` | Vidish.Online · Hard problems | Hero in **monsoon** mid-rain — lightning flash if you can catch it (20–45 s cycle) |
-| 3 | `public/assets/projects/vidish-space/case-study.webp` | Vidish.Online · Results | This case-study page or the new Projects grid — the newest surface |
+| ~~1~~ ✅ | `public/assets/projects/vidish-space/hero-summer.webp` | Vidish.Online · The solution | **DELIVERED** 2026-08-21 — summer hero with picker and CTAs |
+| ~~2~~ ✅ | `public/assets/projects/vidish-space/weather-monsoon.webp` | Vidish.Online · Hard problems | **DELIVERED** 2026-08-21 — monsoon hero mid-rain |
+| ~~3~~ ✅ | `public/assets/projects/vidish-space/contact-calendar.webp` | Vidish.Online · Results | **DELIVERED** 2026-08-21 — repointed to the contact page + GitHub calendar (the actual newest surface); services + career captures also on file as spares |
 | 4 | `public/assets/projects/akkountant/agent-chat.webp` | Akkountant · Results | Agent chat ("Ask about investments…") answering a question, ideally with an uploaded receipt in-thread — **if the receipt shows a counterparty name/address/card tail, mask it (third-party data)** |
 | 5 | `public/assets/projects/akkountant/wealth-digest.webp` | Akkountant · Results | The daily wealth digest — email or in-app panel |
 | ~~19–24~~ ✅ | `akkountant/{home,portfolio,asset-cards,stocks,jobs,timestamps}.webp` | Akkountant · 4 sections | **DELIVERED** 2026-08-19 — 6 Overseer captures, raw; write-up restructured around them |
@@ -42,7 +42,7 @@ off), no code changes.
 |---|------|----------|---------|
 | ~~8~~ ✅ | `public/assets/projects/akkountant/card.webp` | *(was illustration)* | **DELIVERED** 2026-08-19 — portfolio overview, raw |
 | ~~9~~ ✅ | `public/assets/projects/tripsplit/card.webp` | `tripsplitModal/tripsplit.webp` | **DELIVERED** 2026-08-20 — the redesigned landing page ("A ledger for the road"), raw (no personal data by construction) |
-| 10 | `public/assets/projects/vidish-space/card.webp` | `vidishSpaceModal/vidishSpaceDark.webp` | The current site — monsoon or winter full-page looks best on cards |
+| ~~10~~ ✅ | `public/assets/projects/vidish-space/card.webp` | `vidishSpaceModal/vidishSpaceDark.webp` | **DELIVERED** 2026-08-21 — winter full-page hero (per the original monsoon-or-winter guidance; monsoon serves as the in-page figure). Old vidishSpaceModal/ assets deleted as orphans |
 | ~~14~~ ✅ | `public/assets/projects/makaan/card.webp` | *(was monogram)* | **DELIVERED** 2026-08-19 — the map, raw |
 | ~~15~~ ✅ | `public/assets/projects/satte-nights/card.webp` | *(was none — card was text-only)* | **DELIVERED** 2026-08-20 — composed 3-up phone montage (lobby · table · setup) on brand green |
 | ~~18~~ ✅ | `public/assets/projects/united-majdoors/card.webp` | *(was monogram)* | **DELIVERED** 2026-08-19 — Overseer-supplied akkountant-filtered board, RAW (clean by construction; also the How-it-works figure) |
