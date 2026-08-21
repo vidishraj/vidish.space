@@ -146,6 +146,13 @@ export const PointerHighlight: React.FC<PointerHighlightProps> = ({
                             exit={{opacity: 0, scale: 0}}
                             transition={{duration: 0.2}}
                             style={{
+                                // Anchor at the container's origin: without
+                                // top/left an absolute element keeps its STATIC
+                                // position (below the text, since it follows the
+                                // children in the markup), which shifted the
+                                // whole traced path a full text-height down.
+                                top: 0,
+                                left: 0,
                                 x: springX,
                                 y: springY,
                                 translateX: '-50%',
