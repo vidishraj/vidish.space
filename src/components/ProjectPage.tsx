@@ -131,7 +131,7 @@ const ProjectPage: React.FC<ProjectPageProps> = ({project, projects, onClose, on
             initial={reduceMotion ? {opacity: 0} : {opacity: 0, y: 24, scale: 0.985}}
             animate={{opacity: 1, y: 0, scale: 1}}
             transition={{duration: 0.28, ease: 'easeOut'}}
-            className="h-full w-full max-w-[1600px] overflow-y-auto overscroll-contain shadow-2xl sm:rounded-2xl"
+            className="h-full w-full max-w-[1600px] overflow-y-auto overflow-x-hidden overscroll-contain shadow-2xl sm:rounded-2xl"
             style={{background: pageBg, color: textPrimary, border: `1px solid ${hairline}`}}
         >
             {/* Top bar */}
@@ -402,7 +402,7 @@ const ProjectPage: React.FC<ProjectPageProps> = ({project, projects, onClose, on
                         <button
                             type="button"
                             onClick={() => onSelect(prev)}
-                            className="rounded-xl p-5 text-left transition-transform hover:-translate-y-0.5"
+                            className="min-w-0 overflow-hidden rounded-xl p-5 text-left transition-transform hover:-translate-y-0.5"
                             style={linkBtn}
                         >
                             <div className="text-xs font-semibold uppercase tracking-wider" style={{color: textMuted}}>
@@ -416,7 +416,7 @@ const ProjectPage: React.FC<ProjectPageProps> = ({project, projects, onClose, on
                         <button
                             type="button"
                             onClick={() => onSelect(next)}
-                            className="rounded-xl p-5 text-right transition-transform hover:-translate-y-0.5"
+                            className="min-w-0 overflow-hidden rounded-xl p-5 text-right transition-transform hover:-translate-y-0.5"
                             style={linkBtn}
                         >
                             <div className="text-xs font-semibold uppercase tracking-wider" style={{color: textMuted}}>
