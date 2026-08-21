@@ -33,7 +33,9 @@ export const Projects = () => {
                 <ParallaxText baseVelocity={200}>MY WORK</ParallaxText>
                 <ProjectsGrid projects={allProjects}/>
             </div>
-            <ParallaxText baseVelocity={200} direction={isMonsoon ? 'left' : 'right'}>Projects</ParallaxText>
+            {/* This strip visually introduces the NEXT section (the career
+                timeline), so it must name the journey, not repeat "Projects". */}
+            <ParallaxText baseVelocity={200} direction={isMonsoon ? 'left' : 'right'}>My Journey</ParallaxText>
         </section>
     );
 };

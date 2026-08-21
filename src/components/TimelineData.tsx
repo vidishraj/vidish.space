@@ -11,6 +11,7 @@ const jobAnimation = () => import('../assets/lottieAnimations/job.json');
 const internshipAnimation = () => import('../assets/lottieAnimations/internship.json');
 const collegeDaysAnimation = () => import('../assets/lottieAnimations/college.json');
 const freelanceAnimation = () => import('../assets/lottieAnimations/newSummer3.json');
+const fleetAnimation = () => import('../assets/lottieAnimations/timelineAnimation.json');
 
 interface LazyLottieProps {
     animationImport: () => Promise<{ default: object }>;
@@ -84,7 +85,9 @@ export const timelineData = (season: Season) => {
     };
 
     const getCardStyle = (index: number): CSSProperties => {
-        return {background: cardColors[index]};
+        // Cycle the palette: every season defines 5 card colors and the
+        // chapter count must never crash on a 6th (see the Services fix).
+        return {background: cardColors[index % cardColors.length]};
     };
 
     return [
@@ -259,7 +262,7 @@ export const timelineData = (season: Season) => {
                                         <h3 className="font-semibold text-lg"
                                             style={{color: textColor}}>Project Deployment</h3>
                                         <p style={{color: textColor}}>Contributed to the final design of the tool and deployed it on Windows Server
-                                            using uWSGI + IIS (yes, it worked!).</p>
+                                            using IIS + Apache (yes, it worked!).</p>
                                     </div>
                                 </div>
                             </div>
@@ -319,9 +322,10 @@ export const timelineData = (season: Season) => {
                                     <div>
                                         <h3 className="font-semibold text-lg"
                                             style={{color: textColor}}>New Project</h3>
-                                        <p style={{color: textColor}}>6 months in – Got a new project: Rebuilding an old JSP application using
-                                            ReactJS
-                                            + Spring Boot with AWS as our cloud provider.</p>
+                                        <p style={{color: textColor}}>6 months in – The big one: the bank’s move off
+                                            on-premise servers. Rebuilding an old JSP application as React + Spring Boot
+                                            microservices on AWS—a migration that took serious time to architect before
+                                            the building years began.</p>
                                     </div>
                                 </div>
                             </div>
@@ -353,10 +357,10 @@ export const timelineData = (season: Season) => {
                                         <h3 className="font-semibold text-lg"
                                             style={{color: textColor}}>International
                                             Collaboration</h3>
-                                        <p style={{color: textColor}}>Cross-functional teams, mostly working with French colleagues—meaning I've
+                                        <p style={{color: textColor}}>Fully remote for all three and a half years: one of
+                                            two developers in India on a 15-member team, the rest in France—meaning I've
                                             learned more French phrases than I ever expected to (Mostly "Ça marche?" and
-                                            "Ça
-                                            ne marche pas.")</p>
+                                            "Ça ne marche pas.")</p>
                                     </div>
                                 </div>
                             </div>
@@ -401,8 +405,10 @@ export const timelineData = (season: Season) => {
                                     <div>
                                         <h3 className="font-semibold text-lg"
                                             style={{color: textColor}}>The Leap</h3>
-                                        <p style={{color: textColor}}>Left the corporate world to go independent. Turns out,
-                                            being your own boss means you never get to blame anyone else for bad code.</p>
+                                        <p style={{color: textColor}}>Started freelancing on nights and weekends alongside
+                                            the remote day job in 2025; when Societe Generale wrapped in Feb 2026, went
+                                            all in. Turns out, being your own boss means you never get to blame anyone
+                                            else for bad code.</p>
                                     </div>
                                 </div>
                             </div>
@@ -415,9 +421,11 @@ export const timelineData = (season: Season) => {
                                     <div>
                                         <h3 className="font-semibold text-lg"
                                             style={{color: textColor}}>AI & Full-Stack</h3>
-                                        <p style={{color: textColor}}>Built AI pipelines with vector databases and LLM integrations
-                                            for Movo. Shipped an entire LLM wellness platform to the App Store as the sole developer
-                                            for SoulTalk—808 commits of pure hustle.</p>
+                                        <p style={{color: textColor}}>Put 548 commits into <a href="#/project/client-movo" style={{color: 'inherit', textDecoration: 'underline'}}>Movo</a> in
+                                            three months—vector search, an LLM insights engine, CRM integrations—ending as
+                                            the backend’s second most active contributor. Shipped an entire LLM wellness
+                                            platform to the App Store as the sole developer for <a href="#/project/client-soultalk" style={{color: 'inherit', textDecoration: 'underline'}}>SoulTalk</a>—808
+                                            commits of pure hustle.</p>
                                     </div>
                                 </div>
                             </div>
@@ -430,9 +438,9 @@ export const timelineData = (season: Season) => {
                                     <div>
                                         <h3 className="font-semibold text-lg"
                                             style={{color: textColor}}>Mobile & Optimization</h3>
-                                        <p style={{color: textColor}}>Refactored Raheee's mobile app in a 2-week sprint—shrunk it
-                                            from 154MB to 20MB. Also built secure data exchange connectors for Cipherome's
-                                            genomics platform.</p>
+                                        <p style={{color: textColor}}>Refactored <a href="#/project/client-raheee" style={{color: 'inherit', textDecoration: 'underline'}}>Raheee</a>’s mobile app in a
+                                            2-week sprint—shrunk it from 154MB to 20MB. Also built secure data exchange
+                                            connectors for <a href="#/project/client-cipherome" style={{color: 'inherit', textDecoration: 'underline'}}>Cipherome</a>’s genomics platform.</p>
                                     </div>
                                 </div>
                             </div>
@@ -445,9 +453,10 @@ export const timelineData = (season: Season) => {
                                     <div>
                                         <h3 className="font-semibold text-lg"
                                             style={{color: textColor}}>Hardware Meets Software</h3>
-                                        <p style={{color: textColor}}>Went from cloud to bare metal—built a Raspberry Pi kiosk
-                                            system for Nyxidiom, talking to STM32 boards over UART. Because why not add
-                                            embedded systems to the resume?</p>
+                                        <p style={{color: textColor}}>Went from cloud to bare metal—built the entire Pi side
+                                            of a container-return kiosk for <a href="#/project/client-nyxidiom" style={{color: 'inherit', textDecoration: 'underline'}}>Nyxidiom</a> (100% of the
+                                            code by git blame at handoff), talking to STM32 boards over UART. Because why
+                                            not add embedded systems to the resume?</p>
                                     </div>
                                 </div>
                             </div>
@@ -462,6 +471,73 @@ export const timelineData = (season: Season) => {
                                             style={{color: textColor}}>Current Status</h3>
                                         <p style={{color: textColor}}>10+ clients, countless commits, and zero regrets. Still
                                             shipping code, still breaking things in staging, still loving every bit of it.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </AnimatedText>
+                    </div>
+                </ContainerScroll>
+            ],
+        },
+        {
+            title: 'The Fleet Era (2026 - Present)',
+            subtitle: 'Running a 50-Seat AI Software Team \ud83e\udd16',
+            animationData: fleetAnimation,
+            content: [
+                <ContainerScroll
+                    containerClassName={getCardClass()}
+                    containerStyle={getCardStyle(5)}
+                    className={styles.timelineContent}>
+                    <div className="flex flex-col space-y-6">
+                        <TextGenerateEffect
+                            className={`flex align-center justify-center underline`}
+                            parentStyle={{color: textColor}}
+                            words={"Running a 50-Seat AI Software Team \ud83e\udd16"}/>
+
+                        <AnimatedText delay={0.2}>
+                            <div className="space-y-2">
+                                <div className="flex items-start">
+                                    <span className="text-xl mr-2">\ud83c\udfd7\ufe0f</span>
+                                    <div>
+                                        <h3 className="font-semibold text-lg"
+                                            style={{color: textColor}}>United Majdoors</h3>
+                                        <p style={{color: textColor}}>Stopped writing all the code myself and built a
+                                            command centre for a fleet of autonomous Claude agents instead\u2014on top of
+                                            Steve Yegge\u2019s <a href="https://github.com/gastownhall/gastown" target="_blank" rel="noopener noreferrer" style={{color: 'inherit', textDecoration: 'underline'}}>Gas Town</a>. Live
+                                            terminals in the browser, durable work tracking, push notifications: one
+                                            person operating <a href="#/project/united-majdoors" style={{color: 'inherit', textDecoration: 'underline'}}>50+ agent seats across 11 projects</a>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </AnimatedText>
+
+                        <AnimatedText delay={0.4}>
+                            <div className="space-y-2">
+                                <div className="flex items-start">
+                                    <span className="text-xl mr-2">\ud83d\udea2</span>
+                                    <div>
+                                        <h3 className="font-semibold text-lg"
+                                            style={{color: textColor}}>What the fleet ships</h3>
+                                        <p style={{color: textColor}}>An accounting platform with its own AI agent
+                                            (<a href="#/project/akkountant" style={{color: 'inherit', textDecoration: 'underline'}}>Akkountant</a>), a ~300k-listing real-estate dashboard built in five
+                                            weeks (<a href="#/project/makaan" style={{color: 'inherit', textDecoration: 'underline'}}>Makaan</a>), a private poker night for the group chat
+                                            (<a href="#/project/satte-nights" style={{color: 'inherit', textDecoration: 'underline'}}>Satte Nights</a>), and a trip ledger with an AI operator
+                                            (<a href="#/project/tripsplit" style={{color: 'inherit', textDecoration: 'underline'}}>TripSplit</a>).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </AnimatedText>
+
+                        <AnimatedText delay={0.6}>
+                            <div className="space-y-2">
+                                <div className="flex items-start">
+                                    <span className="text-xl mr-2">\ud83c\udf00</span>
+                                    <div>
+                                        <h3 className="font-semibold text-lg"
+                                            style={{color: textColor}}>The recursive bit</h3>
+                                        <p style={{color: textColor}}>This website\u2014including the timeline you are reading
+                                            right now\u2014is written, reviewed, and deployed by agents inside that fleet. I
+                                            mostly review, decide, and take the screenshots.</p>
                                     </div>
                                 </div>
                             </div>
