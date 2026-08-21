@@ -481,7 +481,7 @@ export const timelineData = (season: Season) => {
         },
         {
             title: 'The Fleet Era (2026 - Present)',
-            subtitle: 'Running a 50-Seat AI Software Team \ud83e\udd16',
+            subtitle: 'Running a 50-Seat AI Software Team 🤖',
             animationData: fleetAnimation,
             content: [
                 <ContainerScroll
@@ -492,18 +492,18 @@ export const timelineData = (season: Season) => {
                         <TextGenerateEffect
                             className={`flex align-center justify-center underline`}
                             parentStyle={{color: textColor}}
-                            words={"Running a 50-Seat AI Software Team \ud83e\udd16"}/>
+                            words={"Running a 50-Seat AI Software Team 🤖"}/>
 
                         <AnimatedText delay={0.2}>
                             <div className="space-y-2">
                                 <div className="flex items-start">
-                                    <span className="text-xl mr-2">\ud83c\udfd7\ufe0f</span>
+                                    <span className="text-xl mr-2">🏗️</span>
                                     <div>
                                         <h3 className="font-semibold text-lg"
                                             style={{color: textColor}}>United Majdoors</h3>
                                         <p style={{color: textColor}}>Stopped writing all the code myself and built a
-                                            command centre for a fleet of autonomous Claude agents instead\u2014on top of
-                                            Steve Yegge\u2019s <a href="https://github.com/gastownhall/gastown" target="_blank" rel="noopener noreferrer" style={{color: 'inherit', textDecoration: 'underline'}}>Gas Town</a>. Live
+                                            command centre for a fleet of autonomous Claude agents instead—on top of
+                                            Steve Yegge’s <a href="https://github.com/gastownhall/gastown" target="_blank" rel="noopener noreferrer" style={{color: 'inherit', textDecoration: 'underline'}}>Gas Town</a>. Live
                                             terminals in the browser, durable work tracking, push notifications: one
                                             person operating <a href="#/project/united-majdoors" style={{color: 'inherit', textDecoration: 'underline'}}>50+ agent seats across 11 projects</a>.</p>
                                     </div>
@@ -514,7 +514,7 @@ export const timelineData = (season: Season) => {
                         <AnimatedText delay={0.4}>
                             <div className="space-y-2">
                                 <div className="flex items-start">
-                                    <span className="text-xl mr-2">\ud83d\udea2</span>
+                                    <span className="text-xl mr-2">🚢</span>
                                     <div>
                                         <h3 className="font-semibold text-lg"
                                             style={{color: textColor}}>What the fleet ships</h3>
@@ -531,12 +531,12 @@ export const timelineData = (season: Season) => {
                         <AnimatedText delay={0.6}>
                             <div className="space-y-2">
                                 <div className="flex items-start">
-                                    <span className="text-xl mr-2">\ud83c\udf00</span>
+                                    <span className="text-xl mr-2">🌀</span>
                                     <div>
                                         <h3 className="font-semibold text-lg"
                                             style={{color: textColor}}>The recursive bit</h3>
-                                        <p style={{color: textColor}}>This website\u2014including the timeline you are reading
-                                            right now\u2014is written, reviewed, and deployed by agents inside that fleet. I
+                                        <p style={{color: textColor}}>This website—including the timeline you are reading
+                                            right now—is written, reviewed, and deployed by agents inside that fleet. I
                                             mostly review, decide, and take the screenshots.</p>
                                     </div>
                                 </div>
