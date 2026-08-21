@@ -1,5 +1,5 @@
-import {motion, useAnimation, useInView} from 'framer-motion';
-import {useRef, useEffect} from 'react';
+import {motion, useInView} from 'framer-motion';
+import {useRef} from 'react';
 import {TextGenerateEffect} from '../components/TextGenerate.tsx';
 import {AnimatedText} from '../components/AnimatedText.tsx';
 import {PointerHighlight} from '../components/PointerHighlight.tsx';
@@ -11,6 +11,8 @@ interface ServiceCard {
     title: string;
     description: string;
     tags: string[];
+    /** Deep link into the case study that backs this card's claims. */
+    proof?: {label: string; projectId: string};
 }
 
 const services: ServiceCard[] = [
@@ -20,6 +22,7 @@ const services: ServiceCard[] = [
         description:
             'Microservices handling 50,000+ daily transactions, REST APIs powering 1,000+ users, and third-party integrations with platforms like Salesforce, Mindbody, and Keycloak.',
         tags: ['Spring Boot', 'Node.js', 'Python', 'PostgreSQL'],
+        proof: {label: 'Société Générale', projectId: 'client-socgen'},
     },
     {
         emoji: '\u{1F4BB}',
@@ -27,13 +30,23 @@ const services: ServiceCard[] = [
         description:
             'Responsive web apps, interactive dashboards with million-row tables, and cross-platform mobile apps. Shipped iOS and Android builds from scratch.',
         tags: ['React', 'TypeScript', 'React Native', 'Next.js'],
+        proof: {label: 'Rahee', projectId: 'client-raheee'},
     },
     {
         emoji: '\u{1F916}',
-        title: 'AI-Powered Systems',
+        title: 'AI-Powered Features',
         description:
             'Conversational AI across SMS, email, and voice. RAG pipelines with vector search, LLM-driven insight engines, and intelligent lead scoring systems.',
         tags: ['OpenAI', 'RAG', 'Vector DBs', 'VAPI'],
+        proof: {label: 'Movo', projectId: 'client-movo'},
+    },
+    {
+        emoji: '\u{1F9E0}',
+        title: 'Agentic Systems',
+        description:
+            'Claude agents with scoped tool surfaces: an accounting agent that reads receipts and files investments over MCP, a trip operator with 11 tools, SQL-grounded analysts, and a 50-seat agent fleet that builds and maintains this very site.',
+        tags: ['Claude Agent SDK', 'MCP', 'Tool Use', 'Multi-agent'],
+        proof: {label: 'United Majdoors', projectId: 'united-majdoors'},
     },
     {
         emoji: '\u{2601}\u{FE0F}',
@@ -41,6 +54,7 @@ const services: ServiceCard[] = [
         description:
             'Containerized deployments on AWS, CI/CD pipelines that cut deployment time by 20%, and cloud migrations of legacy enterprise systems.',
         tags: ['AWS', 'Docker', 'Jenkins', 'ECS'],
+        proof: {label: 'SoulTalk', projectId: 'client-soultalk'},
     },
     {
         emoji: '\u{1F527}',
@@ -48,6 +62,7 @@ const services: ServiceCard[] = [
         description:
             'UART protocol implementations for microcontrollers, QR-based validation systems on Raspberry Pi, and bridging firmware with cloud backends.',
         tags: ['STM32', 'Raspberry Pi', 'Serial', 'IoT'],
+        proof: {label: 'Nyxidiom', projectId: 'client-nyxidiom'},
     },
     {
         emoji: '\u{1F680}',
@@ -55,6 +70,7 @@ const services: ServiceCard[] = [
         description:
             'Solo-built entire products from architecture to app store. Took codebases from 154MB down to 20MB, and shipped production systems in as little as two weeks.',
         tags: ['System Design', 'Architecture', 'App Store', 'Deployment'],
+        proof: {label: 'Akkountant', projectId: 'akkountant'},
     },
 ];
 
@@ -87,16 +103,10 @@ const WhatIDo = () => {
     const {season, palette, backgrounds} = useThemeContext();
     const isMonsoon = season === 'monsoon';
     const gridRef = useRef<HTMLDivElement>(null);
-    const isInView = useInView(gridRef, {once: false, amount: 0.12});
-    const controls = useAnimation();
-
-    useEffect(() => {
-        if (isInView) {
-            controls.start('visible');
-        } else {
-            controls.start('hidden');
-        }
-    }, [isInView, controls]);
+    // once:true, no amount threshold — same reasoning as the projects grid:
+    // replaying the entrance on every pass is jarring, and a fractional
+    // threshold can be unsatisfiable on small viewports.
+    const isInView = useInView(gridRef, {once: true});
 
     return (
         <section
@@ -144,7 +154,7 @@ const WhatIDo = () => {
                     className={styles.grid}
                     variants={containerVariants}
                     initial="hidden"
-                    animate={controls}
+                    animate={isInView ? 'visible' : 'hidden'}
                 >
                     {services.map((service, index) => {
                         const cardPalette = palette.serviceCards[index];
@@ -196,6 +206,23 @@ const WhatIDo = () => {
                                         </span>
                                     ))}
                                 </div>
+
+                                {service.proof && (
+                                    <a
+                                        href={`#/project/${service.proof.projectId}`}
+                                        aria-label={`Open the ${service.proof.label} case study`}
+                                        style={{
+                                            marginTop: 'auto',
+                                            paddingTop: '0.75rem',
+                                            fontSize: '0.8rem',
+                                            fontWeight: 700,
+                                            textDecoration: 'none',
+                                            color: cardPalette.accent,
+                                        }}
+                                    >
+                                        Proof: {service.proof.label} →
+                                    </a>
+                                )}
                             </motion.div>
                         );
                     })}

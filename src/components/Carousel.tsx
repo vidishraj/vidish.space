@@ -49,16 +49,23 @@ export function ProjectsGrid({projects, showFilter = true}: ProjectsGridProps) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // Browser back/forward
+    // Browser back/forward, plus in-page hash links (e.g. the Services
+    // section's proof links): both must open/close the case-study modal.
+    // An anchor click fires hashchange (not popstate) and pushes a history
+    // entry, so treat it as pushed — closing walks back cleanly.
     useEffect(() => {
-        const onPop = () => {
+        const onHashNav = () => {
             const id = projectIdFromHash();
             const match = id ? projects.find(p => p.id === id) ?? null : null;
-            pushedRef.current = !!match; // entries reached via history are navigable back
+            pushedRef.current = !!match;
             setActive(match);
         };
-        window.addEventListener('popstate', onPop);
-        return () => window.removeEventListener('popstate', onPop);
+        window.addEventListener('popstate', onHashNav);
+        window.addEventListener('hashchange', onHashNav);
+        return () => {
+            window.removeEventListener('popstate', onHashNav);
+            window.removeEventListener('hashchange', onHashNav);
+        };
     }, [projects]);
 
     const open = useCallback((p: Project) => {
