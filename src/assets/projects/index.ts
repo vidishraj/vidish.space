@@ -1115,7 +1115,7 @@ const clientProjects: Project[] = [
         id: 'client-socgen',
         kind: 'client',
         title: 'Regulatory data platform — monolith to cloud',
-        tagline: 'Three and a half years on a global bank’s regulatory data platform: a Java 8 monolith with a JSP front-end rebuilt as Java 17 microservices on AWS, serving 1,000+ daily users on 50K+ transactions a day.',
+        tagline: 'Three and a half years on a global bank’s regulatory data platform: an on-premise Java 8 monolith rebuilt as Java 17 microservices on AWS, serving 1,000+ daily users on 50K+ transactions a day.',
         hookMetric: {value: '50K+', label: 'transactions daily'},
         tags: ['Java 17', 'Spring Boot', 'AWS', 'React', 'PostgreSQL'],
         client: {
@@ -1124,12 +1124,12 @@ const clientProjects: Project[] = [
             role: 'Software Engineer',
             duration: 'Jul 2022 – Feb 2026',
         },
-        facts: {role: 'Software Engineer', timeline: 'Jul 2022 – Feb 2026', status: 'completed', team: 'Team of 8 · India + France', platform: 'Banking · AWS'},
+        facts: {role: 'Software Engineer · fully remote', timeline: 'Jul 2022 – Feb 2026', status: 'completed', team: '15-member team · one of 2 devs in India', platform: 'Banking · AWS'},
         sections: [
             {
                 title: 'Context',
                 blocks: [
-                    {type: 'text', md: 'A mission-critical regulatory data pipeline at a global bank (the systems that process the banking data regulators see), running on an aging Java 8 monolith with a legacy JSP front-end and manual deployments. I joined straight out of university in 2022, spent the first six months maintaining the microservice chain crunching that data, then moved onto the rebuild that filled the next three years: replacing the monolith with **Java 17 Spring Boot microservices on AWS** and the JSP front-end with **React + TypeScript**.'},
+                    {type: 'text', md: 'A mission-critical regulatory data pipeline at a global bank (the systems that process the banking data regulators see), running on an aging Java 8 monolith with a legacy JSP front-end, manual deployments, and everything hosted on-premise. Moving it to AWS was a big step for the bank, not a lift-and-shift, and it showed in the timeline: the architecture took a long while to settle before the implementation years began.\n\nI joined straight out of university in 2022 and worked **fully remote for my entire time there**, one of **two India-based developers on a 15-member team** with the rest in France, inside a platform group of 50+. The first six months went into maintaining the microservice chain crunching that data; the rebuild filled the next three years: replacing the monolith with **Java 17 Spring Boot microservices on AWS** and the JSP front-end with **React + TypeScript**.'},
                 ],
             },
             {
@@ -1141,7 +1141,7 @@ const clientProjects: Project[] = [
                         {icon: '🗄️', title: 'The data layer', body: 'PostgreSQL schema design and query optimisation for transaction processing at 50K+ transactions a day; the same query work cut API response times by 15%.'},
                         {icon: '📊', title: 'Analytics pipelines', body: 'Databricks for data-processing tasks: SQL plus workflow orchestration feeding the platform’s analytics.'},
                         {icon: '🔁', title: 'CI/CD and containerisation', body: 'Jenkins pipelines, Docker images, ECS/ECR task definitions, CloudWatch debugging, and Secrets Manager configuration. Deployment time came down 20%, and the delivery path got documented.'},
-                        {icon: '🤝', title: 'Distributed delivery', body: 'Sprint delivery and architecture decisions across teams in France and India: 90% sprint-commitment completion, code reviews in a team of 8, coverage held above 70%.'},
+                        {icon: '🤝', title: 'Distributed delivery, fully remote', body: 'Three and a half years of sprint delivery and architecture decisions with a team split between India and France, never once from an office: 90% sprint-commitment completion, regular cross-team code reviews, coverage held above 70%.'},
                     ]},
                 ],
             },
@@ -1161,7 +1161,7 @@ const clientProjects: Project[] = [
         metrics: [
             {value: '50K+', label: 'transactions processed daily'},
             {value: '1,000+', label: 'daily users on the front-end'},
-            {value: '3.5 yrs', label: 'on the platform · team of 8'},
+            {value: '2 of 15', label: 'India-based devs on the team, rest in France'},
         ],
         techStack: ['Java 17', 'Spring Boot', 'React', 'TypeScript', 'PostgreSQL', 'Databricks', 'AWS ECS/ECR', 'RDS', 'Secrets Manager', 'CloudWatch', 'Docker', 'Jenkins'],
     },
