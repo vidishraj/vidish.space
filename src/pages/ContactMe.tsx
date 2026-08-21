@@ -2,6 +2,7 @@ import styles from './ContactMe.module.scss'
 import Lottie from "lottie-react";
 import animationData from '../assets/lottieAnimations/lastAnimation.json'
 import SocialLinks from "../components/ContactLinks.tsx";
+import GithubCalendar from "../components/GithubCalendar.tsx";
 import {useThemeContext} from '../App';
 
 export const ContactMe = () => {
@@ -16,14 +17,18 @@ export const ContactMe = () => {
             className={styles.section4}
             id="section5"
             style={{
-                height: '100vh',
+                minHeight: '100vh',
                 display: 'flex',
                 flexDirection: 'column',
                 ...(backgrounds.contact ? {backgroundImage: `url('${backgrounds.contact}')`} : winterContactBg),
             }}
         >
-            <div className={"flex items-center justify-center"} style={{height: '60vh'}}>
+            <div
+                className={"flex flex-col items-center justify-center"}
+                style={{minHeight: '60vh', gap: '2.2rem', padding: '2rem 1rem'}}
+            >
                 <SocialLinks/>
+                <GithubCalendar username="vidishraj"/>
             </div>
             <Lottie animationData={animationData}
                     style={{
