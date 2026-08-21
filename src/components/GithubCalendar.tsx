@@ -92,10 +92,14 @@ const GithubCalendar = ({username}: {username: string}) => {
         weeks.push(cells.slice(i, i + 7));
     }
 
+    // Three backgrounds, not two: monsoon is dark, winter's contact section is
+    // a dark blue (light text works), but summer's is near-white — light text
+    // there was invisible. Summer gets dark ink on a light panel.
+    const isSummer = season === 'summer';
     const scale = isMonsoon ? DARK_SCALE : LIGHT_SCALE;
-    const panelBg = isMonsoon ? 'rgba(30,41,59,0.55)' : 'rgba(255,255,255,0.14)';
-    const border = isMonsoon ? 'rgba(148,163,184,0.25)' : 'rgba(255,255,255,0.35)';
-    const text = isMonsoon ? '#cbd5e1' : '#f1f5f9';
+    const panelBg = isMonsoon ? 'rgba(30,41,59,0.55)' : isSummer ? 'rgba(255,255,255,0.65)' : 'rgba(255,255,255,0.14)';
+    const border = isMonsoon ? 'rgba(148,163,184,0.25)' : isSummer ? 'rgba(15,23,42,0.14)' : 'rgba(255,255,255,0.35)';
+    const text = isMonsoon ? '#cbd5e1' : isSummer ? '#1f2937' : '#f1f5f9';
 
     return (
         <a

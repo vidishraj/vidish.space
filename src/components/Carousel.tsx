@@ -26,6 +26,7 @@ export function ProjectsGrid({projects, showFilter = true}: ProjectsGridProps) {
     const gridRef = useRef<HTMLDivElement>(null);
     const {season} = useThemeContext();
     const isDark = season === 'monsoon';
+    const isWinter = season === 'winter';
     const t = projectTheme(isDark);
     // No amount threshold (any visible pixel triggers): on mobile the grid is
     // one tall column, so a fractional threshold can exceed what a phone
@@ -126,7 +127,11 @@ export function ProjectsGrid({projects, showFilter = true}: ProjectsGridProps) {
                     <div
                         className="inline-flex rounded-full p-1"
                         style={{
-                            background: t.chipBg,
+                            // Winter's projects section sits on steel blue;
+                            // the translucent chip background left unselected
+                            // tab text muddy there. A near-opaque light pill
+                            // restores contrast without touching the theme.
+                            background: isWinter ? 'rgba(240,246,252,0.92)' : t.chipBg,
                             border: `1px solid ${t.hairline}`,
                         }}
                     >
