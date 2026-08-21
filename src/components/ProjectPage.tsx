@@ -109,17 +109,30 @@ const ProjectPage: React.FC<ProjectPageProps> = ({project, projects, onClose, on
     };
 
     return (
+        // Backdrop: the grid stays visible behind a dimmed rim, so the case
+        // study reads as a (near-fullscreen) modal over the site, not a page
+        // takeover. Click outside the panel to close; full-bleed on phones.
+        <motion.div
+            initial={{opacity: 0}}
+            animate={{opacity: 1}}
+            transition={{duration: 0.2}}
+            className="fixed inset-0 z-[60] flex items-center justify-center sm:p-5 lg:p-8"
+            style={{background: 'rgba(2,6,23,0.62)', backdropFilter: 'blur(4px)'}}
+            onClick={(e) => {
+                if (e.target === e.currentTarget) onClose();
+            }}
+        >
         <motion.div
             ref={containerRef}
             role="dialog"
             aria-modal="true"
             aria-label={project.title}
             tabIndex={-1}
-            initial={reduceMotion ? {opacity: 0} : {opacity: 0, y: 28}}
-            animate={{opacity: 1, y: 0}}
-            transition={{duration: 0.32, ease: 'easeOut'}}
-            className="fixed inset-0 z-[60] overflow-y-auto overscroll-contain"
-            style={{background: pageBg, color: textPrimary}}
+            initial={reduceMotion ? {opacity: 0} : {opacity: 0, y: 24, scale: 0.985}}
+            animate={{opacity: 1, y: 0, scale: 1}}
+            transition={{duration: 0.28, ease: 'easeOut'}}
+            className="h-full w-full max-w-[1600px] overflow-y-auto overscroll-contain shadow-2xl sm:rounded-2xl"
+            style={{background: pageBg, color: textPrimary, border: `1px solid ${hairline}`}}
         >
             {/* Top bar */}
             <div
@@ -415,6 +428,7 @@ const ProjectPage: React.FC<ProjectPageProps> = ({project, projects, onClose, on
                     ) : <div />}
                 </div>
             </footer>
+        </motion.div>
         </motion.div>
     );
 };
