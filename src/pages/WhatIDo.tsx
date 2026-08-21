@@ -157,7 +157,9 @@ const WhatIDo = () => {
                     animate={isInView ? 'visible' : 'hidden'}
                 >
                     {services.map((service, index) => {
-                        const cardPalette = palette.serviceCards[index];
+                        // Cycle the season palette: the palette arrays carry 6
+                        // entries, and the card count must never crash on a 7th.
+                        const cardPalette = palette.serviceCards[index % palette.serviceCards.length];
 
                         return (
                             <motion.div
