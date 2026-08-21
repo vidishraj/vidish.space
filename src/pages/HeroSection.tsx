@@ -60,13 +60,9 @@ const HeroSection = () => {
                         onSeasonChange={setSeason}
                     />
 
-                    {/* Conversion layer, grouped: one pitch line, one action
-                        row (availability + both CTAs), one quiet proof line. */}
-                    <p className={styles.heroPitch} style={{color: palette.textSecondary}}>
-                        I build complete products solo: backend, mobile, AI, and the
-                        infrastructure they run on.
-                    </p>
-
+                    {/* Conversion layer: two CTAs and one quiet proof line.
+                        The subtitle carries the positioning; anything more
+                        read as clutter on the Overseer's screen. */}
                     <div className={styles.heroActionRow}>
                         <a
                             href="#section4"
