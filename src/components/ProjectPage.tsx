@@ -216,6 +216,12 @@ const ProjectPage: React.FC<ProjectPageProps> = ({project, projects, onClose, on
                             GitHub ↗
                         </a>
                     )}
+                    {project.links?.appStore && (
+                        <a href={project.links.appStore} target="_blank" rel="noopener noreferrer"
+                           className="rounded-full px-4 py-1.5 text-sm font-semibold" style={linkBtn}>
+                             App Store{project.links.appStoreNote ? ` (${project.links.appStoreNote})` : ''} ↗
+                        </a>
+                    )}
                     {project.links?.designDoc && (
                         <a href={project.links.designDoc} target="_blank" rel="noopener noreferrer"
                            className="rounded-full px-4 py-1.5 text-sm font-semibold" style={linkBtn}>

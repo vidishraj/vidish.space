@@ -1308,12 +1308,12 @@ const clientProjects: Project[] = [
                 title: 'Outcome',
                 blocks: [
                     {type: 'callout', label: 'Outcome', text: 'The rescue sprint turned into ongoing frontend ownership, shipping continuously through TestFlight and app-store review with an automated submission pipeline.'},
-                    {type: 'text', md: '[rahee.ai](https://rahee.ai)'},
+                    {type: 'text', md: '[rahee.ai](https://rahee.ai) · [On the App Store](https://apps.apple.com/in/app/rahee-ai-from-reels-to-trips/id6748941312)'},
                 ],
             },
         ],
         techStack: ['React', 'TypeScript', 'Capacitor 7', 'iOS (Xcode)', 'Android (R8)', 'Meta SDK', 'SSE', 'TestFlight', 'CI/CD'],
-        links: {website: 'https://rahee.ai'},
+        links: {website: 'https://rahee.ai', appStore: 'https://apps.apple.com/in/app/rahee-ai-from-reels-to-trips/id6748941312'},
     },
     {
         id: 'client-soultalk',
@@ -1373,7 +1373,7 @@ const clientProjects: Project[] = [
             },
         ],
         techStack: ['Python', 'FastAPI', 'SQLAlchemy 2.0', 'Pydantic v2', 'Redis (arq)', 'PostgreSQL (RDS)', 'AWS S3', 'React Native (Expo)', 'WebSockets', 'Docker', 'GitHub Actions', 'Nginx'],
-        links: {website: 'https://soultalkapp.com'},
+        links: {website: 'https://soultalkapp.com', appStore: 'https://apps.apple.com/app/id6759283325', appStoreNote: 'US + Canada'},
     },
     {
         id: 'client-cipherome',

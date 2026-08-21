@@ -67,6 +67,9 @@ export interface ProjectLinks {
     github?: string;
     website?: string;
     designDoc?: string;
+    appStore?: string;
+    /** Availability note rendered next to the App Store button, e.g. "US + Canada". */
+    appStoreNote?: string;
 }
 
 export interface Project {
