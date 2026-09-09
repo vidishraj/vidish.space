@@ -3,15 +3,10 @@ export type Season = 'summer' | 'monsoon' | 'winter';
 export const SEASON_STORAGE_KEY = 'portfolio-season';
 export const SEASON_QUERY_PARAM = 'season';
 
-// --- Auto-detection from real-world month ---
-// Northern hemisphere Indian seasons:
-// Summer: March–June, Monsoon: July–October, Winter: November–February
-export const getAutoSeason = (): Season => {
-    const month = new Date().getMonth(); // 0-indexed
-    if (month >= 2 && month <= 5) return 'summer';
-    if (month >= 6 && month <= 9) return 'monsoon';
-    return 'winter';
-};
+// First-visit default: monsoon (the rain world) — the Overseer's chosen
+// signature look. A visitor's own choice (URL param or saved season) always
+// wins; this only decides what a brand-new visitor sees first.
+export const DEFAULT_SEASON: Season = 'monsoon';
 
 export const getInitialSeason = (): Season => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -27,7 +22,7 @@ export const getInitialSeason = (): Season => {
         return savedSeason;
     }
 
-    return getAutoSeason();
+    return DEFAULT_SEASON;
 };
 
 export const persistSeason = (season: Season) => {

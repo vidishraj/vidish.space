@@ -12,7 +12,7 @@ export {
     SEASON_QUERY_PARAM,
     getInitialSeason,
     persistSeason,
-    getAutoSeason,
+    DEFAULT_SEASON,
     seasonPalettes,
     seasonBackgrounds,
     seasonHeroImages,
